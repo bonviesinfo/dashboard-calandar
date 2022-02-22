@@ -224,6 +224,7 @@ function CageBoard(props) {
               disableElevation
               startIcon={<AddIcon />}
               sx={{
+                color: 'background.paper',
                 fontSize: '0.875rem',
                 fontWeight: 'bold',
                 letterSpacing: '0.1em',
