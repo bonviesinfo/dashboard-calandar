@@ -4,9 +4,10 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import ControlMenu from '../components/CageBoard/ControlMenu'
 import { CageCard, CageNullCard } from '../components/CageBoard/CageCard'
-import AddIcon from '@mui/icons-material/Add'
+import AddCircleIcon from '@mui/icons-material/AddCircle'
+import ControlMenu from '../components/CageBoard/ControlMenu'
+import EnterPopover from '../components/CageBoard/EnterPopover'
 
 const cageSetting = {
   col: 6,
@@ -64,6 +65,7 @@ function CageBoard(props) {
   const [cages, setCages] = useState([])
   const [currentCage, setCurrentCage] = useState(null)
   const [anchorEl, setAnchorEl] = useState(null)
+  const [enterAnchorEl, setEnterAnchorEl] = useState(null)
 
   const cageMapping = useMemo(() => {
     const cageMapping = {}
@@ -114,6 +116,17 @@ function CageBoard(props) {
     handleClose()
   }
 
+  // 開啟及關閉進籠窗
+  const enterOpen = Boolean(enterAnchorEl)
+
+  const handleCreateClick = (e) => {
+    setEnterAnchorEl(e.currentTarget)
+  }
+
+  const handleCreateClose = () => {
+    setEnterAnchorEl(null)
+  }
+
   const renderedCards = totalCageArray.map((item, index) => {
     return cageMapping[index + 1]
       ? (
@@ -138,8 +151,7 @@ function CageBoard(props) {
   return (
     <Box
       sx={{
-        pb: 4,
-        bgcolor: '#efefef',
+        py: { xs: 2, sm: 3 },
         minHeight: '100vh',
         userSelect: 'none',
         '& .cage-grid': {
@@ -226,37 +238,60 @@ function CageBoard(props) {
     >
       <Box sx={{ width: '90%', m: '0 auto', }}>
 
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', }}>
-          <Typography variant="h2" component="h1" gutterBottom fontWeight="bold" color="text.secondary" sx={{ pb: 2, pt: 1 }}>
-            Cage Board
+        <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', }}>
+
+          <Typography variant="h4" component="h1" color="primary" sx={{ fontWeight: 'bold', color: 'text.secondary' }}>
+            籠位管理
           </Typography>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
             <Button
-              variant="contained"
-              size="large"
               disableElevation
-              startIcon={<AddIcon />}
+              variant="contained"
+              color="primary"
+              onClick={handleCreateClick}
+              startIcon={<AddCircleIcon />}
               sx={{
-                color: 'background.paper',
-                fontSize: '0.875rem',
+                fontSize: '1.125rem',
                 fontWeight: 'bold',
                 letterSpacing: '0.1em',
-                bgcolor: theme => alpha(theme.palette.primary.main, 0.6),
+                color: 'background.paper',
+                bgcolor: theme => alpha(theme.palette.primary.main, 0.7),
                 '&:hover': {
                   bgcolor: theme => alpha(theme.palette.primary.main, 0.8),
                 },
+                '& .MuiButton-startIcon svg': { fontSize: '1.25rem' },
               }}
             >
-              寵物進籠
+              寵物入籠
             </Button>
+          </Box>
+
+        </Box>
+
+        <Box sx={{
+          overflowX: 'auto',
+          borderRadius: 2,
+          border: '1px solid #efefef',
+        }}>
+          <Box sx={{
+            pt: 3,
+            px: 4,
+            pb: 5,
+            minWidth: { md: cageSetting.col * 200 },
+          }}>
+            <Grid container spacing={3} columns={cageSetting.col}>
+              {renderedCards}
+            </Grid>
           </Box>
         </Box>
 
-
-        <Grid container spacing={3} columns={cageSetting.col}>
-          {renderedCards}
-        </Grid>
+        <EnterPopover
+          disableEscapeKeyDown
+          open={enterOpen}
+          anchorEl={enterAnchorEl}
+          onClose={handleCreateClose}
+        />
 
         <ControlMenu
           id={id}

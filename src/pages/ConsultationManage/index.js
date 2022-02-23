@@ -989,7 +989,7 @@ function ConsultationMange() {
         },
       }}
     >
-      <Typography variant="h6" color="primary" sx={{ fontWeight: 'bold', pb: 1, color: 'text.secondary' }}>
+      <Typography variant="h4" color="primary" sx={{ fontWeight: 'bold', pb: 1, color: 'text.secondary' }}>
         諮詢管理
       </Typography>
 

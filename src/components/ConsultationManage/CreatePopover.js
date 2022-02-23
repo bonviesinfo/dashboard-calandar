@@ -1,5 +1,5 @@
 import React from 'react'
-import { v4 as uuidv4 } from 'uuid'
+import { nanoid } from '@reduxjs/toolkit'
 import { useTheme } from '@mui/material/styles'
 import { useDispatch } from 'react-redux'
 import { createConsultation } from '../../slices/consultationsSlice'
@@ -71,7 +71,7 @@ function CreatePopover({ member, onClose, ...restProps }) {
     if (validateConsultation()) return
     const newConsultation = {
       ...creatingConsultation,
-      id: uuidv4(),
+      id: nanoid(),
       isExpanded: true,
       recordedAt: Date.now(),
       member: currentMember || member,

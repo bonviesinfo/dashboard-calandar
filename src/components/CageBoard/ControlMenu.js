@@ -48,7 +48,7 @@ function TransCageMenuItem({
           disableElevation
           sx={{
             color: 'background.paper',
-            bgcolor: theme => alpha(theme.palette.primary.main, 0.8),
+            bgcolor: theme => alpha(theme.palette.primary.main, 0.7),
           }}
           onClick={() => handleCageChange(inputSerial)}
         >
