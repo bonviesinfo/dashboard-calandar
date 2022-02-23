@@ -9,7 +9,7 @@ import { CageCard, CageNullCard } from '../components/CageBoard/CageCard'
 import AddIcon from '@mui/icons-material/Add'
 
 const cageSetting = {
-  col: 5,
+  col: 6,
   row: 3,
 }
 
@@ -128,6 +128,7 @@ function CageBoard(props) {
         pb: 4,
         bgcolor: '#efefef',
         minHeight: '100vh',
+        userSelect: 'none',
         '& .cage-grid': {
           position: 'relative',
           '&::before': {

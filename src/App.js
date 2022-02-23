@@ -6,6 +6,8 @@ import useCustomizedTheme from './hooks/useCustomizedTheme'
 import ItineraryReminder from './components/SideBar/ItineraryReminder'
 
 const CageBoard = lazy(() => import('./pages/CageBoard'))
+const ConsultationManage = lazy(() => import('./pages/ConsultationManage'))
+const PurchaseRecordsAccordion = lazy(() => import('./pages/PurchaseRecordsAccordion'))
 
 const App = () => {
   const { CustomizedThemeProvider } = useCustomizedTheme()
@@ -21,6 +23,8 @@ const App = () => {
             <Suspense fallback={null}>
               <Routes>
                 <Route exact path="/" element={<CageBoard />} />
+                <Route exact path="/consultation" element={<ConsultationManage />} />
+                <Route exact path="/purchase-record" element={<PurchaseRecordsAccordion />} />
               </Routes>
             </Suspense>
           </Box>

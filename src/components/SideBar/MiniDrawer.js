@@ -79,12 +79,14 @@ export default function MiniDrawer() {
     <Drawer variant="permanent">
       <List>
         {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItemButton key={text} color="">
-            <ListItemText primary={text} />
-            <ListItemIcon>
-              {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-            </ListItemIcon>
-          </ListItemButton>
+          <Link to="/">
+            <ListItemButton key={text} color="">
+              <ListItemText primary={text} />
+              <ListItemIcon>
+                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+              </ListItemIcon>
+            </ListItemButton>
+          </Link>
         ))}
       </List>
       <Divider />
