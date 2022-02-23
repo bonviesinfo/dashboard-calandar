@@ -65,7 +65,18 @@ function CageBoard(props) {
   const [currentCage, setCurrentCage] = useState(null)
   const [anchorEl, setAnchorEl] = useState(null)
 
-  console.log(currentCage)
+  const cageMapping = useMemo(() => {
+    const cageMapping = {}
+    cages.forEach(item => {
+      cageMapping[item.serial] = item
+    })
+    return cageMapping
+  }, [cages])
+
+
+  const totalCageArray = useMemo(() => {
+    return Array.from(new Array(cageSetting.col * cageSetting.row))
+  }, [])
 
   useEffect(() => {
     setCages(dummyData)
@@ -87,23 +98,23 @@ function CageBoard(props) {
     handleClose()
   }
 
+  const onCageChange = serial => {
+    if (!currentCage) return
+    if (serial > totalCageArray.length || Number.isNaN(+serial)) return
 
-  const open = Boolean(anchorEl)
-  const id = open ? 'simple-popover' : undefined
-
-  const totalCageAmount = useMemo(() => {
-    return Array.from(new Array(cageSetting.col * cageSetting.row))
-  }, [])
-
-  const cageMapping = useMemo(() => {
-    const cageMapping = {}
-    cages.forEach(item => {
-      cageMapping[item.serial] = item
+    setCages(prev => {
+      let newCages = prev.map(cage => cage.id === currentCage.id ? { ...cage, serial } : cage)
+      if (cageMapping[serial]) {
+        newCages = newCages.map(cage => cage.id === cageMapping[serial].id ? { ...cage, serial: currentCage.serial } : cage
+        )
+      }
+      return newCages
     })
-    return cageMapping
-  }, [cages])
 
-  const renderedCards = totalCageAmount.map((item, index) => {
+    handleClose()
+  }
+
+  const renderedCards = totalCageArray.map((item, index) => {
     return cageMapping[index + 1]
       ? (
         <CageCard
@@ -121,6 +132,8 @@ function CageBoard(props) {
       )
   })
 
+  const open = Boolean(anchorEl)
+  const id = open ? 'simple-popover' : undefined
 
   return (
     <Box
@@ -251,6 +264,7 @@ function CageBoard(props) {
           anchorEl={anchorEl}
           handleClose={handleClose}
           handleCageClear={onCageClear}
+          handleCageChange={onCageChange}
         />
       </Box>
 
