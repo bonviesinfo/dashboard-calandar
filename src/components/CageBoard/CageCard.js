@@ -1,7 +1,9 @@
 import React from 'react'
+import { alpha } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
+import Button from '@mui/material/Button'
 import Avatar from '@mui/material/Avatar'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
@@ -9,7 +11,10 @@ import CardActionArea from '@mui/material/CardActionArea'
 import MonitorHeartIcon from '@mui/icons-material/MonitorHeart'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
+import PetsRoundedIcon from '@mui/icons-material/PetsRounded'
+import { ThemeContext } from '@emotion/react'
 
 export function CageCard({ info, serial, fill, handleClick }) {
 
@@ -139,19 +144,59 @@ export function CageCard({ info, serial, fill, handleClick }) {
   )
 }
 
-export function CageNullCard(props) {
+export function CageNullCard({
+  serial,
+  handleNullClick,
+}) {
   return (
     <Grid item md={1}
       className="cage-grid"
       sx={{
         width: '100%',
         '&::before': {
-          content: `${props.serial ? `'${props.serial}'` : '"null"'}`,
+          content: `${serial ? `'${serial}'` : '"null"'}`,
         },
       }}
     >
       <Card className="null-cage">
-        No Pet
+        {/* <Typography variant="body2" color="text.mid" noWrap sx={{ pt: 6, pb: 2 }}>
+          No Pet
+        </Typography> */}
+        {/* <Box sx={{ pt: 6 }}>
+          No Pet
+        </Box> */}
+        {/* <Button variant="outlined" size="small" sx={{ mt: 1, borderColor: theme => theme.palette.text.fade, color: 'text.fade' }}>
+          入籠
+        </Button> */}
+
+        <IconButton size="large" sx={{ mt: 8 }}>
+          <PetsRoundedIcon fontSize="large" sx={{
+            width: '3.5rem',
+            height: '3.5rem',
+            color: 'text.fade',
+          }} />
+        </IconButton>
+
+        <Button
+          variant="contained"
+          size="small"
+          disableElevation
+          endIcon={<KeyboardArrowDownIcon />}
+          sx={{
+            mt: 6,
+            mb: 2,
+            color: 'background.default',
+            bgcolor: 'text.fade',
+            '&:hover': {
+              bgcolor: theme => alpha(theme.palette.primary.light, 0.8),
+              color: 'background.default',
+            },
+          }}
+          onClick={handleNullClick}
+        >
+          其他
+        </Button>
+
       </Card>
     </Grid>
   )

@@ -3,69 +3,30 @@ import { useTheme, alpha } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+import DateTimePicker from '@mui/lab/DateTimePicker'
 import { CageCard, CageNullCard } from '../components/CageBoard/CageCard'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import ControlMenu from '../components/CageBoard/ControlMenu'
+import NullCageMenu from '../components/CageBoard/NullCageMenu'
 import EnterPopover from '../components/CageBoard/EnterPopover'
+import { dummyCageData } from '../constants/dummyCageData'
 
 const cageSetting = {
   col: 6,
   row: 3,
 }
 
-const dummyData = [
-  {
-    id: 'cr1',
-    serial: 1,
-    content: '安親',
-    pet: {
-      petName: 'Bobby',
-      petAge: 2,
-      petCategory: 'Cat',
-      avatar: 'https://live.staticflickr.com/70/226625536_551abc895a_n.jpg',
-    },
-  },
-  {
-    id: 'cr2',
-    serial: 12,
-    content: '住院',
-    pet: {
-      petName: 'Moceil',
-      petAge: 4,
-      petCategory: 'Dog',
-      avatar: 'https://live.staticflickr.com/1808/42312338234_efeddcb88f_n.jpg',
-    },
-  },
-  {
-    id: 'cr3',
-    serial: 8,
-    content: '住院',
-    pet: {
-      petName: 'Mimi',
-      petAge: 6,
-      petCategory: 'Cat',
-      avatar: 'https://live.staticflickr.com/2833/11998821256_ed10ca5d83_n.jpg',
-    },
-  },
-  {
-    id: 'cr4',
-    serial: 5,
-    content: '安親',
-    pet: {
-      petName: 'Chi Chi',
-      petAge: 3,
-      petCategory: 'Dog',
-    },
-  },
-]
-
 function CageBoard(props) {
   const theme = useTheme()
   const [cages, setCages] = useState([])
   const [currentCage, setCurrentCage] = useState(null)
   const [anchorEl, setAnchorEl] = useState(null)
+  const [nullAnchorEl, setNullAnchorEl] = useState(null)
   const [enterAnchorEl, setEnterAnchorEl] = useState(null)
+
+  const [value, setValue] = React.useState(new Date())
 
   const cageMapping = useMemo(() => {
     const cageMapping = {}
@@ -81,7 +42,7 @@ function CageBoard(props) {
   }, [])
 
   useEffect(() => {
-    setCages(dummyData)
+    setCages(dummyCageData)
   }, [])
 
   const handleClick = cage => event => {
@@ -117,7 +78,9 @@ function CageBoard(props) {
   }
 
   // 開啟及關閉進籠窗
+  const open = Boolean(anchorEl)
   const enterOpen = Boolean(enterAnchorEl)
+  const nullOpen = Boolean(nullAnchorEl)
 
   const handleCreateClick = (e) => {
     setEnterAnchorEl(e.currentTarget)
@@ -126,6 +89,16 @@ function CageBoard(props) {
   const handleCreateClose = () => {
     setEnterAnchorEl(null)
   }
+
+  const handleNullClick = (event) => {
+    setNullAnchorEl(event.currentTarget)
+  }
+
+  const handleNullClose = () => {
+    setNullAnchorEl(null)
+  }
+
+
 
   const renderedCards = totalCageArray.map((item, index) => {
     return cageMapping[index + 1]
@@ -141,12 +114,10 @@ function CageBoard(props) {
         <CageNullCard
           key={index}
           serial={index + 1}
+          handleNullClick={handleNullClick}
         />
       )
   })
-
-  const open = Boolean(anchorEl)
-  const id = open ? 'simple-popover' : undefined
 
   return (
     <Box
@@ -176,11 +147,12 @@ function CageBoard(props) {
           height: '100%',
           minHeight: 200,
           position: 'relative',
-          '&.null-cage': {
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'text.disabled',
-          },
+        },
+        '& .MuiCard-root.null-cage': {
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          color: 'text.disabled',
         },
         '& .control-btn': {
           position: 'absolute',
@@ -245,6 +217,18 @@ function CageBoard(props) {
           </Typography>
 
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+            <DateTimePicker
+              minutesStep={5}
+              // label="提醒開始時間"
+              inputFormat="yyyy/MM/dd hh:mm a"
+              mask="___/__/__ __:__ _M"
+              renderInput={(params) => <TextField {...params} />}
+              value={value}
+              onChange={(newValue) => {
+                setValue(newValue);
+              }}
+            />
+
             <Button
               disableElevation
               variant="contained"
@@ -252,6 +236,7 @@ function CageBoard(props) {
               onClick={handleCreateClick}
               startIcon={<AddCircleIcon />}
               sx={{
+                ml: 2,
                 fontSize: '1.125rem',
                 fontWeight: 'bold',
                 letterSpacing: '0.1em',
@@ -294,12 +279,17 @@ function CageBoard(props) {
         />
 
         <ControlMenu
-          id={id}
           open={open}
           anchorEl={anchorEl}
           handleClose={handleClose}
           handleCageClear={onCageClear}
           handleCageChange={onCageChange}
+        />
+
+        <NullCageMenu
+          open={nullOpen}
+          anchorEl={nullAnchorEl}
+          handleClose={handleNullClose}
         />
       </Box>
 

@@ -46,6 +46,7 @@ const getDesignTokens = (mode) => ({
           secondary: 'rgba(0, 0, 0, 0.6)',
           third: grey[700],
           mid: grey[500],
+          fader: grey[400],
           fade: grey[300],
           lighter: grey[200],
           light: grey[50],
