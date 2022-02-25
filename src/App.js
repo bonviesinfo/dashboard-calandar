@@ -6,6 +6,8 @@ import useCustomizedTheme from './hooks/useCustomizedTheme'
 import ItineraryReminder from './components/SideBar/ItineraryReminder'
 
 const CageBoard = lazy(() => import('./pages/CageBoard'))
+const DateGrid = lazy(() => import('./pages/DateGrid'))
+const TestCalendar = lazy(() => import('./pages/TestCalendar'))
 const ConsultationManage = lazy(() => import('./pages/ConsultationManage'))
 const PurchaseRecordsAccordion = lazy(() => import('./pages/PurchaseRecordsAccordion'))
 
@@ -23,6 +25,8 @@ const App = () => {
             <Suspense fallback={null}>
               <Routes>
                 <Route exact path="/" element={<CageBoard />} />
+                <Route exact path="/date-grid" element={<DateGrid />} />
+                <Route exact path="/calendar" element={<TestCalendar />} />
                 <Route exact path="/consultation" element={<ConsultationManage />} />
                 <Route exact path="/purchase-record" element={<PurchaseRecordsAccordion />} />
               </Routes>

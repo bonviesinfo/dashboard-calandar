@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, memo } from 'react'
 import { Fab, Badge, Box } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import TextSnippetIcon from '@mui/icons-material/TextSnippet'
 import ItineraryCreatePopover from './ItineraryCreatePopover'
 import ItineraryListPopover from './ItineraryListPopover'
 
-export default function ItineraryReminder() {
+function ItineraryReminder() {
   const [listAnchorEl, setListAnchorEl] = useState(null)
   const [createAnchorEl, setCreateAnchorEl] = useState(null)
 
@@ -71,3 +71,5 @@ export default function ItineraryReminder() {
     </React.Fragment>
   )
 }
+
+export default memo(ItineraryReminder)

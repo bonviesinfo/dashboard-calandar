@@ -2,20 +2,23 @@ import React, { useMemo, useState, useEffect } from 'react'
 import { useTheme, alpha } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import DateTimePicker from '@mui/lab/DateTimePicker'
-import { CageCard, CageNullCard } from '../components/CageBoard/CageCard'
-import AddCircleIcon from '@mui/icons-material/AddCircle'
+import CageCardList from '../components/CageBoard/CageCardList'
 import ControlMenu from '../components/CageBoard/ControlMenu'
 import NullCageMenu from '../components/CageBoard/NullCageMenu'
 import EnterPopover from '../components/CageBoard/EnterPopover'
+import CustomizedDatePicker from '../components/CageBoard/CustomizedDatePicker'
 import { dummyCageData } from '../constants/dummyCageData'
 
 const cageSetting = {
   col: 6,
   row: 3,
+}
+
+const filterCageDate = date => {
+  return dummyCageData.filter(cage => {
+    return new Date(cage.start).toLocaleDateString() === new Date(date).toLocaleDateString()
+  })
 }
 
 function CageBoard(props) {
@@ -25,8 +28,6 @@ function CageBoard(props) {
   const [anchorEl, setAnchorEl] = useState(null)
   const [nullAnchorEl, setNullAnchorEl] = useState(null)
   const [enterAnchorEl, setEnterAnchorEl] = useState(null)
-
-  const [value, setValue] = React.useState(new Date())
 
   const cageMapping = useMemo(() => {
     const cageMapping = {}
@@ -42,7 +43,9 @@ function CageBoard(props) {
   }, [])
 
   useEffect(() => {
-    setCages(dummyCageData)
+    setCages(
+      filterCageDate(new Date())
+    )
   }, [])
 
   const handleClick = cage => event => {
@@ -82,9 +85,9 @@ function CageBoard(props) {
   const enterOpen = Boolean(enterAnchorEl)
   const nullOpen = Boolean(nullAnchorEl)
 
-  const handleCreateClick = (e) => {
-    setEnterAnchorEl(e.currentTarget)
-  }
+  // const handleCreateClick = (e) => {
+  //   setEnterAnchorEl(e.currentTarget)
+  // }
 
   const handleCreateClose = () => {
     setEnterAnchorEl(null)
@@ -98,33 +101,24 @@ function CageBoard(props) {
     setNullAnchorEl(null)
   }
 
-
-
-  const renderedCards = totalCageArray.map((item, index) => {
-    return cageMapping[index + 1]
-      ? (
-        <CageCard
-          key={cageMapping[index + 1].id || index}
-          serial={index + 1}
-          fill={cageSetting.col > 3}
-          info={cageMapping[index + 1]}
-          handleClick={handleClick(cageMapping[index + 1])}
-        />
-      ) : (
-        <CageNullCard
-          key={index}
-          serial={index + 1}
-          handleNullClick={handleNullClick}
-        />
-      )
-  })
-
   return (
     <Box
       sx={{
         py: { xs: 2, sm: 3 },
         minHeight: '100vh',
         userSelect: 'none',
+        overflowX: 'hidden',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: '-10vh',
+          left: 0,
+          width: '125%',
+          height: '60vh',
+          zIndex: -1,
+          transform: 'Rotate(-3deg)',
+          bgcolor: alpha(theme.palette.primary.light, 0.15),
+        },
         '& .cage-grid': {
           position: 'relative',
           '&::before': {
@@ -208,7 +202,11 @@ function CageBoard(props) {
         },
       }}
     >
-      <Box sx={{ width: '90%', m: '0 auto', }}>
+      <Box sx={{
+        width: '90%',
+        m: '0 auto',
+
+      }}>
 
         <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', }}>
 
@@ -216,40 +214,33 @@ function CageBoard(props) {
             籠位管理
           </Typography>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-            <DateTimePicker
-              minutesStep={5}
-              // label="提醒開始時間"
-              inputFormat="yyyy/MM/dd hh:mm a"
-              mask="___/__/__ __:__ _M"
-              renderInput={(params) => <TextField {...params} />}
-              value={value}
-              onChange={(newValue) => {
-                setValue(newValue);
-              }}
-            />
+          <Box sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            '& .MuiOutlinedInput-input': {
+              py: 1.375,
+              width: 125,
+              fontSize: '1rem',
+            },
+            '& .search-btn': {
+              ml: 2,
+              fontSize: '1.125rem',
+              fontWeight: 'bold',
+              letterSpacing: '0.1em',
+              color: 'background.paper',
+              bgcolor: theme => alpha(theme.palette.primary.main, 0.7),
+              '&:hover': {
+                bgcolor: theme => alpha(theme.palette.primary.main, 0.8),
+              },
+              '& .MuiButton-startIcon svg': { fontSize: '1.25rem' },
+            },
+          }}>
 
-            <Button
-              disableElevation
-              variant="contained"
-              color="primary"
-              onClick={handleCreateClick}
-              startIcon={<AddCircleIcon />}
-              sx={{
-                ml: 2,
-                fontSize: '1.125rem',
-                fontWeight: 'bold',
-                letterSpacing: '0.1em',
-                color: 'background.paper',
-                bgcolor: theme => alpha(theme.palette.primary.main, 0.7),
-                '&:hover': {
-                  bgcolor: theme => alpha(theme.palette.primary.main, 0.8),
-                },
-                '& .MuiButton-startIcon svg': { fontSize: '1.25rem' },
-              }}
-            >
-              寵物入籠
-            </Button>
+            <CustomizedDatePicker
+              setCages={setCages}
+              filterCageDate={filterCageDate}
+            />
           </Box>
 
         </Box>
@@ -257,7 +248,9 @@ function CageBoard(props) {
         <Box sx={{
           overflowX: 'auto',
           borderRadius: 2,
-          border: '1px solid #efefef',
+          bgcolor: theme.palette.text.lightest,
+          border: `1px solid ${theme.palette.text.lighter}`,
+
         }}>
           <Box sx={{
             pt: 3,
@@ -266,7 +259,14 @@ function CageBoard(props) {
             minWidth: { md: cageSetting.col * 200 },
           }}>
             <Grid container spacing={3} columns={cageSetting.col}>
-              {renderedCards}
+              <CageCardList
+                cageSetting={cageSetting}
+                cages={cages}
+                handleClick={handleClick}
+                cageMapping={cageMapping}
+                totalCageArray={totalCageArray}
+                handleNullClick={handleNullClick}
+              />
             </Grid>
           </Box>
         </Box>

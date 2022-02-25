@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { styled } from '@mui/material/styles'
 import { Drawer as MuiDrawer, List, ListItemButton, ListItemIcon, ListItemText, Divider } from '@mui/material'
 import { Link } from 'react-router-dom'
@@ -73,7 +73,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 )
 
-export default function MiniDrawer() {
+function MiniDrawer() {
 
   return (
     <Drawer variant="permanent">
@@ -114,3 +114,5 @@ export default function MiniDrawer() {
     </Drawer>
   )
 }
+
+export default memo(MiniDrawer)

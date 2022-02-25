@@ -5,6 +5,8 @@ import { amber, cyan, teal, grey } from '@mui/material/colors'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import ColorModeContext from '../contexts/ColorModeContext'
+import twLocale from 'date-fns/locale/zh-TW'
+
 
 const getDesignTokens = (mode) => ({
   palette: {
@@ -50,9 +52,10 @@ const getDesignTokens = (mode) => ({
           fade: grey[300],
           lighter: grey[200],
           light: grey[50],
+          lightest: '#fcfcfc',
         }
         : {
-          primary: '#fff',
+          primary: '#ffffff',
           secondary: grey[100],
           third: grey[200],
           lighter: grey[800],
@@ -101,7 +104,7 @@ const useCustomizedTheme = () => {
   const CustomizedThemeProvider = props => (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <LocalizationProvider dateAdapter={AdapterDateFns} locale={twLocale}>
           <CssBaseline />
           {props.children}
         </LocalizationProvider>

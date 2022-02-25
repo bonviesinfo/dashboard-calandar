@@ -14,7 +14,6 @@ import MedicalServicesIcon from '@mui/icons-material/MedicalServices'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import PetsRoundedIcon from '@mui/icons-material/PetsRounded'
-import { ThemeContext } from '@emotion/react'
 
 export function CageCard({ info, serial, fill, handleClick }) {
 

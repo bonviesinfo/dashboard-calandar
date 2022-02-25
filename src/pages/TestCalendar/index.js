@@ -1,25 +1,23 @@
 import React, { useState, useEffect } from 'react'
-// import { useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box'
-import FullCalendar from '@fullcalendar/react' // must go before plugins
+import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
-import { dummyEvents } from './dummyData'
+import { dummyCageData } from '../../constants/dummyCageData'
 
-import EventList from './EventList'
-import EventPool from './EventPool'
-import EventPopover from './EventPopover'
+import EventList from '../../components/TestCalendar/EventList'
+import EventPool from '../../components/TestCalendar/EventPool'
+import EventPopover from '../../components/TestCalendar/EventPopover'
 
-const DemoApp = () => {
+const TestCalendar = () => {
   // const theme = useTheme()
   const [events, setEvents] = useState([])
   const [anchorEl, setAnchorEl] = useState(null)
   const [currentEvent, setCurrentEvent] = useState({})
-  console.log(currentEvent)
 
   useEffect(() => {
-    setEvents(dummyEvents)
+    setEvents(dummyCageData)
   }, [])
 
   const handleClick = (eventInfo) => {
@@ -80,7 +78,20 @@ const DemoApp = () => {
         initialView="dayGridMonth"
         editable={true}
         droppable={true}
-        events={events}
+        aspectRatio={1.75}
+        views={{
+          dayGridMonth: { // name of view
+            eventTimeFormat: {
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: false,
+            },
+            // other view-specific options here
+          }
+        }}
+
+        eventClick={handleClick}
+        eventMouseLeave={() => console.log('leave')}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         headerToolbar={{
           left: 'prev,next today',
@@ -90,14 +101,13 @@ const DemoApp = () => {
         drop={function (info) {
           info.draggedEl.parentNode.removeChild(info.draggedEl);
         }}
-        eventClick={handleClick}
-        eventMouseLeave={() => console.log('leave')}
+        events={events}
       />
     </Box >
   )
 
 }
 
-export default DemoApp
+export default TestCalendar
 
 

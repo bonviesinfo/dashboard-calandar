@@ -1,3 +1,7 @@
+body {
+  overflow-x: hidden;
+}
+
 /* 滾動條樣式 */
 ::-webkit-scrollbar {
   width: 5px;
