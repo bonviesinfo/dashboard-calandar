@@ -1,4 +1,5 @@
 const todayISO = new Date().toISOString()
+const yesterdayISO = new Date(new Date().getTime() - 86400000).toISOString()
 
 export const dummyCageData = [
   {
@@ -63,8 +64,8 @@ export const dummyCageData = [
       petCategory: 'Dog',
       avatar: 'https://live.staticflickr.com/1808/42312338234_efeddcb88f_n.jpg',
     },
-    start: '2022-02-24T03:30:00',
-    end: '2022-02-24T07:30:00',
+    start: yesterdayISO,
+    end: yesterdayISO,
   },
   {
     id: 'cr6',
@@ -76,8 +77,8 @@ export const dummyCageData = [
       petCategory: 'Dog',
       avatar: 'https://live.staticflickr.com/7075/7058942935_d29b5c4778_n.jpg',
     },
-    start: '2022-02-24T03:30:00',
-    end: '2022-02-24T07:30:00',
+    start: yesterdayISO,
+    end: yesterdayISO,
   },
   {
     id: 'cr7',
@@ -89,8 +90,8 @@ export const dummyCageData = [
       petCategory: 'Dog',
       avatar: 'https://live.staticflickr.com/4821/40438716093_4a7905c3e7_n.jpg',
     },
-    start: '2022-02-24T03:30:00',
-    end: '2022-02-24T07:30:00',
+    start: yesterdayISO,
+    end: yesterdayISO,
   },
   {
     id: 'cr8',
@@ -102,8 +103,8 @@ export const dummyCageData = [
       petCategory: 'Dog',
       avatar: 'https://live.staticflickr.com/3358/5711249841_f2de6e0b63_n.jpg',
     },
-    start: '2022-02-24T03:30:00',
-    end: '2022-02-24T07:30:00',
+    start: yesterdayISO,
+    end: yesterdayISO,
   },
 
 ]

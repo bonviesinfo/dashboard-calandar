@@ -64,8 +64,9 @@ const getDesignTokens = (mode) => ({
     },
     jewelry: {
       red: '#ff756a',
-      darkBlue: '#289ad9',
+      darkRed: '#eb7167',
       blue: '#57c3ff',
+      darkBlue: '#289ad9',
       lightBlue: '#a5dfff',
       // #ff8d6b
     },

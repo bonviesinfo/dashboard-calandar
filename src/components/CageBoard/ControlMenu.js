@@ -7,8 +7,6 @@ import MenuItem from '@mui/material/MenuItem'
 import TextField from '@mui/material/TextField'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemIcon from '@mui/material/ListItemIcon'
-
-
 import ContentCopy from '@mui/icons-material/ContentCopy'
 import ContentPaste from '@mui/icons-material/ContentPaste'
 import SyncAltIcon from '@mui/icons-material/SyncAlt'
@@ -93,13 +91,13 @@ function ControlMenu({
         <ListItemIcon>
           <ContentCopy fontSize="small" />
         </ListItemIcon>
-        <ListItemText>Copy</ListItemText>
+        <ListItemText>Other1</ListItemText>
       </MenuItem>
       <MenuItem>
         <ListItemIcon>
           <ContentPaste fontSize="small" />
         </ListItemIcon>
-        <ListItemText>Paste</ListItemText>
+        <ListItemText>Other2</ListItemText>
       </MenuItem>
       <Divider />
       <MenuItem onClick={handleCageClear}>

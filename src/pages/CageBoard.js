@@ -248,7 +248,7 @@ function CageBoard(props) {
         <Box sx={{
           overflowX: 'auto',
           borderRadius: 2,
-          bgcolor: theme.palette.text.lightest,
+          bgcolor: alpha(theme.palette.text.lightest, 0.6),
           border: `1px solid ${theme.palette.text.lighter}`,
 
         }}>
