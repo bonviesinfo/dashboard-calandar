@@ -8,7 +8,7 @@ import ControlMenu from '../components/CageBoard/ControlMenu'
 import NullCageMenu from '../components/CageBoard/NullCageMenu'
 import EnterPopover from '../components/CageBoard/EnterPopover'
 import CustomizedDatePicker from '../components/CageBoard/CustomizedDatePicker'
-import { dummyCageData } from '../constants/dummyCageData'
+import { dummyCageData } from '../data/dummyCageData'
 
 const cageSetting = {
   col: 6,

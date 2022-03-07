@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { omit } from 'lodash-es'
-import { principalMapping, consultationMapping, IMPORTANT_LEVEL_IDS } from '../constants/dummyConsultationData'
+import { principalMapping, consultationMapping, IMPORTANT_LEVEL_IDS } from '../data/dummyConsultationData'
 
 
 export function useConsultationForm(INITIAL_STATE) {

@@ -19,7 +19,7 @@ import TextareaAutosize from '@mui/material/TextareaAutosize'
 import DateTimePicker from '@mui/lab/DateTimePicker'
 import { useConsultationForm } from '../../hooks/useConsultationForm'
 
-import { dummyMembers, principals, consultationCategories, minorPropertyTags, IMPORTANT_LEVELS } from '../../constants/dummyConsultationData'
+import { dummyMembers, principals, consultationCategories, minorPropertyTags, IMPORTANT_LEVELS } from '../../data/dummyConsultationData'
 
 const INITIAL_STATE = {
   remindStart: null,

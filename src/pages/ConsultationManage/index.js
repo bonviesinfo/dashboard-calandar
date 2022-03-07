@@ -37,7 +37,7 @@ import DisplayToggleButton from '../../components/ConsultationManage/DisplayTogg
 import CategoryToggleButton from '../../components/ConsultationManage/CategoryToggleButton'
 import CreatePopover from '../../components/ConsultationManage/CreatePopover'
 import DeletePopover from '../../components/ConsultationManage/DeletePopover'
-import { dummyMember, principals, principalMapping, consultationCategories, consultationMapping, minorPropertyTags, IMPORTANT_CLASS_MAPPING, IMPORTANT_LEVELS, IMPORTANT_LEVEL_IDS } from '../../constants/dummyConsultationData'
+import { dummyMember, principals, principalMapping, consultationCategories, consultationMapping, minorPropertyTags, IMPORTANT_CLASS_MAPPING, IMPORTANT_LEVELS, IMPORTANT_LEVEL_IDS } from '../../data/dummyConsultationData'
 
 // 客製時間格式
 const getLocaleDateString = timestamp => {

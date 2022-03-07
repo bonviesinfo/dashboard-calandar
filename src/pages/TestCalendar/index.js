@@ -4,7 +4,7 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
-import { dummyCageData } from '../../constants/dummyCageData'
+import { dummyCageData } from '../../data/dummyCageData'
 
 import EventList from '../../components/TestCalendar/EventList'
 import EventPool from '../../components/TestCalendar/EventPool'

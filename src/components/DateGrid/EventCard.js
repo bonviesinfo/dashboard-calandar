@@ -23,33 +23,42 @@ const EventCard = ({
       <div className="card-container">
 
         <div className="content">
-          <Avatar
-            alt={pet.petName}
-            variant="rounded"
-            src={pet.avatar || ''}
-            sx={{
-              width: '100%',
-              height: 108,
-              mb: 1.5,
-            }}
-          />
 
           <Box display="flex" alignItems="center" justifyContent="space-between">
             <Typography
               noWrap
               variant="h5"
               fontWeight="bold"
-              title={pet.petName}
+              title={pet?.petName}
               sx={{
                 letterSpacing: '0.025em',
               }}
             >
-              {pet.petName}
+              {pet?.petName || '-'}
             </Typography>
 
-            <Chip label="美容" color="success" sx={{ ml: 1.5, letterSpacing: '0.1em', }} />
-
+            <Chip label="美容"
+              sx={{
+                ml: 1.5,
+                letterSpacing: '0.1em',
+                color: 'background.default',
+                bgcolor: 'success.light',
+              }}
+            />
           </Box>
+
+
+          <Avatar
+            alt={pet?.petName}
+            variant="rounded"
+            src={pet?.avatar || ''}
+            sx={{
+              width: '100%',
+              height: 108,
+              mt: 2,
+              mb: 2,
+            }}
+          />
 
 
         </div>

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import DatePicker from '@mui/lab/DatePicker'
-import { dummyCageData } from '../../constants/dummyCageData'
+import { dummyCageData } from '../../data/dummyCageData'
 
 const CustomizedDatePicker = ({
   setCages,

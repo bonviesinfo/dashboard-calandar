@@ -16,7 +16,7 @@ import Autocomplete from '@mui/material/Autocomplete'
 import FormHelperText from '@mui/material/FormHelperText'
 import TextareaAutosize from '@mui/material/TextareaAutosize'
 import DateTimePicker from '@mui/lab/DateTimePicker'
-import { dummyMembers, principals, consultationCategories, minorPropertyTags, IMPORTANT_LEVELS } from '../../constants/dummyConsultationData'
+import { dummyMembers, principals, consultationCategories, minorPropertyTags, IMPORTANT_LEVELS } from '../../data/dummyConsultationData'
 import { useConsultationForm } from '../../hooks/useConsultationForm'
 
 const INITIAL_STATE = {

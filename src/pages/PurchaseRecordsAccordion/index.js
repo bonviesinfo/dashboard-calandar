@@ -10,8 +10,8 @@ import AccordionDetails from '@mui/material/AccordionDetails'
 import Pagination from '@mui/material/Pagination'
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp'
 import MemberInfo from '../../components/UI/MemberInfo'
-import orderData from '../../constants/dummyOrderData'
-import { dummyMember } from '../../constants/dummyConsultationData'
+import orderData from '../../data/dummyOrderData'
+import { dummyMember } from '../../data/dummyConsultationData'
 
 function ConsultationAccordion() {
   // const [expanded, setExpanded] = useState('panel1')
