@@ -62,10 +62,7 @@ const DateGrid = () => {
         bottomOpen={bottomOpen}
         toggleBottomDrawer={toggleBottomDrawer}
       />
-
       <BottomDrawer open={bottomOpen} onClose={() => setBottomOpen(false)} />
-
-
       <MainGrid />
     </Box>
   )

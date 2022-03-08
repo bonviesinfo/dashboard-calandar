@@ -1,5 +1,6 @@
-import React, { forwardRef, useState, Fragment } from 'react'
+import React, { forwardRef, useState, useMemo, Fragment } from 'react'
 import { useTheme } from '@mui/material/styles'
+import { useSelector, useDispatch } from 'react-redux'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
@@ -8,12 +9,24 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
-// import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 import Slide from '@mui/material/Slide'
 import DateTimePicker from '@mui/lab/DateTimePicker'
+import { dummyEmployeeData } from '../../data/dummyEmployeeData'
 import { dummyPetData } from '../../data/dummyPetData'
 import AddIcon from '@mui/icons-material/Add'
+
+import { selectEmployeesOccupiedTime } from '../../slices/employeesOccupiedTimeSlice'
+import { addEmployeeEvent } from '../../slices/employeesEventsSlice'
+
+import {
+  intervalMinute,
+  timePerHour,
+  // startInterval,
+  // intervalMS,
+  // gridLength,
+  // nthNum,
+} from '../../constants/dateGrid'
 
 const dummyReserveType = [
   {
@@ -24,6 +37,10 @@ const dummyReserveType = [
     id: 'tt2',
     name: '美容',
   },
+  {
+    id: 'tt3',
+    name: '住院',
+  },
 ]
 
 const Transition = forwardRef(function Transition(props, ref) {
@@ -31,11 +48,25 @@ const Transition = forwardRef(function Transition(props, ref) {
 })
 
 const DialogCreate = ({ show }) => {
+  const dispatch = useDispatch()
   const theme = useTheme()
+  const employeesOccupiedTime = useSelector(selectEmployeesOccupiedTime)
   const [open, setOpen] = useState(false)
   const [selectedPet, setSelectPet] = useState(null)
+  const [selectedEmployee, setSelectEmployee] = useState(null)
   const [selectedReserveType, setSelectReserveType] = useState(null)
   const [creatingItem, setCreatingItem] = useState({})
+
+  console.log('employeesOccupiedTime', employeesOccupiedTime)
+
+  const petMapping = useMemo(() => {
+    const newPetMapping = {}
+    dummyPetData.forEach((pet) => {
+      newPetMapping[pet.id] = pet
+    })
+
+    return newPetMapping
+  }, [dummyPetData])
 
 
   const onTimeChange = name => newValue => {
@@ -61,6 +92,48 @@ const DialogCreate = ({ show }) => {
     setSelectReserveType(event.target.value)
   }
 
+  const handleEmployeeChange = (event) => {
+    setSelectEmployee(event.target.value)
+  }
+
+  const validateTimeOccupied = () => {
+    const { startTime, endTime } = creatingItem
+    const startTimeIndex = startTime.getHours() * timePerHour + startTime.getMinutes() / intervalMinute
+    const endTimeIndex = endTime.getHours() * timePerHour + endTime.getMinutes() / intervalMinute
+
+    const occupiedTime = employeesOccupiedTime[selectedEmployee]
+    if (occupiedTime) {
+      for (let i = startTimeIndex; i < endTimeIndex; i += 1) {
+        if (occupiedTime[i]) {
+          return false
+        }
+      }
+    }
+
+    return true
+  }
+
+
+
+
+
+  const handleSubmit = () => {
+    const { startTime, endTime } = creatingItem
+    const newEvent = {
+      id: Math.random().toString(36).substr(2, 9),
+      pet: petMapping[selectedPet],
+      employeeId: selectedEmployee,
+      reserveType: selectedReserveType,
+      start: new Date(startTime).getTime(),
+      end: new Date(endTime).getTime(),
+    }
+
+    if (!validateTimeOccupied()) return alert('該成員時間重複')
+
+    dispatch(addEmployeeEvent(newEvent))
+    setOpen(false)
+  }
+
 
   return (
     <Fragment>
@@ -83,7 +156,7 @@ const DialogCreate = ({ show }) => {
       <Dialog
         open={open}
         TransitionComponent={Transition}
-        keepMounted
+        // keepMounted
         onClose={handleClose}
         fullWidth={true}
         maxWidth="sm"
@@ -96,11 +169,11 @@ const DialogCreate = ({ show }) => {
         }}
       >
         <DialogTitle sx={{ fontWeight: 'bold' }}>新增預約</DialogTitle>
-        <DialogContent sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <DialogContent>
           <Grid container spacing={3} sx={{ pt: 1 }}>
-            <Grid item xs={6}>
+            <Grid item xs={4}>
               <TextField
-                id="outlined-select-currency"
+                id="selected-pet"
                 select
                 label="寵物"
                 value={selectedPet || ''}
@@ -125,9 +198,42 @@ const DialogCreate = ({ show }) => {
               </TextField>
             </Grid>
 
-            <Grid item xs={6}>
+            <Grid item xs={4}>
               <TextField
-                id="outlined-select-currency"
+                id="selected-employee"
+                select
+                label="服務人員"
+                value={selectedEmployee || ''}
+                onChange={handleEmployeeChange}
+                SelectProps={{
+                  MenuProps: {
+                    sx: {
+                      '& .MuiPaper-root': {
+                        width: 0,
+                      },
+                    },
+                  },
+                }}
+              >
+                {dummyEmployeeData.map((option) => (
+                  <MenuItem key={option.id} value={option.id}>
+                    <Typography variant="body1" noWrap>
+                      {option.name}
+                    </Typography>
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+
+            {/* </Grid>
+
+          <Divider light sx={{ my: 2, }} />
+
+          <Grid container spacing={3} sx={{ pt: 1 }}> */}
+
+            <Grid item xs={4}>
+              <TextField
+                id="selected-reserve-type"
                 select
                 label="服務類別"
                 value={selectedReserveType || ''}
@@ -152,6 +258,8 @@ const DialogCreate = ({ show }) => {
               </TextField>
             </Grid>
 
+            {/* <Grid item xs={6}></Grid> */}
+
 
             <Grid item xs={6}>
               <DateTimePicker
@@ -161,7 +269,8 @@ const DialogCreate = ({ show }) => {
                   {...props}
                 // error={Boolean(errors.remindStart || props.error)} helperText={errors.remindStart} 
                 />}
-                minutesStep={5}
+                openTo="hours"
+                minutesStep={15}
                 label="提醒開始時間"
                 value={creatingItem.startTime}
                 inputFormat="yyyy/MM/dd hh:mm a"
@@ -178,13 +287,14 @@ const DialogCreate = ({ show }) => {
                   {...props}
                 // error={Boolean(errors.remindStart || props.error)} helperText={errors.remindStart} 
                 />}
-                minutesStep={5}
+                openTo="hours"
+                minutesStep={15}
                 label="提醒結束時間"
                 value={creatingItem.endTime}
                 inputFormat="yyyy/MM/dd hh:mm a"
                 mask="___/__/__ __:__ _M"
                 onChange={onTimeChange('endTime')}
-              // maxDateTime={creatingItem.endTime && new Date(creatingItem.endTime)}
+                minDateTime={creatingItem.startTime && new Date(creatingItem.startTime)}
               />
             </Grid>
 
@@ -200,7 +310,7 @@ const DialogCreate = ({ show }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>取消</Button>
-          <Button onClick={handleClose}>確認</Button>
+          <Button onClick={handleSubmit}>確認</Button>
         </DialogActions>
       </Dialog>
     </Fragment>

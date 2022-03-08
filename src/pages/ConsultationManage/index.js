@@ -947,7 +947,7 @@ function ConsultationMange() {
           '& .light-blue': { bgcolor: 'jewelry.lightBlue' },
           '& .negative': {
             color: 'text.primary',
-            bgcolor: 'text.lighter',
+            bgcolor: 'text.fadest',
           },
         },
         '& .chip-wrapper.completed': {

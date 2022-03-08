@@ -51,7 +51,8 @@ const getDesignTokens = (mode) => ({
           mid: grey[500],
           fader: grey[400],
           fade: grey[300],
-          lighter: grey[200],
+          fadest: grey[200],
+          lighter: grey[100],
           light: grey[50],
           lightest: '#fcfcfc',
         }

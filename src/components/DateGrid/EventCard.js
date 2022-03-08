@@ -17,7 +17,7 @@ const EventCard = ({
   return (
     <Card className="event-card"
       sx={{
-        height: row * 60 || 240,
+        height: row * 60 || 180,
       }}
     >
       <div className="card-container">

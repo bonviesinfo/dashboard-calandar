@@ -20,15 +20,15 @@ const BottomDrawer = (props) => {
         '& .MuiCard-root': {
           flex: '0 0 14.5%',
           mr: '1.8%',
-          mt: 5,
-          mb: 4,
+          mt: 4,
+          mb: 3,
           '&:first-of-type': {
             ml: '1.8%',
           },
         },
         '& .MuiDrawer-paper': {
           zIndex: 1251,
-          minHeight: 320,
+          minHeight: 240,
           // bgcolor: 'secondary.bg',
           flexDirection: 'row',
           '&::before': {
@@ -37,7 +37,7 @@ const BottomDrawer = (props) => {
             top: '0%',
             left: 0,
             width: '100%',
-            height: '50%',
+            height: '60%',
             zIndex: -1,
             // transform: 'Rotate(-1deg)',
             bgcolor: theme => alpha(theme.palette.primary.light, 0.1),

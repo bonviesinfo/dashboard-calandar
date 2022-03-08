@@ -1,19 +1,24 @@
 import React, { Fragment, useState, useEffect, useMemo, useCallback, memo } from 'react'
 import reactDom from 'react-dom'
 import { useTheme } from '@mui/material/styles'
+import { useDispatch, useSelector } from 'react-redux'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import EventCard from './EventCard'
 
-import { dummyEmployeeData, dummyEventData } from '../../data/dummyEmployeeData'
+import { dummyEmployeeData } from '../../data/dummyEmployeeData'
+import { selectEmployeeEvents } from '../../slices/employeesEventsSlice'
+import { updateEmployeesEventsMapping } from '../../slices/employeesEventsMappingSlice'
+import { updateEmployeesOccupiedTime } from '../../slices/employeesOccupiedTimeSlice'
 
-const startHour = 6 //hour
-const intervalMinute = 15 //min
-const timePerHour = 60 / intervalMinute
-const startInterval = startHour * timePerHour
-const intervalMS = intervalMinute * 60 * 1000
-const gridLength = (24 * timePerHour)
-const nthNum = (gridLength + 1) * 5 + 1
+import {
+  intervalMinute,
+  timePerHour,
+  startInterval,
+  intervalMS,
+  gridLength,
+  nthNum,
+} from '../../constants/dateGrid'
 
 const getZeroTime = () => {
   const date = new Date()
@@ -24,22 +29,48 @@ const getZeroTime = () => {
   return date
 }
 
+const showInterval = index => {
+  const newIndex = index + startInterval
+  const quo = Math.floor(newIndex / timePerHour)
+  const rem = index % timePerHour
+  const hour = (quo >= 24) ? (quo - 24).toString().padStart(2, '0') : quo.toString().padStart(2, '0')
+  const min = (rem * intervalMinute).toString().padStart(2, '0')
+
+  return `${hour}:${min}`
+}
+
+// const insertOccupiedTime = (occupiedTime, start, end) => {
+//   const newOccupiedTime = [...occupiedTime]
+//   const startIndex = start - startInterval
+//   const endIndex = end - startInterval
+//   for (let i = startIndex; i <= endIndex; i++) {
+//     newOccupiedTime[i] = true
+//   }
+//   return newOccupiedTime
+// }
+
 const MainGrid = () => {
   const theme = useTheme()
+  const dispatch = useDispatch()
+  const employeesEvents = useSelector(selectEmployeeEvents)
   const [selectDate] = useState(getZeroTime())
   const [employees, setEmployees] = useState([])
   const selectDateMs = useMemo(() => selectDate.getTime(), [selectDate])
+
+  console.log('employeesEvents', employeesEvents)
 
   useEffect(() => {
     setEmployees(dummyEmployeeData)
   }, [])
 
   const locateEvent = useCallback(event => {
-    const eventStartMs = event.start.getTime()
-    const eventEndMs = event.end.getTime()
+    const eventStartMs = new Date(event.start).getTime()
+    const eventEndMs = new Date(event.end).getTime()
     const eventStartIndex = Math.floor((eventStartMs - selectDateMs) / intervalMS)
     const eventEndIndex = Math.floor((eventEndMs - selectDateMs) / intervalMS)
     const eventLength = eventEndIndex - eventStartIndex
+
+    console.log(eventLength)
 
     return {
       eventStartIndex,
@@ -55,7 +86,7 @@ const MainGrid = () => {
         eventLength,
       } = locateEvent(event)
 
-      const targetDOM = document.querySelector(`[data-id="${event.dummyEmployeeId}"][data-index="${eventStartIndex}"]`)
+      const targetDOM = document.querySelector(`[data-id="${event.employeeId}"][data-index="${eventStartIndex}"]`)
 
       targetDOM && reactDom.render(<EventCard row={eventLength} pet={event.pet} />, targetDOM)
     })
@@ -63,27 +94,51 @@ const MainGrid = () => {
 
   useEffect(() => {
 
-    appendEvents(dummyEventData)
+    appendEvents(employeesEvents)
 
-  }, [employees, appendEvents])
+  }, [employeesEvents, appendEvents])
 
 
-  const showInterval = index => {
-    const newIndex = index + startInterval
-    const quo = Math.floor(newIndex / timePerHour)
-    const rem = index % timePerHour
-    const hour = (quo >= 24) ? (quo - 24).toString().padStart(2, '0') : quo.toString().padStart(2, '0')
-    const min = (rem * intervalMinute).toString().padStart(2, '0')
 
-    return `${hour}:${min}`
-  }
+  useEffect(() => {
+    // 每個成員的事件表
+    const newEmployeesEventsMapping = {}
+    employeesEvents.forEach(event => {
+      const employee = employees.find(employee => employee.id === event.employeeId)
+      if (!employee) return
+      if (!newEmployeesEventsMapping[employee.id]) {
+        newEmployeesEventsMapping[employee.id] = []
+      }
+      newEmployeesEventsMapping[employee.id].push(event)
+    })
+
+    // 每個成員被占據的時間表
+    const employeesOccupiedTime = {}
+    Object.keys(newEmployeesEventsMapping).forEach(employeeId => {
+      const occupiedTime = {}
+      const events = newEmployeesEventsMapping[employeeId]
+      events.forEach(event => {
+        const startTimeIndex = new Date(event.start).getHours() * timePerHour + Math.ceil(new Date(event.start).getMinutes() / intervalMinute)
+        const endTimeIndex = new Date(event.end).getHours() * timePerHour + Math.ceil(new Date(event.end).getMinutes() / intervalMinute)
+        for (let i = startTimeIndex; i < endTimeIndex; i++) {
+          occupiedTime[i] = event.id
+        }
+      })
+      employeesOccupiedTime[employeeId] = occupiedTime
+    })
+
+
+    dispatch(updateEmployeesEventsMapping(newEmployeesEventsMapping))
+    dispatch(updateEmployeesOccupiedTime(employeesOccupiedTime))
+
+  }, [employees, employeesEvents, dispatch])
 
 
   return (
     <Box
       className="grid-container"
       sx={{
-        width: '90%',
+        width: '95%',
         m: '0 auto',
         pb: 5,
         overflowX: 'auto',
@@ -117,11 +172,11 @@ const MainGrid = () => {
         sx={{
           display: 'grid',
           gridTemplateColumns: `6rem repeat(${dummyEmployeeData.length}, minmax(150px, 1fr)) 2rem`,
-          gridTemplateRows: `8rem`,
+          gridTemplateRows: `7rem`,
           '& .header-item': {
             display: 'flex',
             '& .item-container': {
-              pt: 4,
+              pt: 3,
               mb: 3,
               width: '80%',
               display: 'flex',
@@ -196,7 +251,6 @@ const MainGrid = () => {
               bgcolor: 'text.light',
             },
             '& span': {
-              // width: '3rem',
               display: 'inline-block',
               color: 'text.third',
               bgcolor: 'text.light',

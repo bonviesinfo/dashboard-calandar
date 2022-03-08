@@ -397,7 +397,7 @@ export default function ItineraryCreatePopover({ open, onClose }) {
               px: 1,
               my: 0.75,
               mx: 0.5,
-              bgcolor: 'text.lighter',
+              bgcolor: 'text.fadest',
             },
             '& .MuiChip-root.active': {
               color: 'text.light',

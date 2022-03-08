@@ -313,7 +313,7 @@ function CreatePopover({ member, onClose, ...restProps }) {
           px: 1,
           my: 0.75,
           mx: 0.5,
-          bgcolor: 'text.lighter',
+          bgcolor: 'text.fadest',
         },
         '& .MuiChip-root.active': {
           color: 'text.light',

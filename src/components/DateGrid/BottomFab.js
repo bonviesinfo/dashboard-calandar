@@ -19,7 +19,7 @@ const BottomFab = ({
         zIndex: 1252,
         right: '3rem',
         position: 'fixed',
-        bottom: bottomOpen ? 'calc(320px - 20px)' : '2.5rem',
+        bottom: bottomOpen ? 'calc(240px - 20px)' : '2.5rem',
         transition: theme.transitions.create('bottom', {
           easing: theme.transitions.easing.easeOut,
           duration: theme.transitions.duration.enteringScreen,

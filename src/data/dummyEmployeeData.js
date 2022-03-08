@@ -7,11 +7,11 @@ const getZeroTime = () => {
   return date
 }
 
-const getSomeDateTime = (num, minuteNum) => {
+const getSomeDateTimeMs = (num, minuteNum) => {
   const date = getZeroTime()
   date.setHours(date.getHours() + num)
   minuteNum && date.setMinutes(date.getMinutes() + minuteNum)
-  return date
+  return date.getTime()
 }
 
 export const dummyEmployeeData = [
@@ -47,10 +47,11 @@ export const dummyEmployeeData = [
 
 export const dummyEventData = [
   {
-    dummyEmployeeId: 'cm2',
+    id: 'ev1',
+    employeeId: 'cm2',
     title: '喝CASA啤酒',
-    start: getSomeDateTime(6, 30),
-    end: getSomeDateTime(8, 15),
+    start: getSomeDateTimeMs(6, 30),
+    end: getSomeDateTimeMs(8, 15),
     pet: {
       id: 'p1',
       petName: '純正法國血統 英國皇家訓練畢業 大家的小工舉 凱特琳十八世 -  Bobby·J·McArthur',
@@ -60,10 +61,11 @@ export const dummyEventData = [
     },
   },
   {
-    dummyEmployeeId: 'cm1',
+    id: 'ev2',
+    employeeId: 'cm1',
     title: '吃韓式炸雞',
-    start: getSomeDateTime(7, 30),
-    end: getSomeDateTime(9),
+    start: getSomeDateTimeMs(7, 30),
+    end: getSomeDateTimeMs(9),
     pet: {
       id: 'p2',
       petName: 'Cochi',
@@ -73,10 +75,11 @@ export const dummyEventData = [
     },
   },
   {
-    dummyEmployeeId: 'cm5',
+    id: 'ev3',
+    employeeId: 'cm5',
     title: '拿魚叉抓章魚',
-    start: getSomeDateTime(8),
-    end: getSomeDateTime(10),
+    start: getSomeDateTimeMs(8),
+    end: getSomeDateTimeMs(10),
     pet: {
       id: 'p2',
       petName: 'Cochi',
@@ -86,10 +89,11 @@ export const dummyEventData = [
     },
   },
   {
-    dummyEmployeeId: 'cm4',
+    id: 'ev4',
+    employeeId: 'cm4',
     title: '看Netflix',
-    start: getSomeDateTime(6, 15),
-    end: getSomeDateTime(8, 15),
+    start: getSomeDateTimeMs(6, 15),
+    end: getSomeDateTimeMs(8, 15),
     pet: {
       id: 'p3',
       petName: 'Mimi',
@@ -99,10 +103,11 @@ export const dummyEventData = [
     },
   },
   {
-    dummyEmployeeId: 'cm2',
+    id: 'ev5',
+    employeeId: 'cm2',
     title: '看Youtube',
-    start: getSomeDateTime(8, 30),
-    end: getSomeDateTime(10, 15),
+    start: getSomeDateTimeMs(8, 30),
+    end: getSomeDateTimeMs(10, 15),
     pet: {
       id: 'p4',
       petName: 'Chi Chi',
@@ -111,10 +116,11 @@ export const dummyEventData = [
     },
   },
   {
-    dummyEmployeeId: 'cm3',
+    id: 'ev6',
+    employeeId: 'cm3',
     title: '去Lady M吃蛋糕',
-    start: getSomeDateTime(7),
-    end: getSomeDateTime(11),
+    start: getSomeDateTimeMs(7, 30),
+    end: getSomeDateTimeMs(11),
     pet: {
       id: 'p5',
       petName: 'Micky',
