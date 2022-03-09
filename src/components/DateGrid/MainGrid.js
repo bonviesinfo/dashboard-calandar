@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography'
 import EventCard from './EventCard'
 
 import { dummyEmployeeData } from '../../data/dummyEmployeeData'
+import { dummyPetReserveType } from '../../data/dummyPetData'
 import { selectEmployeeEvents, deleteEmployeeEvent, filterEventByDate } from '../../slices/employeesEventsSlice'
 import { updateEmployeesEventsMapping } from '../../slices/employeesEventsMappingSlice'
 import { updateEmployeesOccupiedTime } from '../../slices/employeesOccupiedTimeSlice'
@@ -38,6 +39,14 @@ const MainGrid = ({ selectDate }) => {
   const selectDateMs = useMemo(() => selectDate.getTime(), [selectDate])
   const employeesEvents = useMemo(() => filterEventByDate(selectDateMs, originalEmployeesEvents), [selectDateMs, originalEmployeesEvents])
 
+  const petReserveTypeMapping = useMemo(() => {
+    const newPetReserveTypeMapping = {}
+    dummyPetReserveType.forEach((petReserveType) => {
+      newPetReserveTypeMapping[petReserveType.id] = petReserveType
+    })
+    return newPetReserveTypeMapping
+  }, [])
+
   useEffect(() => {
     setEmployees(dummyEmployeeData)
   }, [])
@@ -56,7 +65,7 @@ const MainGrid = ({ selectDate }) => {
     }
   }, [selectDateMs])
 
-  const handleDeleteEvent = event => () => {
+  const handleDeleteEvent = useCallback(event => () => {
     const {
       eventStartIndex,
     } = locateEvent(event)
@@ -66,7 +75,8 @@ const MainGrid = ({ selectDate }) => {
     targetDOM && reactDom.render(null, targetDOM)
 
     dispatch(deleteEmployeeEvent(event.id))
-  }
+  }, [locateEvent, dispatch])
+
 
   const appendEvents = useCallback((events) => {
     return events.forEach(event => {
@@ -82,9 +92,10 @@ const MainGrid = ({ selectDate }) => {
         pet={event.pet}
         event={event}
         handleDelete={handleDeleteEvent(event)}
+        petReserveTypeMapping={petReserveTypeMapping}
       />, targetDOM)
     })
-  }, [locateEvent])
+  }, [locateEvent, handleDeleteEvent, petReserveTypeMapping])
 
   useEffect(() => {
 

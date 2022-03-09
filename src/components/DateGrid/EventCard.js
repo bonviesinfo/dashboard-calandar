@@ -9,12 +9,16 @@ import Typography from '@mui/material/Typography'
 import EditRoundedIcon from '@mui/icons-material/EditRounded'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 
+
+// reserveType: 'tt2',
+
 const EventCard = ({
   row,
   event,
   handleDelete,
+  petReserveTypeMapping,
 }) => {
-  const smallMode = !row || row < 4
+  const smallMode = !row || row <= 3
 
   return (
     <Card className="event-card"
@@ -39,12 +43,12 @@ const EventCard = ({
               {event?.pet?.petName || '目前沒名字'}
             </Typography>
 
-            <Chip label="美容" className="chip" />
+            <Chip label={event && event.reserveType && petReserveTypeMapping ? petReserveTypeMapping[event.reserveType].name : '-'} className="chip" />
           </Box>
 
           {!smallMode && (
             <Avatar
-              className={`avatar ${row < 5 ? 'small' : ''}`}
+              className={`avatar ${row <= 4 ? 'small' : ''}`}
               alt={event?.pet?.petName}
               variant="rounded"
               src={event?.pet?.avatar || ''}
@@ -63,7 +67,7 @@ const EventCard = ({
 
         </div>
 
-        <Box className={`actions ${smallMode ? 'small' : ''}`} display="flex" justifyContent="flex-end">
+        <Box className={`actions ${row <= 4 ? 'small' : ''}`} display="flex" justifyContent="flex-end">
           <IconButton size="small" className="edit-btn">
             <EditRoundedIcon fontSize="small" />
           </IconButton>

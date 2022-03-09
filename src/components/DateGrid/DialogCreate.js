@@ -43,16 +43,13 @@ const DialogCreate = ({ show }) => {
   const [selectedReserveType, setSelectReserveType] = useState(null)
   const [creatingItem, setCreatingItem] = useState({})
 
-  console.log('employeesOccupiedTime', employeesOccupiedTime)
-
   const petMapping = useMemo(() => {
     const newPetMapping = {}
     dummyPetData.forEach((pet) => {
       newPetMapping[pet.id] = pet
     })
-
     return newPetMapping
-  }, [dummyPetData])
+  }, [])
 
 
   const onTimeChange = name => newValue => {
