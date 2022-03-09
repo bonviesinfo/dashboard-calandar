@@ -11,14 +11,15 @@ import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 
 const EventCard = ({
   row,
-  pet,
+  event,
   handleDelete,
 }) => {
+  const smallMode = !row || row < 4
 
   return (
     <Card className="event-card"
       sx={{
-        height: row * 60 || 180,
+        height: row * 60 || 120,
       }}
     >
       <div className="card-container">
@@ -30,41 +31,39 @@ const EventCard = ({
               noWrap
               variant="h5"
               fontWeight="bold"
-              title={pet?.petName}
+              title={event?.pet?.petName}
               sx={{
                 letterSpacing: '0.025em',
               }}
             >
-              {pet?.petName || '-'}
+              {event?.pet?.petName || '目前沒名字'}
             </Typography>
 
-            <Chip label="美容"
-              sx={{
-                ml: 1.5,
-                letterSpacing: '0.1em',
-                color: 'background.default',
-                bgcolor: 'success.light',
-              }}
-            />
+            <Chip label="美容" className="chip" />
           </Box>
 
+          {!smallMode && (
+            <Avatar
+              className={`avatar ${row < 5 ? 'small' : ''}`}
+              alt={event?.pet?.petName}
+              variant="rounded"
+              src={event?.pet?.avatar || ''}
+            />
+          )}
 
-          <Avatar
-            alt={pet?.petName}
-            variant="rounded"
-            src={pet?.avatar || ''}
-            sx={{
-              width: '100%',
-              height: 108,
-              mt: 2,
-              mb: 2,
-            }}
-          />
-
+          <Box sx={{
+            px: 1,
+            overflow: 'auto',
+            ...(smallMode && { mt: 1 })
+          }}>
+            <Typography variant="subtitle2">
+              {event?.remark || '-'}
+            </Typography>
+          </Box>
 
         </div>
 
-        <Box className="actions" display="flex" justifyContent="flex-end">
+        <Box className={`actions ${smallMode ? 'small' : ''}`} display="flex" justifyContent="flex-end">
           <IconButton size="small" className="edit-btn">
             <EditRoundedIcon fontSize="small" />
           </IconButton>

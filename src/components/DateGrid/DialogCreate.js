@@ -1,5 +1,5 @@
 import React, { forwardRef, useState, useMemo, Fragment } from 'react'
-import { useTheme } from '@mui/material/styles'
+// import { useTheme } from '@mui/material/styles'
 import { useSelector, useDispatch } from 'react-redux'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
@@ -13,7 +13,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import Slide from '@mui/material/Slide'
 import DateTimePicker from '@mui/lab/DateTimePicker'
 import { dummyEmployeeData } from '../../data/dummyEmployeeData'
-import { dummyPetData } from '../../data/dummyPetData'
+import { dummyPetData, dummyPetReserveType } from '../../data/dummyPetData'
 import AddIcon from '@mui/icons-material/Add'
 
 import { selectEmployeesOccupiedTime } from '../../slices/employeesOccupiedTimeSlice'
@@ -28,20 +28,6 @@ import {
   // nthNum,
 } from '../../constants/dateGrid'
 
-const dummyReserveType = [
-  {
-    id: 'tt1',
-    name: '洗澡',
-  },
-  {
-    id: 'tt2',
-    name: '美容',
-  },
-  {
-    id: 'tt3',
-    name: '住院',
-  },
-]
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
@@ -49,7 +35,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 
 const DialogCreate = ({ show }) => {
   const dispatch = useDispatch()
-  const theme = useTheme()
+  // const theme = useTheme()
   const employeesOccupiedTime = useSelector(selectEmployeesOccupiedTime)
   const [open, setOpen] = useState(false)
   const [selectedPet, setSelectPet] = useState(null)
@@ -73,6 +59,13 @@ const DialogCreate = ({ show }) => {
     setCreatingItem((prev) => ({
       ...prev,
       [name]: newValue,
+    }))
+  }
+
+  const handleChange = name => e => {
+    setCreatingItem((prev) => ({
+      ...prev,
+      [name]: e.target.value,
     }))
   }
 
@@ -115,7 +108,7 @@ const DialogCreate = ({ show }) => {
 
 
   const handleSubmit = () => {
-    const { startTime, endTime } = creatingItem
+    const { startTime, endTime, remark } = creatingItem
     const newEvent = {
       id: Math.random().toString(36).substr(2, 9),
       pet: petMapping[selectedPet],
@@ -123,6 +116,7 @@ const DialogCreate = ({ show }) => {
       reserveType: selectedReserveType,
       start: new Date(startTime).getTime(),
       end: new Date(endTime).getTime(),
+      remark,
     }
 
     if (!validateTimeOccupied()) return alert('該成員時間重複')
@@ -168,32 +162,6 @@ const DialogCreate = ({ show }) => {
         <DialogTitle sx={{ fontWeight: 'bold' }}>新增預約</DialogTitle>
         <DialogContent>
           <Grid container spacing={3} sx={{ pt: 1 }}>
-            <Grid item xs={4}>
-              <TextField
-                id="selected-pet"
-                select
-                label="寵物"
-                value={selectedPet || ''}
-                onChange={handlePetChange}
-                SelectProps={{
-                  MenuProps: {
-                    sx: {
-                      '& .MuiPaper-root': {
-                        width: 0,
-                      },
-                    },
-                  },
-                }}
-              >
-                {dummyPetData.map((option) => (
-                  <MenuItem key={option.id} value={option.id}>
-                    <Typography variant="body1" noWrap>
-                      {option.petName}
-                    </Typography>
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Grid>
 
             <Grid item xs={4}>
               <TextField
@@ -216,6 +184,33 @@ const DialogCreate = ({ show }) => {
                   <MenuItem key={option.id} value={option.id}>
                     <Typography variant="body1" noWrap>
                       {option.name}
+                    </Typography>
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+
+            <Grid item xs={4}>
+              <TextField
+                id="selected-pet"
+                select
+                label="寵物"
+                value={selectedPet || ''}
+                onChange={handlePetChange}
+                SelectProps={{
+                  MenuProps: {
+                    sx: {
+                      '& .MuiPaper-root': {
+                        width: 0,
+                      },
+                    },
+                  },
+                }}
+              >
+                {dummyPetData.map((option) => (
+                  <MenuItem key={option.id} value={option.id}>
+                    <Typography variant="body1" noWrap>
+                      {option.petName}
                     </Typography>
                   </MenuItem>
                 ))}
@@ -245,7 +240,7 @@ const DialogCreate = ({ show }) => {
                   },
                 }}
               >
-                {dummyReserveType.map((option) => (
+                {dummyPetReserveType.map((option) => (
                   <MenuItem key={option.id} value={option.id}>
                     <Typography variant="body1" noWrap>
                       {option.name}
@@ -300,6 +295,8 @@ const DialogCreate = ({ show }) => {
                 multiline
                 minRows={3}
                 label="備註"
+                value={creatingItem.remark}
+                onChange={handleChange('remark')}
               />
             </Grid>
 

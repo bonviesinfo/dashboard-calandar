@@ -57,7 +57,7 @@ export const dummyEventData = [
   {
     id: 'ev1',
     employeeId: 'cm2',
-    title: '喝CASA啤酒',
+    remark: '我是一些提醒事項，可能也不會太長，大概兩三行左右 你說什麼你說什麼你說什麼你說什麼你說什麼你說什麼你說什麼',
     start: getSomeDateTimeMs(6, 30),
     end: getSomeDateTimeMs(8, 15),
     pet: {
@@ -71,7 +71,7 @@ export const dummyEventData = [
   {
     id: 'ev2',
     employeeId: 'cm1',
-    title: '吃韓式炸雞',
+    remark: '吃韓式炸雞',
     start: getSomeDateTimeMs(7, 30),
     end: getSomeDateTimeMs(9),
     pet: {
@@ -85,7 +85,7 @@ export const dummyEventData = [
   {
     id: 'ev3',
     employeeId: 'cm5',
-    title: '拿魚叉抓章魚',
+    remark: '拿魚叉抓章魚',
     start: getSomeDateTimeMs(8),
     end: getSomeDateTimeMs(10),
     pet: {
@@ -99,7 +99,7 @@ export const dummyEventData = [
   {
     id: 'ev4',
     employeeId: 'cm4',
-    title: '看Netflix',
+    remark: '看Netflix',
     start: getSomeDateTimeMs(6, 15),
     end: getSomeDateTimeMs(8, 15),
     pet: {
@@ -113,7 +113,7 @@ export const dummyEventData = [
   {
     id: 'ev5',
     employeeId: 'cm2',
-    title: '看Youtube',
+    remark: '喝CASA啤酒',
     start: getSomeDateTimeMs(8, 30),
     end: getSomeDateTimeMs(10, 15),
     pet: {
@@ -126,7 +126,7 @@ export const dummyEventData = [
   {
     id: 'ev6',
     employeeId: 'cm3',
-    title: '去Lady M吃蛋糕',
+    remark: '去Lady M吃蛋糕',
     start: getSomeDateTimeMs(7, 30),
     end: getSomeDateTimeMs(11),
     pet: {
@@ -140,7 +140,7 @@ export const dummyEventData = [
   {
     id: 'ev7',
     employeeId: 'cm2',
-    title: 'CCCCCC123',
+    remark: 'CCCCCC123',
     start: getOtherDateTimeMs(1, 6, 30),
     end: getOtherDateTimeMs(1, 8, 15),
     pet: {
@@ -154,7 +154,7 @@ export const dummyEventData = [
   {
     id: 'ev8',
     employeeId: 'cm4',
-    title: 'CCCCCC562',
+    remark: 'CCCCCC562',
     start: getOtherDateTimeMs(1, 7, 15),
     end: getOtherDateTimeMs(1, 9, 45),
     pet: {
@@ -168,7 +168,7 @@ export const dummyEventData = [
   {
     id: 'ev9',
     employeeId: 'cm3',
-    title: 'CCCCCC912',
+    remark: 'CCCCCC912',
     start: getOtherDateTimeMs(1, 8, 30),
     end: getOtherDateTimeMs(1, 10, 15),
     pet: {
@@ -182,7 +182,7 @@ export const dummyEventData = [
   {
     id: 'ev10',
     employeeId: 'cm3',
-    title: 'CCCCCC837',
+    remark: 'CCCCCC837',
     start: getOtherDateTimeMs(2, 6, 30),
     end: getOtherDateTimeMs(2, 8, 30),
     pet: {

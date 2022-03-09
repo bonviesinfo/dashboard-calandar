@@ -41,3 +41,22 @@ export const dummyPetData = [
     avatar: 'https://live.staticflickr.com/2851/33522734484_655cb6c80c_n.jpg',
   },
 ]
+
+export const dummyPetReserveType = [
+  {
+    id: 'tt1',
+    name: '洗澡',
+  },
+  {
+    id: 'tt2',
+    name: '美容',
+  },
+  {
+    id: 'tt3',
+    name: '住院',
+  },
+  {
+    id: 'tt400',
+    name: '其他',
+  },
+]

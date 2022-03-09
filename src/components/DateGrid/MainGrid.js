@@ -80,6 +80,7 @@ const MainGrid = ({ selectDate }) => {
       targetDOM && reactDom.render(<EventCard
         row={eventLength}
         pet={event.pet}
+        event={event}
         handleDelete={handleDeleteEvent(event)}
       />, targetDOM)
     })
@@ -88,7 +89,6 @@ const MainGrid = ({ selectDate }) => {
   useEffect(() => {
 
     appendEvents(employeesEvents)
-    console.log(employeesEvents)
 
   }, [employeesEvents, appendEvents])
 

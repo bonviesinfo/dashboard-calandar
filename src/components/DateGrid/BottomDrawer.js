@@ -28,7 +28,7 @@ const BottomDrawer = (props) => {
         },
         '& .MuiDrawer-paper': {
           zIndex: 1251,
-          minHeight: 240,
+          minHeight: 180,
           // bgcolor: 'secondary.bg',
           flexDirection: 'row',
           '&::before': {
@@ -37,7 +37,7 @@ const BottomDrawer = (props) => {
             top: '0%',
             left: 0,
             width: '100%',
-            height: '60%',
+            height: '70%',
             zIndex: -1,
             // transform: 'Rotate(-1deg)',
             bgcolor: theme => alpha(theme.palette.primary.light, 0.1),

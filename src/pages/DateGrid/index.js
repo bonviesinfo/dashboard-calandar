@@ -63,32 +63,52 @@ const DateGrid = () => {
           borderRadius: 3,
           width: '80%',
           display: 'flex',
-          '& .card-container': {
-            width: '100%',
-            bgcolor: alpha(theme.palette.primary.dark, 0.03),
-            display: 'flex',
-            flexDirection: 'column',
+        },
+        '& .card-container': {
+          width: '100%',
+          bgcolor: alpha(theme.palette.primary.dark, 0.03),
+          display: 'flex',
+          flexDirection: 'column',
+        },
+        '& .content': {
+          pt: 1.5,
+          px: 1.5,
+          flexGrow: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: 0,
+        },
+        '& .chip': {
+          ml: 1.5,
+          letterSpacing: '0.1em',
+          color: 'background.default',
+          bgcolor: 'success.light',
+        },
+        '& .avatar': {
+          width: '100%',
+          height: 108,
+          mt: 2,
+          mb: 2,
+          '&.small': {
+            mb: 0,
           },
-          '& .content': {
-            p: 1.5,
-            flexGrow: 1,
-            display: 'flex',
-            flexDirection: 'column',
+        },
+        '& .actions': {
+          py: 1,
+          px: 1.5,
+          bgcolor: theme.palette.text.light,
+          '&.small': {
+            py: 0,
           },
-          '& .actions': {
-            px: 1.5,
-            py: 1,
-            bgcolor: theme.palette.text.light,
-          },
-          '& .edit-btn': {
-            color: theme.palette.jewelry.darkBlue,
-          },
-          '& .delete-btn': {
-            color: theme.palette.jewelry.darkRed,
-          },
-          '& .MuiTypography-root': {
-            color: 'text.secondary',
-          },
+        },
+        '& .edit-btn': {
+          color: theme.palette.jewelry.darkBlue,
+        },
+        '& .delete-btn': {
+          color: theme.palette.jewelry.darkRed,
+        },
+        '& .MuiTypography-root': {
+          color: 'text.secondary',
         },
       }}
     >
