@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
-import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import DatePicker from '@mui/lab/DatePicker'
-import { dummyCageData } from '../../data/dummyCageData'
 
-const CustomizedDatePicker = ({
-  setCages,
-  filterCageDate,
-}) => {
-  const [dateValue, setDateValue] = useState(new Date())
+const CustomizedDatePicker = (props) => {
+  const {
+    dateValue,
+    setDateValue,
+    handleDateChangeConfirm,
+    variant,
+    ...restProps
+  } = props
+  // const [dateValue, setDateValue] = useState(new Date())
   const [dateError, setDateError] = useState('')
 
   const onDateChange = (newValue) => {
@@ -16,9 +19,7 @@ const CustomizedDatePicker = ({
     setDateValue(newValue)
 
     if (validateDate(newValue)) return
-    setCages(
-      filterCageDate(newValue)
-    )
+    handleDateChangeConfirm(newValue)
   }
 
   const validateDate = (dateValue) => {
@@ -40,7 +41,7 @@ const CustomizedDatePicker = ({
   // }
 
   return (
-    <form onSubmit={e => e.preventDefault()}>
+    <Box component="form" onSubmit={e => e.preventDefault()} {...restProps}>
       <DatePicker
         inputFormat="yyyy/MM/dd"
         mask="____/__/__"
@@ -48,6 +49,7 @@ const CustomizedDatePicker = ({
         onChange={onDateChange}
         renderInput={(params) => (
           <TextField {...params}
+            {...(variant && { variant })}
             error={Boolean(dateError)}
             helperText={dateError}
           />
@@ -64,7 +66,7 @@ const CustomizedDatePicker = ({
       >
         搜尋
       </Button> */}
-    </form>
+    </Box>
   )
 }
 

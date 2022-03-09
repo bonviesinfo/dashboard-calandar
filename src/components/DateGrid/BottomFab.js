@@ -1,10 +1,10 @@
 import React from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-// import Fab from '@mui/material/Fab'
 import { useTheme, alpha } from '@mui/material/styles'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import DialogCreate from './DialogCreate'
+import CustomizesDatePicker from '../UI/CustomizedDatePicker'
 
 
 const BottomFab = ({
@@ -17,9 +17,11 @@ const BottomFab = ({
     <Box
       sx={{
         zIndex: 1252,
+        display: 'flex',
+        alignItems: 'center',
         right: '3rem',
         position: 'fixed',
-        bottom: bottomOpen ? 'calc(240px - 20px)' : '2.5rem',
+        bottom: bottomOpen ? 'calc(240px - 1.25rem)' : '2.5rem',
         transition: theme.transitions.create('bottom', {
           easing: theme.transitions.easing.easeOut,
           duration: theme.transitions.duration.enteringScreen,

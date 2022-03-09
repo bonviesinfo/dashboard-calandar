@@ -14,6 +14,14 @@ const getSomeDateTimeMs = (num, minuteNum) => {
   return date.getTime()
 }
 
+const getOtherDateTimeMs = (dayGap, num, minuteNum) => {
+  const date = getZeroTime()
+  date.setDate(date.getDate() + dayGap)
+  date.setHours(date.getHours() + num)
+  minuteNum && date.setMinutes(date.getMinutes() + minuteNum)
+  return date.getTime()
+}
+
 export const dummyEmployeeData = [
   {
     id: 'cm1',
@@ -129,6 +137,63 @@ export const dummyEventData = [
       avatar: 'https://live.staticflickr.com/4821/40438716093_4a7905c3e7_n.jpg',
     },
   },
+  {
+    id: 'ev7',
+    employeeId: 'cm2',
+    title: 'CCCCCC123',
+    start: getOtherDateTimeMs(1, 6, 30),
+    end: getOtherDateTimeMs(1, 8, 15),
+    pet: {
+      id: 'p6',
+      petName: 'Sachima',
+      petAge: 9,
+      petCategory: 'Cat',
+      avatar: 'https://live.staticflickr.com/2851/33522734484_655cb6c80c_n.jpg',
+    },
+  },
+  {
+    id: 'ev8',
+    employeeId: 'cm4',
+    title: 'CCCCCC562',
+    start: getOtherDateTimeMs(1, 7, 15),
+    end: getOtherDateTimeMs(1, 9, 45),
+    pet: {
+      id: 'p5',
+      petName: 'Micky',
+      petAge: 2,
+      petCategory: 'Dog',
+      avatar: 'https://live.staticflickr.com/4821/40438716093_4a7905c3e7_n.jpg',
+    },
+  },
+  {
+    id: 'ev9',
+    employeeId: 'cm3',
+    title: 'CCCCCC912',
+    start: getOtherDateTimeMs(1, 8, 30),
+    end: getOtherDateTimeMs(1, 10, 15),
+    pet: {
+      id: 'p1',
+      petName: '純正法國血統 英國皇家訓練畢業 大家的小工舉 凱特琳十八世 -  Bobby·J·McArthur',
+      petAge: 2,
+      petCategory: 'Cat',
+      avatar: 'https://live.staticflickr.com/70/226625536_551abc895a_n.jpg',
+    },
+  },
+  {
+    id: 'ev10',
+    employeeId: 'cm3',
+    title: 'CCCCCC837',
+    start: getOtherDateTimeMs(2, 6, 30),
+    end: getOtherDateTimeMs(2, 8, 30),
+    pet: {
+      id: 'p2',
+      petName: 'Cochi',
+      petAge: 7,
+      petCategory: 'Dog',
+      avatar: 'https://live.staticflickr.com/7075/7058942935_d29b5c4778_n.jpg',
+    },
+  }
+
 ]
 
 

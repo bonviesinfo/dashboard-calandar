@@ -114,9 +114,6 @@ const DialogCreate = ({ show }) => {
   }
 
 
-
-
-
   const handleSubmit = () => {
     const { startTime, endTime } = creatingItem
     const newEvent = {
@@ -140,14 +137,14 @@ const DialogCreate = ({ show }) => {
       <Button
         startIcon={<AddIcon />}
         onClick={handleClickOpen}
-        disabled={!show}
+        // disabled={!show}
         sx={{
           mr: 2,
-          transition: theme.transitions.create('all', {
-            easing: theme.transitions.easing.easeOut,
-            duration: theme.transitions.duration.enteringScreen,
-          }),
-          ...(!show && { opacity: 0 }),
+          // transition: theme.transitions.create('all', {
+          //   easing: theme.transitions.easing.easeOut,
+          //   duration: theme.transitions.duration.enteringScreen,
+          // }),
+          // ...(!show && { opacity: 0 }),
         }}
       >
         新增預約
@@ -271,7 +268,7 @@ const DialogCreate = ({ show }) => {
                 />}
                 openTo="hours"
                 minutesStep={15}
-                label="提醒開始時間"
+                label="開始時間"
                 value={creatingItem.startTime}
                 inputFormat="yyyy/MM/dd hh:mm a"
                 mask="___/__/__ __:__ _M"
@@ -289,7 +286,7 @@ const DialogCreate = ({ show }) => {
                 />}
                 openTo="hours"
                 minutesStep={15}
-                label="提醒結束時間"
+                label="結束時間"
                 value={creatingItem.endTime}
                 inputFormat="yyyy/MM/dd hh:mm a"
                 mask="___/__/__ __:__ _M"

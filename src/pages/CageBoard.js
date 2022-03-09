@@ -7,7 +7,7 @@ import CageCardList from '../components/CageBoard/CageCardList'
 import ControlMenu from '../components/CageBoard/ControlMenu'
 import NullCageMenu from '../components/CageBoard/NullCageMenu'
 import EnterPopover from '../components/CageBoard/EnterPopover'
-import CustomizedDatePicker from '../components/CageBoard/CustomizedDatePicker'
+import CustomizedDatePicker from '../components/UI/CustomizedDatePicker'
 import { dummyCageData } from '../data/dummyCageData'
 
 const cageSetting = {
@@ -21,7 +21,7 @@ const filterCageDate = date => {
   })
 }
 
-function CageBoard(props) {
+function CageBoard() {
   const theme = useTheme()
   const [cages, setCages] = useState([])
   const [currentCage, setCurrentCage] = useState(null)
@@ -99,6 +99,10 @@ function CageBoard(props) {
 
   const handleNullClose = () => {
     setNullAnchorEl(null)
+  }
+
+  const handleDateChangeConfirm = (newDate) => {
+    setCages(filterCageDate(newDate))
   }
 
   return (
@@ -208,38 +212,41 @@ function CageBoard(props) {
 
       }}>
 
-        <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', }}>
+        <Box
+          sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', }}
+        >
 
           <Typography variant="h4" component="h1" color="primary" sx={{ fontWeight: 'bold', color: 'text.secondary' }}>
             籠位管理
           </Typography>
 
-          <Box sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            '& .MuiOutlinedInput-input': {
-              py: 1.375,
-              width: 125,
-              fontSize: '1rem',
-            },
-            '& .search-btn': {
-              ml: 2,
-              fontSize: '1.125rem',
-              fontWeight: 'bold',
-              letterSpacing: '0.1em',
-              color: 'background.paper',
-              bgcolor: theme => alpha(theme.palette.primary.main, 0.7),
-              '&:hover': {
-                bgcolor: theme => alpha(theme.palette.primary.main, 0.8),
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              '& .MuiOutlinedInput-input': {
+                py: 1.375,
+                width: 125,
+                fontSize: '1rem',
               },
-              '& .MuiButton-startIcon svg': { fontSize: '1.25rem' },
-            },
-          }}>
+              '& .search-btn': {
+                ml: 2,
+                fontSize: '1.125rem',
+                fontWeight: 'bold',
+                letterSpacing: '0.1em',
+                color: 'background.paper',
+                bgcolor: theme => alpha(theme.palette.primary.main, 0.7),
+                '&:hover': {
+                  bgcolor: theme => alpha(theme.palette.primary.main, 0.8),
+                },
+                '& .MuiButton-startIcon svg': { fontSize: '1.25rem' },
+              },
+            }}
+          >
 
             <CustomizedDatePicker
-              setCages={setCages}
-              filterCageDate={filterCageDate}
+              handleDateChangeConfirm={handleDateChangeConfirm}
             />
           </Box>
 

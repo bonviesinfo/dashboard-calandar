@@ -12,6 +12,7 @@ import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 const EventCard = ({
   row,
   pet,
+  handleDelete,
 }) => {
 
   return (
@@ -68,7 +69,7 @@ const EventCard = ({
             <EditRoundedIcon fontSize="small" />
           </IconButton>
 
-          <IconButton size="small" className="delete-btn">
+          <IconButton size="small" className="delete-btn" onClick={handleDelete}>
             <DeleteRoundedIcon fontSize="small" />
           </IconButton>
         </Box>

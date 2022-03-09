@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography'
 import EventCard from './EventCard'
 
 import { dummyEmployeeData } from '../../data/dummyEmployeeData'
-import { selectEmployeeEvents } from '../../slices/employeesEventsSlice'
+import { selectEmployeeEvents, deleteEmployeeEvent, filterEventByDate } from '../../slices/employeesEventsSlice'
 import { updateEmployeesEventsMapping } from '../../slices/employeesEventsMappingSlice'
 import { updateEmployeesOccupiedTime } from '../../slices/employeesOccupiedTimeSlice'
 
@@ -20,15 +20,6 @@ import {
   nthNum,
 } from '../../constants/dateGrid'
 
-const getZeroTime = () => {
-  const date = new Date()
-  date.setHours(0)
-  date.setMinutes(0)
-  date.setSeconds(0)
-  date.setMilliseconds(0)
-  return date
-}
-
 const showInterval = index => {
   const newIndex = index + startInterval
   const quo = Math.floor(newIndex / timePerHour)
@@ -39,25 +30,13 @@ const showInterval = index => {
   return `${hour}:${min}`
 }
 
-// const insertOccupiedTime = (occupiedTime, start, end) => {
-//   const newOccupiedTime = [...occupiedTime]
-//   const startIndex = start - startInterval
-//   const endIndex = end - startInterval
-//   for (let i = startIndex; i <= endIndex; i++) {
-//     newOccupiedTime[i] = true
-//   }
-//   return newOccupiedTime
-// }
-
-const MainGrid = () => {
+const MainGrid = ({ selectDate }) => {
   const theme = useTheme()
   const dispatch = useDispatch()
-  const employeesEvents = useSelector(selectEmployeeEvents)
-  const [selectDate] = useState(getZeroTime())
+  const originalEmployeesEvents = useSelector(selectEmployeeEvents)
   const [employees, setEmployees] = useState([])
   const selectDateMs = useMemo(() => selectDate.getTime(), [selectDate])
-
-  console.log('employeesEvents', employeesEvents)
+  const employeesEvents = useMemo(() => filterEventByDate(selectDateMs, originalEmployeesEvents), [selectDateMs, originalEmployeesEvents])
 
   useEffect(() => {
     setEmployees(dummyEmployeeData)
@@ -70,14 +49,24 @@ const MainGrid = () => {
     const eventEndIndex = Math.floor((eventEndMs - selectDateMs) / intervalMS)
     const eventLength = eventEndIndex - eventStartIndex
 
-    console.log(eventLength)
-
     return {
       eventStartIndex,
       eventEndIndex,
       eventLength,
     }
   }, [selectDateMs])
+
+  const handleDeleteEvent = event => () => {
+    const {
+      eventStartIndex,
+    } = locateEvent(event)
+
+    const targetDOM = document.querySelector(`[data-id="${event.employeeId}"][data-index="${eventStartIndex}"]`)
+
+    targetDOM && reactDom.render(null, targetDOM)
+
+    dispatch(deleteEmployeeEvent(event.id))
+  }
 
   const appendEvents = useCallback((events) => {
     return events.forEach(event => {
@@ -88,13 +77,18 @@ const MainGrid = () => {
 
       const targetDOM = document.querySelector(`[data-id="${event.employeeId}"][data-index="${eventStartIndex}"]`)
 
-      targetDOM && reactDom.render(<EventCard row={eventLength} pet={event.pet} />, targetDOM)
+      targetDOM && reactDom.render(<EventCard
+        row={eventLength}
+        pet={event.pet}
+        handleDelete={handleDeleteEvent(event)}
+      />, targetDOM)
     })
   }, [locateEvent])
 
   useEffect(() => {
 
     appendEvents(employeesEvents)
+    console.log(employeesEvents)
 
   }, [employeesEvents, appendEvents])
 
@@ -140,8 +134,8 @@ const MainGrid = () => {
       sx={{
         width: '95%',
         m: '0 auto',
-        pb: 5,
-        overflowX: 'auto',
+        flexGrow: 1,
+        minHeight: 0,
         position: 'relative',
         '& .grid-item': {
           display: 'flex',
@@ -221,8 +215,9 @@ const MainGrid = () => {
       {/* Grid Body */}
       <Box
         sx={{
+          pb: 5,
           overflowY: 'overlay',
-          maxHeight: 'calc(100vh - 100px)',
+          height: 'calc(100% - 7rem)',
           display: 'grid',
           gridTemplateColumns: `4rem 2rem repeat(${dummyEmployeeData.length}, minmax(150px, 1fr)) 2rem`,
           gridTemplateRows: `1rem repeat(${gridLength}, 60px)`,
@@ -304,7 +299,7 @@ const MainGrid = () => {
 
             return (
               <div
-                key={'c' + index}
+                key={`${selectDateMs}c${index}`}
                 className={`grid-item${active}${fullHour}`}
                 data-id={employee.id}
                 data-index={newIndex}

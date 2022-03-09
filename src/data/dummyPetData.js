@@ -33,4 +33,11 @@ export const dummyPetData = [
     petCategory: 'Dog',
     avatar: 'https://live.staticflickr.com/4821/40438716093_4a7905c3e7_n.jpg',
   },
+  {
+    id: 'p6',
+    petName: 'Sachima',
+    petAge: 9,
+    petCategory: 'Cat',
+    avatar: 'https://live.staticflickr.com/2851/33522734484_655cb6c80c_n.jpg',
+  },
 ]
