@@ -36,6 +36,10 @@ const MainGrid = ({ selectDate }) => {
   const dispatch = useDispatch()
   const originalEmployeesEvents = useSelector(selectEmployeeEvents)
   const [employees, setEmployees] = useState([])
+  const [currentEvent, setCurrentEvent] = useState(null)
+
+  console.log(currentEvent)
+
   const selectDateMs = useMemo(() => selectDate.getTime(), [selectDate])
   const employeesEvents = useMemo(() => filterEventByDate(selectDateMs, originalEmployeesEvents), [selectDateMs, originalEmployeesEvents])
 
@@ -50,6 +54,11 @@ const MainGrid = ({ selectDate }) => {
   useEffect(() => {
     setEmployees(dummyEmployeeData)
   }, [])
+
+  const handleEditClick = event => {
+    setCurrentEvent(event)
+
+  }
 
   const locateEvent = useCallback(event => {
     const eventStartMs = new Date(event.start).getTime()
@@ -91,6 +100,7 @@ const MainGrid = ({ selectDate }) => {
         row={eventLength}
         pet={event.pet}
         event={event}
+        handleEditClick={handleEditClick}
         handleDelete={handleDeleteEvent(event)}
         petReserveTypeMapping={petReserveTypeMapping}
       />, targetDOM)

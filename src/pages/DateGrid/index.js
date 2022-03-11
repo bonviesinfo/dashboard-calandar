@@ -11,18 +11,9 @@ import PropsDatePicker from '../../components/UI/PropsDatePicker'
 
 import ArrowBackIosRoundedIcon from '@mui/icons-material/ArrowBackIosRounded'
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded'
-
+import { getZeroTime } from '../../utils/timeUtils'
 
 // import { replaceEmployeeEvents, filterEventByDate, selectEmployeeEvents } from '../../slices/employeesEventsSlice'
-
-const getZeroTime = () => {
-  const date = new Date()
-  date.setHours(0)
-  date.setMinutes(0)
-  date.setSeconds(0)
-  date.setMilliseconds(0)
-  return date
-}
 
 const DateGrid = () => {
   const theme = useTheme()
@@ -164,6 +155,7 @@ const DateGrid = () => {
         </Box>
 
         <BottomFab
+          selectDate={selectDate}
           bottomOpen={bottomOpen}
           toggleBottomDrawer={toggleBottomDrawer}
         />

@@ -16,9 +16,11 @@ const EventCard = ({
   row,
   event,
   handleDelete,
+  handleEditClick,
   petReserveTypeMapping,
 }) => {
-  const smallMode = !row || row <= 3
+  const smallMode = !row || row <= 4
+  const ultraSmallMode = !row || row <= 3
 
   return (
     <Card className="event-card"
@@ -46,9 +48,9 @@ const EventCard = ({
             <Chip label={event && event.reserveType && petReserveTypeMapping ? petReserveTypeMapping[event.reserveType].name : '-'} className="chip" />
           </Box>
 
-          {!smallMode && (
+          {!ultraSmallMode && (
             <Avatar
-              className={`avatar ${row <= 4 ? 'small' : ''}`}
+              className={`avatar ${smallMode ? 'small' : ''}`}
               alt={event?.pet?.petName}
               variant="rounded"
               src={event?.pet?.avatar || ''}
@@ -58,7 +60,7 @@ const EventCard = ({
           <Box sx={{
             px: 1,
             overflow: 'auto',
-            ...(smallMode && { mt: 1 })
+            ...(ultraSmallMode && { mt: 1 })
           }}>
             <Typography variant="subtitle2">
               {event?.remark || '-'}
@@ -67,8 +69,8 @@ const EventCard = ({
 
         </div>
 
-        <Box className={`actions ${row <= 4 ? 'small' : ''}`} display="flex" justifyContent="flex-end">
-          <IconButton size="small" className="edit-btn">
+        <Box className={`actions ${smallMode ? 'small' : ''}`} display="flex" justifyContent="flex-end">
+          <IconButton size="small" className="edit-btn" onClick={() => handleEditClick(event)}>
             <EditRoundedIcon fontSize="small" />
           </IconButton>
 

@@ -4,10 +4,10 @@ import Button from '@mui/material/Button'
 import { useTheme, alpha } from '@mui/material/styles'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import DialogCreate from './DialogCreate'
-import CustomizesDatePicker from '../UI/CustomizedDatePicker'
 
 
 const BottomFab = ({
+  selectDate,
   bottomOpen,
   toggleBottomDrawer,
 }) => {
@@ -39,7 +39,7 @@ const BottomFab = ({
       }}
     >
 
-      <DialogCreate show={!bottomOpen} />
+      <DialogCreate show={!bottomOpen} selectDate={selectDate} />
 
       <Button
         disableRipple
