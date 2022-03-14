@@ -6,15 +6,12 @@ const employeesEventsMappingSlice = createSlice({
   name: 'employeesEventsMapping',
   initialState,
   reducers: {
-    'updateEmployeesEventsMapping': (state, action) => {
-      return {
-        ...state,
-        ...action.payload,
-      }
+    'replaceEmployeesEventsMapping': (state, action) => {
+      return { ...action.payload }
     },
   }
 })
 
-export const { updateEmployeesEventsMapping } = employeesEventsMappingSlice.actions
+export const { replaceEmployeesEventsMapping } = employeesEventsMappingSlice.actions
 export const selectEmployeesEventsMapping = state => state.employeesEventsMapping
 export default employeesEventsMappingSlice.reducer

@@ -1,7 +1,7 @@
 import React, { forwardRef, useState, useMemo, Fragment } from 'react'
 // import { useTheme } from '@mui/material/styles'
 import { useSelector, useDispatch } from 'react-redux'
-// import Box from '@mui/material/Box'
+import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
@@ -12,10 +12,10 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import Slide from '@mui/material/Slide'
-// import TimePicker from '@mui/lab/TimePicker'
-// import DatePicker from '@mui/lab/DatePicker'
+import TimePicker from '@mui/lab/TimePicker'
+import DatePicker from '@mui/lab/DatePicker'
 import DateTimePicker from '@mui/lab/DateTimePicker'
-// import { getZeroTime } from '../../utils/timeUtils'
+import { getZeroTime } from '../../utils/timeUtils'
 import { dummyEmployeeData } from '../../data/dummyEmployeeData'
 import { dummyPetData, dummyPetReserveType } from '../../data/dummyPetData'
 import AddIcon from '@mui/icons-material/Add'
@@ -26,20 +26,19 @@ import { addEmployeeEvent } from '../../slices/employeesEventsSlice'
 import {
   intervalMinute,
   timePerHour,
-  // startInterval,
-  // intervalMS,
+  startInterval,
+  intervalMS,
   // gridLength,
   // nthNum,
 } from '../../constants/dateGrid'
 
-// const getNearestTime = time => {
-//   const minute = time.getMinutes()
-//   const nearestMinute = Math.round(minute / intervalMinute) * intervalMinute
-//   const nearestTime = new Date(time)
-//   nearestTime.setMinutes(nearestMinute, 0, 0)
-//   return nearestTime
-// }
-
+const getNearestTime = time => {
+  const minute = time.getMinutes()
+  const nearestMinute = Math.round(minute / intervalMinute) * intervalMinute
+  const nearestTime = new Date(time)
+  nearestTime.setMinutes(nearestMinute, 0, 0)
+  return nearestTime
+}
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
@@ -52,16 +51,20 @@ const DialogCreateContent = ({
   const dispatch = useDispatch()
   const employeesOccupiedTime = useSelector(selectEmployeesOccupiedTime)
 
-  const [creatingItem, setCreatingItem] = useState({})
+  const [creatingItem, setCreatingItem] = useState({ endTime: null })
+  const [selectedDuration, setSelectedDuration] = useState('')
   // const [startTime, setStartTime] = useState(getNearestTime(new Date()))
 
-  // const zeroTimeMs = getZeroTime().getTime()
-  // const selectDateMs = selectDate.getTime()
+  const zeroTimeMs = getZeroTime().getTime()
+  const selectDateMs = selectDate.getTime()
+  const selectDateStartTimeMs = selectDateMs + getNearestTime(new Date()).getTime() - zeroTimeMs
   // const selectDateStartTimeMs = useMemo(() => {
   //   return startTime
   //     ? selectDateMs + startTime.getTime() - zeroTimeMs
   //     : selectDateMs
   // }, [startTime, selectDateMs, zeroTimeMs])
+
+  const [startTime, setStartTime] = useState(new Date(selectDateStartTimeMs))
 
   const petMapping = useMemo(() => {
     const newPetMapping = {}
@@ -71,13 +74,12 @@ const DialogCreateContent = ({
     return newPetMapping
   }, [])
 
-
-  const onTimeChange = name => newValue => {
-    setCreatingItem((prev) => ({
-      ...prev,
-      [name]: newValue,
-    }))
-  }
+  // const onTimeChange = name => newValue => {
+  //   setCreatingItem((prev) => ({
+  //     ...prev,
+  //     [name]: newValue,
+  //   }))
+  // }
 
   const handleChange = name => e => {
     setCreatingItem((prev) => ({
@@ -93,7 +95,7 @@ const DialogCreateContent = ({
   }
 
   const validateTimeOccupied = () => {
-    const { startTime, endTime, employeeId } = creatingItem
+    const { endTime, employeeId } = creatingItem
     const startTimeIndex = startTime.getHours() * timePerHour + startTime.getMinutes() / intervalMinute
     const endTimeIndex = endTime.getHours() * timePerHour + endTime.getMinutes() / intervalMinute
 
@@ -109,16 +111,22 @@ const DialogCreateContent = ({
     return true
   }
 
+  const validateInterval = newValue => {
+    if (!(newValue instanceof Date) || isNaN(newValue) || newValue.getMinutes() % intervalMinute !== 0) {
+      return false
+    }
+    return true
+  }
 
   const handleSubmit = () => {
     if (!validateTimeOccupied()) return alert('該成員時間重複')
-    const { startTime, endTime, remark, pet, employeeId, reserveType } = creatingItem
+    const { endTime, remark, pet, employeeId, reserveType } = creatingItem
     const newEvent = {
       id: Math.random().toString(36).substr(2, 9),
       pet,
       employeeId,
       reserveType,
-      start: new Date(startTime).getTime(),
+      start: startTime.getTime(),
       end: new Date(endTime).getTime(),
       remark,
     }
@@ -126,6 +134,59 @@ const DialogCreateContent = ({
     dispatch(addEmployeeEvent(newEvent))
     handleClose()
   }
+
+  const handleStartTimeChange = (newValue) => {
+    if (!validateInterval(newValue)) return
+
+    setStartTime(newValue)
+    setSelectedDuration('')
+    setCreatingItem((prev) => ({
+      ...prev,
+      endTime: null,
+    }))
+  }
+
+  const handleDurationChange = (event) => {
+    setSelectedDuration(event.target.value)
+    if (startTime) {
+      setCreatingItem(prev => ({
+        ...prev,
+        endTime: new Date(startTime.getTime() + event.target.value * intervalMS),
+      }))
+    }
+  }
+
+  const handleEndTimeChange = (newValue) => {
+    if (!validateInterval(newValue)) return
+
+    setCreatingItem((prev) => ({
+      ...prev,
+      endTime: newValue,
+    }))
+
+    if (selectedDuration && newValue
+      && (newValue instanceof Date && !isNaN(newValue))
+      && newValue.getTime() - selectDateMs - startInterval * intervalMS <= 86400000
+    ) {
+      setStartTime(new Date(newValue.getTime() - selectedDuration * intervalMS))
+    } else {
+      setSelectedDuration('')
+    }
+  }
+
+  const renderDurationOPtions = () => {
+    return Array.from({ length: 24 * timePerHour }).map((item, index) => {
+      const newIndex = index + 1
+      const hour = Math.floor(newIndex / timePerHour)
+      const minute = newIndex % timePerHour * intervalMinute
+      return (
+        <MenuItem key={newIndex} value={newIndex}>
+          {hour > 0 ? `${hour}小時` : ''}{minute > 0 ? `${minute}分鐘` : ''}
+        </MenuItem>
+      )
+    })
+  }
+
 
   return (
     <>
@@ -212,10 +273,10 @@ const DialogCreateContent = ({
           container
           spacing={3}
           sx={{ pt: 3 }}
-        // columns={16}
+          columns={16}
         >
 
-          <Grid item xs={6}>
+          {/* <Grid item xs={6}>
             <DateTimePicker
               renderInput={(props) => <TextField
                 variant="outlined"
@@ -234,9 +295,9 @@ const DialogCreateContent = ({
               views={['hours', 'minutes']}
             // maxDateTime={creatingItem.startTime && new Date(creatingItem.startTime)}
             />
-          </Grid>
+          </Grid> */}
 
-          {/* <Grid item xs={3}>
+          <Grid item xs={3}>
             <DatePicker
               renderInput={(props) => <TextField
                 variant="outlined"
@@ -249,8 +310,9 @@ const DialogCreateContent = ({
               label="開始日期"
               inputFormat="yyyy/MM/dd"
               mask="____/__/__"
-              value={selectDate}
               onChange={() => { }}
+              value={startTime}
+            // value={selectDate}
             // value={creatingItem.startTime}
             // onChange={onTimeChange('startTime')}
             />
@@ -258,11 +320,11 @@ const DialogCreateContent = ({
 
           <Grid item xs={3}>
             <TimePicker
+              ampm={false}
+              minutesStep={15}
               label="開始時刻"
               value={startTime}
-              onChange={(newValue) => {
-                setStartTime(newValue);
-              }}
+              onChange={handleStartTimeChange}
               renderInput={(params) => <TextField {...params} />}
             />
           </Grid>
@@ -271,8 +333,8 @@ const DialogCreateContent = ({
             <TextField
               select
               label="持續時間"
-              // value={creatingItem?.pet?.id || ''}
-              // onChange={handlePetChange}
+              value={selectedDuration}
+              onChange={handleDurationChange}
               sx={{
                 transform: theme => `translate(0, ${theme.spacing(-1.5)})`,
               }}
@@ -280,21 +342,14 @@ const DialogCreateContent = ({
                 MenuProps: {
                   sx: {
                     '& .MuiPaper-root': {
-                      width: 0,
+                      maxHeight: 250,
                     },
                   },
                 },
               }}
             >
-              <MenuItem>
-                30min
-              </MenuItem>
-              <MenuItem>
-                1hr
-              </MenuItem>
-              <MenuItem>
-                1hr 30min
-              </MenuItem>
+              <MenuItem value="">None</MenuItem>
+              {renderDurationOPtions()}
             </TextField>
 
             <Box sx={{
@@ -305,14 +360,13 @@ const DialogCreateContent = ({
               fontSize: '2rem',
               height: '1px',
               color: 'text.mid',
-              // bgcolor: 'text.third',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
             }}>
               ⇁
             </Box>
-          </Grid> */}
+          </Grid>
 
           <Grid item xs={6}>
             <DateTimePicker
@@ -326,10 +380,10 @@ const DialogCreateContent = ({
               minutesStep={15}
               label="結束時間"
               value={creatingItem.endTime}
-              inputFormat="yyyy/MM/dd hh:mm a"
-              mask="____/__/__ __:__ _M"
-              onChange={onTimeChange('endTime')}
-              minDateTime={creatingItem.startTime && new Date(creatingItem.startTime)}
+              inputFormat="yyyy/MM/dd kk:mm"
+              mask="____/__/__ __:__"
+              onChange={handleEndTimeChange}
+              minDateTime={startTime}
             />
           </Grid>
         </Grid>

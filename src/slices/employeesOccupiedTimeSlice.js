@@ -6,16 +6,14 @@ const employeesOccupiedTimeSlice = createSlice({
   name: 'employeesOccupiedTime',
   initialState,
   reducers: {
-    'updateEmployeesOccupiedTime': (state, action) => {
-      return {
-        ...state,
-        ...action.payload,
-      }
+    'replaceEmployeesOccupiedTime': (state, action) => {
+      return { ...action.payload }
     },
   }
 })
 
-export const { updateEmployeesOccupiedTime } = employeesOccupiedTimeSlice.actions
+export const { replaceEmployeesOccupiedTime
+} = employeesOccupiedTimeSlice.actions
 export const selectEmployeesOccupiedTime = state => state.employeesOccupiedTime
 
 export default employeesOccupiedTimeSlice.reducer

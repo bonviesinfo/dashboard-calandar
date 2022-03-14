@@ -9,8 +9,8 @@ import EventCard from './EventCard'
 import { dummyEmployeeData } from '../../data/dummyEmployeeData'
 import { dummyPetReserveType } from '../../data/dummyPetData'
 import { selectEmployeeEvents, deleteEmployeeEvent, filterEventByDate } from '../../slices/employeesEventsSlice'
-import { updateEmployeesEventsMapping } from '../../slices/employeesEventsMappingSlice'
-import { updateEmployeesOccupiedTime } from '../../slices/employeesOccupiedTimeSlice'
+import { replaceEmployeesEventsMapping } from '../../slices/employeesEventsMappingSlice'
+import { replaceEmployeesOccupiedTime } from '../../slices/employeesOccupiedTimeSlice'
 
 import {
   intervalMinute,
@@ -143,8 +143,8 @@ const MainGrid = ({ selectDate }) => {
     })
 
 
-    dispatch(updateEmployeesEventsMapping(newEmployeesEventsMapping))
-    dispatch(updateEmployeesOccupiedTime(employeesOccupiedTime))
+    dispatch(replaceEmployeesEventsMapping(newEmployeesEventsMapping))
+    dispatch(replaceEmployeesOccupiedTime(employeesOccupiedTime))
 
   }, [employees, employeesEvents, dispatch])
 
