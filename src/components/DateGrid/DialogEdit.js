@@ -47,12 +47,10 @@ const DialogEditContent = ({
   selectDate,
   handleClose,
   currentEvent,
-  handleClearEvent,
 }) => {
   const dispatch = useDispatch()
   const employeesOccupiedTime = useSelector(selectEmployeesOccupiedTime)
 
-  const [initialEvent] = useState(currentEvent || null)
   const [creatingItem, setCreatingItem] = useState({
     ...currentEvent,
     endTime: currentEvent ? new Date(currentEvent.end) : null
@@ -127,9 +125,6 @@ const DialogEditContent = ({
     currentEvent
       ? dispatch(updateEmployeeEvent(newEvent))
       : dispatch(addEmployeeEvent(newEvent))
-
-
-    initialEvent && handleClearEvent(initialEvent)
 
     handleClose()
   }
@@ -388,7 +383,6 @@ const DialogEdit = ({
   selectDate,
   currentEvent,
   handleClose,
-  handleClearEvent,
 }) => {
 
 
@@ -411,7 +405,6 @@ const DialogEdit = ({
         selectDate={selectDate}
         handleClose={handleClose}
         currentEvent={currentEvent}
-        handleClearEvent={handleClearEvent}
       />
     </Dialog>
   )

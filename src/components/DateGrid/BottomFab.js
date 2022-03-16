@@ -5,13 +5,10 @@ import { useTheme, alpha } from '@mui/material/styles'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import DialogEdit from './DialogEdit'
 import AddIcon from '@mui/icons-material/Add'
-// import DialogCreate from './DialogCreate'
-
 
 const BottomFab = ({
   selectDate,
   bottomOpen,
-  handleClearEvent,
   toggleBottomDrawer,
 }) => {
   const theme = useTheme()
@@ -53,9 +50,6 @@ const BottomFab = ({
       }}
     >
 
-
-      {/* <DialogCreate show={!bottomOpen} selectDate={selectDate} /> */}
-
       <Button
         startIcon={<AddIcon />}
         onClick={handleOpen}
@@ -70,7 +64,6 @@ const BottomFab = ({
         open={open}
         selectDate={selectDate}
         handleClose={handleClose}
-        handleClearEvent={handleClearEvent}
       />
 
       <Button

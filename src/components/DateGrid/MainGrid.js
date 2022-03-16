@@ -1,5 +1,4 @@
 import React, { Fragment, useState, useEffect, useMemo, useCallback, memo } from 'react'
-import reactDom from 'react-dom'
 import { useTheme } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import Box from '@mui/material/Box'
@@ -8,7 +7,7 @@ import EventCard from './EventCard'
 
 import { dummyEmployeeData } from '../../data/dummyEmployeeData'
 import { dummyPetReserveType } from '../../data/dummyPetData'
-import { selectEmployeeEvents, filterEventByDate } from '../../slices/employeesEventsSlice'
+import { deleteEmployeeEvent, selectEmployeeEvents, filterEventByDate } from '../../slices/employeesEventsSlice'
 import { replaceEmployeesEventsMapping } from '../../slices/employeesEventsMappingSlice'
 import { replaceEmployeesOccupiedTime } from '../../slices/employeesOccupiedTimeSlice'
 
@@ -35,12 +34,12 @@ const MainGrid = ({
   selectDate,
   setCurrentEvent,
   locateEvent,
-  handleDeleteEvent,
 }) => {
   const theme = useTheme()
   const dispatch = useDispatch()
   const originalEmployeesEvents = useSelector(selectEmployeeEvents)
   const [employees, setEmployees] = useState([])
+  const [employeesStartTimeMapping, setEmployeesStartTimeMapping] = useState({})
 
   const selectDateMs = useMemo(() => selectDate.getTime(), [selectDate])
   const employeesEvents = useMemo(() => filterEventByDate(selectDateMs, originalEmployeesEvents), [selectDateMs, originalEmployeesEvents])
@@ -61,70 +60,9 @@ const MainGrid = ({
     setCurrentEvent(event)
   }, [setCurrentEvent])
 
-
-  const appendEvents = useCallback((events) => {
-    return events.forEach(event => {
-      const {
-        eventStartIndex,
-        eventLength,
-      } = locateEvent(event)
-
-      const targetDOM = document.querySelector(`[data-id="${event.employeeId}"][data-index="${eventStartIndex}"]`)
-
-      targetDOM && reactDom.render(<EventCard
-        row={eventLength}
-        pet={event.pet}
-        event={event}
-        handleEditClick={handleEditClick}
-        handleDelete={handleDeleteEvent(event)}
-        petReserveTypeMapping={petReserveTypeMapping}
-      />, targetDOM)
-    })
-  }, [locateEvent, handleDeleteEvent, petReserveTypeMapping, handleEditClick])
-
-  useEffect(() => {
-
-    appendEvents(employeesEvents)
-
-  }, [employeesEvents, appendEvents])
-
-  // const positionedEvents = useMemo(() => {
-  //   const gridBody = document.querySelector('#grid-body')
-  //   const left = gridBody ? gridBody.getBoundingClientRect().left : 0
-  //   const top = gridBody ? gridBody.getBoundingClientRect().top : 0
-
-  //   return employeesEvents.map(event => {
-  //     const {
-  //       eventStartIndex,
-  //       eventLength,
-  //     } = locateEvent(event)
-
-  //     const targetDOM = document.querySelector(`[data-id="${event.employeeId}"][data-index="${eventStartIndex}"]`)
-
-  //     if (!targetDOM) return null
-
-  //     const targetRec = targetDOM.getBoundingClientRect()
-  //     console.log(targetRec.left)
-  //     const result = targetDOM
-  //       ? <EventCard
-  //         key={event.id}
-  //         style={{
-  //           width: targetRec.width * 0.8,
-  //           top: targetRec.top - top,
-  //           left: targetRec.left - left,
-  //         }}
-  //         row={eventLength}
-  //         pet={event.pet}
-  //         event={event}
-  //         handleEditClick={handleEditClick}
-  //         handleDelete={handleDeleteEvent(event)}
-  //         petReserveTypeMapping={petReserveTypeMapping}
-  //       />
-  //       : null
-
-  //     return result
-  //   })
-  // })
+  const handleDeleteEvent = (event) => () => {
+    dispatch(deleteEmployeeEvent(event.id))
+  }
 
   useEffect(() => {
     // 每個成員的事件表
@@ -138,26 +76,43 @@ const MainGrid = ({
       newEmployeesEventsMapping[employee.id].push(event)
     })
 
-    // 每個成員被占據的時間表
+    // 每個成員被占據的時間表與開始時間表
     const employeesOccupiedTime = {}
+    const employeesStartTimeMapping = {}
+
     Object.keys(newEmployeesEventsMapping).forEach(employeeId => {
       const occupiedTime = {}
+      const startTimeMapping = {}
+
       const events = newEmployeesEventsMapping[employeeId]
       events.forEach(event => {
-        const startTimeIndex = new Date(event.start).getHours() * timePerHour + Math.ceil(new Date(event.start).getMinutes() / intervalMinute)
-        const endTimeIndex = new Date(event.end).getHours() * timePerHour + Math.ceil(new Date(event.end).getMinutes() / intervalMinute)
-        for (let i = startTimeIndex; i < endTimeIndex; i++) {
+        // const startTimeIndex = new Date(event.start).getHours() * timePerHour + Math.ceil(new Date(event.start).getMinutes() / intervalMinute)
+        // const endTimeIndex = new Date(event.end).getHours() * timePerHour + Math.ceil(new Date(event.end).getMinutes() / intervalMinute)
+
+        const {
+          eventStartIndex,
+          eventLength,
+          eventEndIndex,
+        } = locateEvent(event)
+
+        for (let i = eventStartIndex; i < eventEndIndex; i++) {
           occupiedTime[i] = event.id
+        }
+
+        startTimeMapping[eventStartIndex] = {
+          eventLength,
+          event,
         }
       })
       employeesOccupiedTime[employeeId] = occupiedTime
+      employeesStartTimeMapping[employeeId] = startTimeMapping
     })
 
-
+    setEmployeesStartTimeMapping(employeesStartTimeMapping)
     dispatch(replaceEmployeesEventsMapping(newEmployeesEventsMapping))
     dispatch(replaceEmployeesOccupiedTime(employeesOccupiedTime))
 
-  }, [employees, employeesEvents, dispatch])
+  }, [employees, employeesEvents, locateEvent, dispatch])
 
 
   return (
@@ -173,7 +128,7 @@ const MainGrid = ({
           display: 'flex',
           position: 'relative',
           bgcolor: 'background.default',
-          borderTop: `1px solid ${theme.palette.text.lighter}`,
+          borderTop: `1px solid ${theme.palette.text.fadest}`,
           // '&.active': {
           //   bgcolor: alpha(theme.palette.primary.light, 0.1),
           // },
@@ -192,7 +147,6 @@ const MainGrid = ({
         },
       }}
     >
-
       {/* Grid Header */}
       <Box
         className="grid-header"
@@ -322,14 +276,16 @@ const MainGrid = ({
 
 
         {dummyEmployeeData.map((employee, index) => {
+          const eventStartTimeMapping = employeesStartTimeMapping[employee.id]
           const restItems = Array.from(new Array(gridLength)).map((item, index) => {
             const newIndex = index + startInterval
+            const eventInfo = eventStartTimeMapping && eventStartTimeMapping[newIndex]
+
             const startTimestamp = selectDateMs + newIndex * intervalMS
+            const fullHour = index % timePerHour === 0 ? ' full-hour' : ''
             const active = (new Date(employee.start).getTime() <= startTimestamp && new Date(employee.end).getTime() > startTimestamp)
               ? ' active'
               : ''
-
-            const fullHour = index % timePerHour === 0 ? ' full-hour' : ''
 
             return (
               <div
@@ -338,7 +294,17 @@ const MainGrid = ({
                 data-id={employee.id}
                 data-index={newIndex}
               >
-                {/* {index + 1} */}
+                {eventInfo
+                  ? <EventCard
+                    row={eventInfo.eventLength}
+                    pet={eventInfo?.event?.pet}
+                    event={eventInfo?.event}
+                    handleEditClick={handleEditClick}
+                    handleDelete={handleDeleteEvent(eventInfo?.event)}
+                    petReserveTypeMapping={petReserveTypeMapping}
+                  />
+                  : null
+                }
               </div>
             )
           })
@@ -363,3 +329,69 @@ const MainGrid = ({
 
 export default memo(MainGrid)
 
+
+
+
+  // const appendEvents = useCallback((events) => {
+  //   return events.forEach(event => {
+  //     const {
+  //       eventStartIndex,
+  //       eventLength,
+  //     } = locateEvent(event)
+
+  //     const targetDOM = document.querySelector(`[data-id="${event.employeeId}"][data-index="${eventStartIndex}"]`)
+
+  //     targetDOM && reactDom.render(<EventCard
+  //       row={eventLength}
+  //       pet={event.pet}
+  //       event={event}
+  //       handleEditClick={handleEditClick}
+  //       handleDelete={handleDeleteEvent(event)}
+  //       petReserveTypeMapping={petReserveTypeMapping}
+  //     />, targetDOM)
+  //   })
+  // }, [locateEvent, handleDeleteEvent, petReserveTypeMapping, handleEditClick])
+
+  // useEffect(() => {
+
+  //   appendEvents(employeesEvents)
+
+  // }, [employeesEvents, appendEvents])
+
+  // const positionedEvents = useMemo(() => {
+  //   const gridBody = document.querySelector('#grid-body')
+  //   const left = gridBody ? gridBody.getBoundingClientRect().left : 0
+  //   const top = gridBody ? gridBody.getBoundingClientRect().top : 0
+
+  //   return employeesEvents.map(event => {
+  //     const {
+  //       eventStartIndex,
+  //       eventLength,
+  //     } = locateEvent(event)
+
+  //     const targetDOM = document.querySelector(`[data-id="${event.employeeId}"][data-index="${eventStartIndex}"]`)
+
+  //     if (!targetDOM) return null
+
+  //     const targetRec = targetDOM.getBoundingClientRect()
+  //     console.log(targetRec.left)
+  //     const result = targetDOM
+  //       ? <EventCard
+  //         key={event.id}
+  //         style={{
+  //           width: targetRec.width * 0.8,
+  //           top: targetRec.top - top,
+  //           left: targetRec.left - left,
+  //         }}
+  //         row={eventLength}
+  //         pet={event.pet}
+  //         event={event}
+  //         handleEditClick={handleEditClick}
+  //         handleDelete={handleDeleteEvent(event)}
+  //         petReserveTypeMapping={petReserveTypeMapping}
+  //       />
+  //       : null
+
+  //     return result
+  //   })
+  // })

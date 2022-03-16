@@ -1,6 +1,4 @@
 import React, { useState, useCallback, useMemo } from 'react'
-import { useDispatch } from 'react-redux'
-import reactDom from 'react-dom'
 import { useTheme, alpha } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -16,12 +14,9 @@ import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRound
 import { getZeroTime } from '../../utils/timeUtils'
 import { intervalMS } from '../../constants/dateGrid'
 
-import { deleteEmployeeEvent } from '../../slices/employeesEventsSlice'
-
 // import { replaceEmployeeEvents, filterEventByDate, selectEmployeeEvents } from '../../slices/employeesEventsSlice'
 
 const DateGrid = () => {
-  const dispatch = useDispatch()
   const theme = useTheme()
   const [bottomOpen, setBottomOpen] = useState(false)
   const [selectDate, setSelectDate] = useState(getZeroTime())
@@ -33,7 +28,7 @@ const DateGrid = () => {
     const eventStartMs = new Date(event.start).getTime()
     const eventEndMs = new Date(event.end).getTime()
     const eventStartIndex = Math.floor((eventStartMs - selectDateMs) / intervalMS)
-    const eventEndIndex = Math.floor((eventEndMs - selectDateMs) / intervalMS)
+    const eventEndIndex = Math.ceil((eventEndMs - selectDateMs) / intervalMS)
     const eventLength = eventEndIndex - eventStartIndex
 
     return {
@@ -42,22 +37,6 @@ const DateGrid = () => {
       eventLength,
     }
   }, [selectDateMs])
-
-  const handleClearEvent = useCallback((event) => {
-    const {
-      eventStartIndex,
-    } = locateEvent(event)
-
-    const targetDOM = document.querySelector(`[data-id="${event.employeeId}"][data-index="${eventStartIndex}"]`)
-
-    targetDOM && reactDom.unmountComponentAtNode(targetDOM)
-  }, [locateEvent])
-
-
-  const handleDeleteEvent = useCallback((event) => () => {
-    handleClearEvent(event)
-    dispatch(deleteEmployeeEvent(event.id))
-  }, [dispatch, handleClearEvent])
 
 
   const handleDateChangeConfirm = (date) => { }
@@ -165,7 +144,6 @@ const DateGrid = () => {
               selectDate={selectDate}
               currentEvent={currentEvent}
               handleClose={handleEditClose}
-              handleClearEvent={handleClearEvent}
             />
 
             <IconButton sx={{ mr: 3 }} onClick={toPrevDay}>
@@ -213,7 +191,6 @@ const DateGrid = () => {
         <BottomFab
           selectDate={selectDate}
           bottomOpen={bottomOpen}
-          handleClearEvent={handleClearEvent}
           toggleBottomDrawer={toggleBottomDrawer}
         />
         <BottomDrawer open={bottomOpen} onClose={() => setBottomOpen(false)} />
@@ -222,7 +199,6 @@ const DateGrid = () => {
           locateEvent={locateEvent}
           selectDate={selectDate}
           setCurrentEvent={setCurrentEvent}
-          handleDeleteEvent={handleDeleteEvent}
         />
 
       </Box>
