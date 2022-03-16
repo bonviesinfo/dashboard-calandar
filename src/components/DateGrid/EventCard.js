@@ -62,14 +62,14 @@ const EventCard = ({
             overflow: 'auto',
             ...(ultraSmallMode && { mt: 1 })
           }}>
-            <Typography variant="subtitle2">
+            <Typography variant="subtitle2" className="remark">
               {event?.remark || '-'}
             </Typography>
           </Box>
 
         </div>
 
-        <Box className={`actions ${smallMode ? 'small' : ''}`} display="flex" justifyContent="flex-end">
+        <Box className={`actions ${smallMode ? 'small' : 'small'}`} display="flex" justifyContent="flex-end">
           <IconButton size="small" className="edit-btn" onClick={() => handleEditClick(event)}>
             <EditRoundedIcon fontSize="small" />
           </IconButton>

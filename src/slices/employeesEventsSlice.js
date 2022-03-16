@@ -1,9 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { dummyEventData } from '../data/dummyEmployeeData'
+import { startHour } from '../constants/dateGrid'
 
 export const filterEventByDate = (date, events) => {
+  const startCheckMs = date + startHour * 60 * 60 * 1000
+  const endCheckMs = date + (startHour + 24) * 60 * 60 * 1000
+
   return events.filter(event => {
-    return new Date(event.start).toLocaleDateString() === new Date(date).toLocaleDateString()
+    const todayCheck = new Date(event.start).getTime() >= startCheckMs
+    const tomorrowCheck = new Date(event.start).getTime() < endCheckMs
+
+    return todayCheck && tomorrowCheck
   })
 }
 
@@ -16,6 +23,12 @@ const employeesEventsSlice = createSlice({
     'addEmployeeEvent': (state, action) => {
       state.push(action.payload)
     },
+    'updateEmployeeEvent': (state, action) => {
+      return state.map(event => (event.id === action.payload.id)
+        ? action.payload
+        : event
+      )
+    },
     'deleteEmployeeEvent': (state, action) => {
       return state.filter(event => event.id !== action.payload)
     },
@@ -27,6 +40,7 @@ const employeesEventsSlice = createSlice({
 
 export const {
   addEmployeeEvent,
+  updateEmployeeEvent,
   deleteEmployeeEvent,
   replaceEmployeeEvents
 } = employeesEventsSlice.actions

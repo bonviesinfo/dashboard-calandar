@@ -8,7 +8,7 @@ import EventCard from './EventCard'
 
 import { dummyEmployeeData } from '../../data/dummyEmployeeData'
 import { dummyPetReserveType } from '../../data/dummyPetData'
-import { selectEmployeeEvents, deleteEmployeeEvent, filterEventByDate } from '../../slices/employeesEventsSlice'
+import { selectEmployeeEvents, filterEventByDate } from '../../slices/employeesEventsSlice'
 import { replaceEmployeesEventsMapping } from '../../slices/employeesEventsMappingSlice'
 import { replaceEmployeesOccupiedTime } from '../../slices/employeesOccupiedTimeSlice'
 
@@ -31,14 +31,16 @@ const showInterval = index => {
   return `${hour}:${min}`
 }
 
-const MainGrid = ({ selectDate }) => {
+const MainGrid = ({
+  selectDate,
+  setCurrentEvent,
+  locateEvent,
+  handleDeleteEvent,
+}) => {
   const theme = useTheme()
   const dispatch = useDispatch()
   const originalEmployeesEvents = useSelector(selectEmployeeEvents)
   const [employees, setEmployees] = useState([])
-  const [currentEvent, setCurrentEvent] = useState(null)
-
-  console.log(currentEvent)
 
   const selectDateMs = useMemo(() => selectDate.getTime(), [selectDate])
   const employeesEvents = useMemo(() => filterEventByDate(selectDateMs, originalEmployeesEvents), [selectDateMs, originalEmployeesEvents])
@@ -55,36 +57,9 @@ const MainGrid = ({ selectDate }) => {
     setEmployees(dummyEmployeeData)
   }, [])
 
-  const handleEditClick = event => {
+  const handleEditClick = useCallback(event => {
     setCurrentEvent(event)
-
-  }
-
-  const locateEvent = useCallback(event => {
-    const eventStartMs = new Date(event.start).getTime()
-    const eventEndMs = new Date(event.end).getTime()
-    const eventStartIndex = Math.floor((eventStartMs - selectDateMs) / intervalMS)
-    const eventEndIndex = Math.floor((eventEndMs - selectDateMs) / intervalMS)
-    const eventLength = eventEndIndex - eventStartIndex
-
-    return {
-      eventStartIndex,
-      eventEndIndex,
-      eventLength,
-    }
-  }, [selectDateMs])
-
-  const handleDeleteEvent = useCallback(event => () => {
-    const {
-      eventStartIndex,
-    } = locateEvent(event)
-
-    const targetDOM = document.querySelector(`[data-id="${event.employeeId}"][data-index="${eventStartIndex}"]`)
-
-    targetDOM && reactDom.render(null, targetDOM)
-
-    dispatch(deleteEmployeeEvent(event.id))
-  }, [locateEvent, dispatch])
+  }, [setCurrentEvent])
 
 
   const appendEvents = useCallback((events) => {
@@ -105,7 +80,7 @@ const MainGrid = ({ selectDate }) => {
         petReserveTypeMapping={petReserveTypeMapping}
       />, targetDOM)
     })
-  }, [locateEvent, handleDeleteEvent, petReserveTypeMapping])
+  }, [locateEvent, handleDeleteEvent, petReserveTypeMapping, handleEditClick])
 
   useEffect(() => {
 
@@ -113,7 +88,43 @@ const MainGrid = ({ selectDate }) => {
 
   }, [employeesEvents, appendEvents])
 
+  // const positionedEvents = useMemo(() => {
+  //   const gridBody = document.querySelector('#grid-body')
+  //   const left = gridBody ? gridBody.getBoundingClientRect().left : 0
+  //   const top = gridBody ? gridBody.getBoundingClientRect().top : 0
 
+  //   return employeesEvents.map(event => {
+  //     const {
+  //       eventStartIndex,
+  //       eventLength,
+  //     } = locateEvent(event)
+
+  //     const targetDOM = document.querySelector(`[data-id="${event.employeeId}"][data-index="${eventStartIndex}"]`)
+
+  //     if (!targetDOM) return null
+
+  //     const targetRec = targetDOM.getBoundingClientRect()
+  //     console.log(targetRec.left)
+  //     const result = targetDOM
+  //       ? <EventCard
+  //         key={event.id}
+  //         style={{
+  //           width: targetRec.width * 0.8,
+  //           top: targetRec.top - top,
+  //           left: targetRec.left - left,
+  //         }}
+  //         row={eventLength}
+  //         pet={event.pet}
+  //         event={event}
+  //         handleEditClick={handleEditClick}
+  //         handleDelete={handleDeleteEvent(event)}
+  //         petReserveTypeMapping={petReserveTypeMapping}
+  //       />
+  //       : null
+
+  //     return result
+  //   })
+  // })
 
   useEffect(() => {
     // 每個成員的事件表
@@ -181,6 +192,7 @@ const MainGrid = ({ selectDate }) => {
         },
       }}
     >
+
       {/* Grid Header */}
       <Box
         className="grid-header"
@@ -235,8 +247,10 @@ const MainGrid = ({ selectDate }) => {
 
       {/* Grid Body */}
       <Box
+        id="grid-body"
         sx={{
           pb: 5,
+          position: 'relative',
           overflowY: 'overlay',
           height: 'calc(100% - 7rem)',
           display: 'grid',
@@ -288,7 +302,6 @@ const MainGrid = ({ selectDate }) => {
           },
         }}
       >
-
         <div className="pure-item first-row first-col" />
         {Array.from(new Array(gridLength)).map((item, index) => {
           const fullHour = index % timePerHour === 0 ? 'full-hour' : ''

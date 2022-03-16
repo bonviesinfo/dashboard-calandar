@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import Drawer from '@mui/material/Drawer'
 import EventCard from './EventCard'
 import { alpha } from '@mui/material/styles'
@@ -55,4 +55,4 @@ const BottomDrawer = (props) => {
   )
 }
 
-export default BottomDrawer
+export default memo(BottomDrawer)

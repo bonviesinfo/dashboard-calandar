@@ -1,17 +1,31 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import { useTheme, alpha } from '@mui/material/styles'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
-import DialogCreate from './DialogCreate'
+import DialogEdit from './DialogEdit'
+import AddIcon from '@mui/icons-material/Add'
+// import DialogCreate from './DialogCreate'
 
 
 const BottomFab = ({
   selectDate,
   bottomOpen,
+  handleClearEvent,
   toggleBottomDrawer,
 }) => {
   const theme = useTheme()
+
+  const [open, setOpen] = useState(false)
+
+
+  const handleOpen = () => {
+    setOpen(true)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
 
   return (
     <Box
@@ -39,7 +53,25 @@ const BottomFab = ({
       }}
     >
 
-      <DialogCreate show={!bottomOpen} selectDate={selectDate} />
+
+      {/* <DialogCreate show={!bottomOpen} selectDate={selectDate} /> */}
+
+      <Button
+        startIcon={<AddIcon />}
+        onClick={handleOpen}
+        sx={{
+          mr: 2,
+        }}
+      >
+        新增預約
+      </Button>
+
+      <DialogEdit
+        open={open}
+        selectDate={selectDate}
+        handleClose={handleClose}
+        handleClearEvent={handleClearEvent}
+      />
 
       <Button
         disableRipple
