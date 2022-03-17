@@ -6,6 +6,8 @@ import Avatar from '@mui/material/Avatar'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 
+import { useDrag } from 'react-dnd'
+
 import EditRoundedIcon from '@mui/icons-material/EditRounded'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 
@@ -17,15 +19,36 @@ const EventCard = ({
   event,
   handleDelete,
   handleEditClick,
+  handleEventDrop,
   petReserveTypeMapping,
 }) => {
   const smallMode = !row || row <= 4
   const ultraSmallMode = !row || row <= 3
 
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: 'CARD',
+    item: { event },
+    end: (item, monitor) => {
+      const dropResult = monitor.getDropResult();
+      if (dropResult && item && item.event) {
+        handleEventDrop(item.event, dropResult.gridIndex, dropResult.employeeId)
+        // alert(`You dropped ID : ${item.event?.id} into X : ${dropResult.employeeId} Y : ${dropResult.gridIndex}!`)
+      }
+    },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+      handlerId: monitor.getHandlerId(),
+    }),
+  }))
+
+  const opacity = isDragging ? 0.4 : 1
+
   return (
-    <Card className="event-card"
+    <Card className={`event-card${isDragging ? ' dragging' : ''}`}
+      ref={drag}
       sx={{
         height: row * 60 || 120,
+        opacity,
       }}
     >
       <div className="card-container">

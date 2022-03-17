@@ -77,6 +77,9 @@ const DateGrid = () => {
           borderRadius: 3,
           width: '80%',
           display: 'flex',
+          '&.dragging': {
+            pointerEvents: 'none',
+          },
         },
         '& .card-container': {
           width: '100%',
@@ -103,6 +106,9 @@ const DateGrid = () => {
           height: 108,
           mt: 2,
           mb: 2,
+          // '& img': {
+          //   pointerEvents: 'none',
+          // },
           '&.small': {
             mt: 1,
             mb: 0.5,

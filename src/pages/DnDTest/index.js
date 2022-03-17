@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from 'react'
+import React, { memo } from 'react'
 import reactDom from 'react-dom'
 import { useDrag, useDrop } from 'react-dnd'
 
@@ -39,7 +39,7 @@ export const Box = function Box({ name }) {
       isDragging: monitor.isDragging(),
       handlerId: monitor.getHandlerId(),
     }),
-  }));
+  }))
   const opacity = isDragging ? 0.4 : 1;
   return (<div ref={drag} role="Box" style={{ ...boxStyle, opacity }} data-testid={`box-${name}`}>
     {name}

@@ -1,13 +1,14 @@
 import React, { Fragment, useState, useEffect, useMemo, useCallback, memo } from 'react'
-import { useTheme } from '@mui/material/styles'
+import { useTheme, alpha } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import EventCard from './EventCard'
+import MainItem from './MainItem'
 
 import { dummyEmployeeData } from '../../data/dummyEmployeeData'
 import { dummyPetReserveType } from '../../data/dummyPetData'
-import { deleteEmployeeEvent, selectEmployeeEvents, filterEventByDate } from '../../slices/employeesEventsSlice'
+import { updateEmployeeEvent, deleteEmployeeEvent, selectEmployeeEvents, filterEventByDate } from '../../slices/employeesEventsSlice'
 import { replaceEmployeesEventsMapping } from '../../slices/employeesEventsMappingSlice'
 import { replaceEmployeesOccupiedTime } from '../../slices/employeesOccupiedTimeSlice'
 
@@ -55,14 +56,6 @@ const MainGrid = ({
   useEffect(() => {
     setEmployees(dummyEmployeeData)
   }, [])
-
-  const handleEditClick = useCallback(event => {
-    setCurrentEvent(event)
-  }, [setCurrentEvent])
-
-  const handleDeleteEvent = (event) => () => {
-    dispatch(deleteEmployeeEvent(event.id))
-  }
 
   useEffect(() => {
     // 每個成員的事件表
@@ -114,6 +107,25 @@ const MainGrid = ({
 
   }, [employees, employeesEvents, locateEvent, dispatch])
 
+  const handleEditClick = useCallback(event => {
+    setCurrentEvent(event)
+  }, [setCurrentEvent])
+
+  const handleDeleteEvent = (event) => () => {
+    dispatch(deleteEmployeeEvent(event.id))
+  }
+
+  const handleEventDrop = (event, startTimeIndex, targetEmployeeId) => {
+    const newEvent = {
+      ...event,
+      start: selectDateMs + startTimeIndex * intervalMS,
+      end: selectDateMs + startTimeIndex * intervalMS + (event.end - event.start),
+      employeeId: targetEmployeeId,
+    }
+
+    dispatch(updateEmployeeEvent(newEvent))
+  }
+
 
   return (
     <Box
@@ -126,12 +138,13 @@ const MainGrid = ({
         position: 'relative',
         '& .grid-item': {
           display: 'flex',
+          justifyContent: 'center',
           position: 'relative',
           bgcolor: 'background.default',
           borderTop: `1px solid ${theme.palette.text.fadest}`,
-          // '&.active': {
-          //   bgcolor: alpha(theme.palette.primary.light, 0.1),
-          // },
+          '&.active': {
+            bgcolor: alpha(theme.palette.primary.light, 0.1),
+          },
           '&.full-hour': {
             borderTop: `2px solid ${theme.palette.text.fade}`,
           },
@@ -156,6 +169,7 @@ const MainGrid = ({
           gridTemplateRows: `7rem`,
           '& .header-item': {
             display: 'flex',
+            justifyContent: 'center',
             '& .item-container': {
               pt: 3,
               mb: 3,
@@ -281,16 +295,16 @@ const MainGrid = ({
             const newIndex = index + startInterval
             const eventInfo = eventStartTimeMapping && eventStartTimeMapping[newIndex]
 
-            const startTimestamp = selectDateMs + newIndex * intervalMS
+            // const startTimestamp = selectDateMs + newIndex * intervalMS
             const fullHour = index % timePerHour === 0 ? ' full-hour' : ''
-            const active = (new Date(employee.start).getTime() <= startTimestamp && new Date(employee.end).getTime() > startTimestamp)
-              ? ' active'
-              : ''
+            // const active = (new Date(employee.start).getTime() <= startTimestamp && new Date(employee.end).getTime() > startTimestamp)
+            //   ? ' active'
+            //   : ''
 
             return (
-              <div
-                key={`${selectDateMs}c${index}`}
-                className={`grid-item${active}${fullHour}`}
+              <MainItem
+                key={`dc${index}`}
+                className={`grid-item${fullHour}`}
                 data-id={employee.id}
                 data-index={newIndex}
               >
@@ -301,11 +315,12 @@ const MainGrid = ({
                     event={eventInfo?.event}
                     handleEditClick={handleEditClick}
                     handleDelete={handleDeleteEvent(eventInfo?.event)}
+                    handleEventDrop={handleEventDrop}
                     petReserveTypeMapping={petReserveTypeMapping}
                   />
                   : null
                 }
-              </div>
+              </MainItem>
             )
           })
 
