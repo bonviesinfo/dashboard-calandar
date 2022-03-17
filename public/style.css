@@ -27,3 +27,8 @@ body {
 ::-webkit-scrollbar-thumb:active {
   background: rgba(100, 100, 100, 0.8);
 }
+
+.thick-scrollbar::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}

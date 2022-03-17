@@ -40,6 +40,20 @@ export const dummyPetData = [
     petCategory: 'Cat',
     avatar: 'https://live.staticflickr.com/2851/33522734484_655cb6c80c_n.jpg',
   },
+  {
+    id: 'p7',
+    petName: 'Ba Ha',
+    petAge: 9,
+    petCategory: 'Dog',
+    avatar: 'https://live.staticflickr.com/2610/3682417399_71259837d3_b.jpg',
+  },
+  {
+    id: 'p8',
+    petName: 'Karin',
+    petAge: 9,
+    petCategory: 'Cat',
+    avatar: 'https://live.staticflickr.com/8586/16253422823_83c8fca8fc_h.jpg',
+  },
 ]
 
 export const dummyPetReserveType = [

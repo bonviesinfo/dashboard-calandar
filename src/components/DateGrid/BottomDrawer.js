@@ -1,13 +1,36 @@
-import React, { memo } from 'react'
+import React, { memo, useMemo } from 'react'
+import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import EventCard from './EventCard'
+import { useDrop } from 'react-dnd'
 import { alpha } from '@mui/material/styles'
+import { useSelector } from 'react-redux'
+import { selectEmployeeEvents } from '../../slices/employeesEventsSlice'
 
 // import { alpha } from '@mui/material'
+const filterAnonymousEvent = events => {
+  return events.filter(event => !Boolean(event.employeeId))
+}
 
-const BottomDrawer = (props) => {
-  const { open, onClose, ...restProps } = props
+const BottomDrawer = ({
+  open,
+  handleEditClick,
+  handleDeleteEvent,
+  handleEventDrop,
+  petReserveTypeMapping,
+  ...restProps
+}) => {
+  const employeesEvents = useSelector(selectEmployeeEvents)
+  const events = useMemo(() => filterAnonymousEvent(employeesEvents), [employeesEvents])
 
+  const [{ isOver }, drop] = useDrop(() => ({
+    accept: 'CARD',
+    drop: () => ({ anonymous: true }),
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+      // canDrop: monitor.canDrop(),
+    }),
+  }))
 
   return (
     <Drawer
@@ -15,44 +38,62 @@ const BottomDrawer = (props) => {
       variant="persistent"
       anchor="bottom"
       open={open}
-      onClose={onClose}
       sx={{
         '& .MuiCard-root': {
-          flex: '0 0 14.5%',
-          mr: '1.8%',
+          flex: '0 0 17%',
+          mr: '2%',
           mt: 4,
           mb: 3,
           '&:first-of-type': {
-            ml: '1.8%',
+            ml: '2%',
           },
         },
         '& .MuiDrawer-paper': {
           zIndex: 1251,
           minHeight: 180,
-          // bgcolor: 'secondary.bg',
           flexDirection: 'row',
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: '0%',
-            left: 0,
-            width: '100%',
-            height: '70%',
-            zIndex: -1,
-            // transform: 'Rotate(-1deg)',
-            bgcolor: theme => alpha(theme.palette.primary.light, 0.1),
-          },
         },
       }}
       {...restProps}
     >
-      {
-        Array.from(new Array(6)).map((item, index) => (
-          <EventCard key={index} />
-        ))
-      }
+      <Box
+        className="thick-scrollbar"
+        ref={drop}
+        sx={{
+          display: 'flex',
+          flexGrow: 1,
+          overflowX: 'overlay',
+          // bgcolor: theme => alpha(theme.palette.primary.light, 0.1),
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            transition: 'all 0.15s ease-in-out',
+            top: '0%',
+            left: 0,
+            width: '100%',
+            height: isOver ? '100%' : '70%',
+            zIndex: -1,
+            // transform: 'Rotate(-1deg)',
+            bgcolor: theme => alpha(theme.palette.primary.light, isOver ? 0.2 : 0.1),
+          },
+        }}
+      >
+        {
+          events.map((event, index) => (
+            <EventCard
+              key={event.id}
+              event={event}
+              handleEditClick={handleEditClick}
+              handleDelete={handleDeleteEvent(event)}
+              handleEventDrop={handleEventDrop}
+              petReserveTypeMapping={petReserveTypeMapping}
+            />
+          ))
+        }
+      </Box>
     </Drawer>
   )
 }
+
 
 export default memo(BottomDrawer)

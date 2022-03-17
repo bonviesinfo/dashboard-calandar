@@ -4,7 +4,6 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import BottomFab from '../../components/DateGrid/BottomFab'
-import BottomDrawer from '../../components/DateGrid/BottomDrawer'
 import MainGrid from '../../components/DateGrid/MainGrid'
 import PropsDatePicker from '../../components/UI/PropsDatePicker'
 import DialogEdit from '../../components/DateGrid/DialogEdit'
@@ -13,8 +12,6 @@ import ArrowBackIosRoundedIcon from '@mui/icons-material/ArrowBackIosRounded'
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded'
 import { getZeroTime } from '../../utils/timeUtils'
 import { intervalMS } from '../../constants/dateGrid'
-
-// import { replaceEmployeeEvents, filterEventByDate, selectEmployeeEvents } from '../../slices/employeesEventsSlice'
 
 const DateGrid = () => {
   const theme = useTheme()
@@ -28,8 +25,8 @@ const DateGrid = () => {
     const eventStartMs = new Date(event.start).getTime()
     const eventEndMs = new Date(event.end).getTime()
     const eventStartIndex = Math.floor((eventStartMs - selectDateMs) / intervalMS)
-    const eventEndIndex = Math.ceil((eventEndMs - selectDateMs) / intervalMS)
-    const eventLength = eventEndIndex - eventStartIndex
+    const eventEndIndex = Math.ceil((eventEndMs - selectDateMs) / intervalMS) - 1
+    const eventLength = eventEndIndex - eventStartIndex + 1
 
     return {
       eventStartIndex,
@@ -106,9 +103,6 @@ const DateGrid = () => {
           height: 108,
           mt: 2,
           mb: 2,
-          // '& img': {
-          //   pointerEvents: 'none',
-          // },
           '&.small': {
             mt: 1,
             mb: 0.5,
@@ -133,6 +127,10 @@ const DateGrid = () => {
         },
         '& .MuiTypography-root': {
           color: 'text.secondary',
+          '&.duration-text': {
+            color: 'secondary.dark',
+            // textDecoration: 'underline',
+          },
         },
       }}
     >
@@ -150,6 +148,7 @@ const DateGrid = () => {
               selectDate={selectDate}
               currentEvent={currentEvent}
               handleClose={handleEditClose}
+              locateEvent={locateEvent}
             />
 
             <IconButton sx={{ mr: 3 }} onClick={toPrevDay}>
@@ -195,13 +194,14 @@ const DateGrid = () => {
         </Box>
 
         <BottomFab
+          locateEvent={locateEvent}
           selectDate={selectDate}
           bottomOpen={bottomOpen}
           toggleBottomDrawer={toggleBottomDrawer}
         />
-        <BottomDrawer open={bottomOpen} onClose={() => setBottomOpen(false)} />
 
         <MainGrid
+          bottomOpen={bottomOpen}
           locateEvent={locateEvent}
           selectDate={selectDate}
           setCurrentEvent={setCurrentEvent}

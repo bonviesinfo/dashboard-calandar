@@ -1,5 +1,4 @@
-import React, { forwardRef, useState, useMemo } from 'react'
-// import { useTheme } from '@mui/material/styles'
+import React, { forwardRef, useState, useMemo, Fragment } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
@@ -47,6 +46,7 @@ const DialogEditContent = ({
   selectDate,
   handleClose,
   currentEvent,
+  locateEvent,
 }) => {
   const dispatch = useDispatch()
   const employeesOccupiedTime = useSelector(selectEmployeesOccupiedTime)
@@ -87,12 +87,11 @@ const DialogEditContent = ({
 
   const validateTimeOccupied = (editingEventId) => {
     const { endTime, employeeId } = creatingItem
-    const startTimeIndex = startTime.getHours() * timePerHour + startTime.getMinutes() / intervalMinute
-    const endTimeIndex = endTime.getHours() * timePerHour + endTime.getMinutes() / intervalMinute
+    const { eventStartIndex, eventEndIndex } = locateEvent({ start: startTime, end: endTime })
 
     const occupiedTime = employeesOccupiedTime[employeeId]
     if (occupiedTime) {
-      for (let i = startTimeIndex; i < endTimeIndex; i += 1) {
+      for (let i = eventStartIndex; i <= eventEndIndex; i += 1) {
         if (occupiedTime[i] && occupiedTime[i] !== editingEventId) {
           return false
         }
@@ -129,15 +128,40 @@ const DialogEditContent = ({
     handleClose()
   }
 
+  const handleStartDateChange = newValue => {
+    if (!(newValue instanceof Date) || isNaN(newValue)) return
+    setStartTime(newValue)
+
+    if (creatingItem.endTime) {
+      const newEndTime = new Date(newValue)
+      newEndTime.setHours(creatingItem.endTime.getHours())
+      newEndTime.setMinutes(creatingItem.endTime.getMinutes())
+      setCreatingItem(prev => ({
+        ...prev,
+        endTime: newEndTime,
+      }))
+    }
+  }
+
   const handleStartTimeChange = (newValue) => {
     if (!validateInterval(newValue)) return
-
     setStartTime(newValue)
-    setSelectedDuration('')
-    setCreatingItem((prev) => ({
-      ...prev,
-      endTime: null,
-    }))
+
+    if (selectedDuration && newValue
+      && (newValue instanceof Date && !isNaN(newValue))
+      && newValue.getTime() + selectedDuration * intervalMS <= 86400000 + selectDateMs + startInterval * intervalMS
+    ) {
+      setCreatingItem((prev) => ({
+        ...prev,
+        endTime: new Date(newValue.getTime() + selectedDuration * intervalMS),
+      }))
+    } else {
+      setSelectedDuration('')
+      setCreatingItem((prev) => ({
+        ...prev,
+        endTime: null,
+      }))
+    }
   }
 
   const handleDurationChange = (event) => {
@@ -168,9 +192,9 @@ const DialogEditContent = ({
     }
   }
 
-  const renderDurationOPtions = () => {
-    return Array.from({ length: 24 * timePerHour }).map((item, index) => {
-      const newIndex = index + 1
+  const renderDurationOptions = () => {
+    return Array.from({ length: 24 * timePerHour / 2 }).map((item, index) => {
+      const newIndex = (index + 1) * 2
       const hour = Math.floor(newIndex / timePerHour)
       const minute = newIndex % timePerHour * intervalMinute
       return (
@@ -183,7 +207,7 @@ const DialogEditContent = ({
 
 
   return (
-    <>
+    <Fragment>
       <DialogTitle sx={{ fontWeight: 'bold' }}>新增預約</DialogTitle>
       <DialogContent sx={{ overflow: 'initial' }}>
         <Grid container spacing={3} sx={{ pt: 1 }}>
@@ -277,12 +301,12 @@ const DialogEditContent = ({
                 required
                 {...props}
               />}
-              disabled
-              disableOpenPicker
+              // disabled
+              // disableOpenPicker
               label="開始日期"
               inputFormat="yyyy/MM/dd"
               mask="____/__/__"
-              onChange={() => { }}
+              onChange={handleStartDateChange}
               value={startTime}
             />
           </Grid>
@@ -318,7 +342,7 @@ const DialogEditContent = ({
               }}
             >
               <MenuItem value="">None</MenuItem>
-              {renderDurationOPtions()}
+              {renderDurationOptions()}
             </TextField>
 
             <Box sx={{
@@ -373,7 +397,7 @@ const DialogEditContent = ({
         <Button onClick={handleClose}>取消</Button>
         <Button onClick={handleSubmit}>確認</Button>
       </DialogActions>
-    </>
+    </Fragment>
   )
 }
 
@@ -383,6 +407,7 @@ const DialogEdit = ({
   selectDate,
   currentEvent,
   handleClose,
+  locateEvent,
 }) => {
 
 
@@ -405,6 +430,7 @@ const DialogEdit = ({
         selectDate={selectDate}
         handleClose={handleClose}
         currentEvent={currentEvent}
+        locateEvent={locateEvent}
       />
     </Dialog>
   )

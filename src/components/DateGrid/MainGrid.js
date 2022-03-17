@@ -1,8 +1,10 @@
 import React, { Fragment, useState, useEffect, useMemo, useCallback, memo } from 'react'
+import { omit } from 'lodash-es'
 import { useTheme, alpha } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
+import BottomDrawer from './BottomDrawer'
 import EventCard from './EventCard'
 import MainItem from './MainItem'
 
@@ -10,7 +12,7 @@ import { dummyEmployeeData } from '../../data/dummyEmployeeData'
 import { dummyPetReserveType } from '../../data/dummyPetData'
 import { updateEmployeeEvent, deleteEmployeeEvent, selectEmployeeEvents, filterEventByDate } from '../../slices/employeesEventsSlice'
 import { replaceEmployeesEventsMapping } from '../../slices/employeesEventsMappingSlice'
-import { replaceEmployeesOccupiedTime } from '../../slices/employeesOccupiedTimeSlice'
+import { replaceEmployeesOccupiedTime, selectEmployeesOccupiedTime } from '../../slices/employeesOccupiedTimeSlice'
 
 import {
   intervalMinute,
@@ -32,6 +34,7 @@ const showInterval = index => {
 }
 
 const MainGrid = ({
+  bottomOpen,
   selectDate,
   setCurrentEvent,
   locateEvent,
@@ -39,6 +42,7 @@ const MainGrid = ({
   const theme = useTheme()
   const dispatch = useDispatch()
   const originalEmployeesEvents = useSelector(selectEmployeeEvents)
+  const employeesOccupiedTime = useSelector(selectEmployeesOccupiedTime)
   const [employees, setEmployees] = useState([])
   const [employeesStartTimeMapping, setEmployeesStartTimeMapping] = useState({})
 
@@ -88,7 +92,7 @@ const MainGrid = ({
           eventEndIndex,
         } = locateEvent(event)
 
-        for (let i = eventStartIndex; i < eventEndIndex; i++) {
+        for (let i = eventStartIndex; i <= eventEndIndex; i++) {
           occupiedTime[i] = event.id
         }
 
@@ -115,230 +119,246 @@ const MainGrid = ({
     dispatch(deleteEmployeeEvent(event.id))
   }
 
-  const handleEventDrop = (event, startTimeIndex, targetEmployeeId) => {
-    const newEvent = {
-      ...event,
-      start: selectDateMs + startTimeIndex * intervalMS,
-      end: selectDateMs + startTimeIndex * intervalMS + (event.end - event.start),
-      employeeId: targetEmployeeId,
-    }
+  const handleEventDrop = (event, startTimeIndex, targetEmployeeId, anonymous) => {
+    const newEvent = anonymous
+      ? omit(event, ['employeeId'])
+      : {
+        ...event,
+        start: selectDateMs + startTimeIndex * intervalMS,
+        end: selectDateMs + startTimeIndex * intervalMS + (event.end - event.start),
+        employeeId: targetEmployeeId,
+      }
 
     dispatch(updateEmployeeEvent(newEvent))
   }
 
 
   return (
-    <Box
-      className="grid-container"
-      sx={{
-        width: '95%',
-        m: '0 auto',
-        flexGrow: 1,
-        minHeight: 0,
-        position: 'relative',
-        '& .grid-item': {
-          display: 'flex',
-          justifyContent: 'center',
-          position: 'relative',
-          bgcolor: 'background.default',
-          borderTop: `1px solid ${theme.palette.text.fadest}`,
-          '&.active': {
-            bgcolor: alpha(theme.palette.primary.light, 0.1),
-          },
-          '&.full-hour': {
-            borderTop: `2px solid ${theme.palette.text.fade}`,
-          },
-          [`&:not(:nth-of-type(n + ${nthNum}))::before`]: {
-            content: '"·"',
-            zIndex: 2,
-            position: 'absolute',
-            top: '50%',
-            right: 0,
-            transform: 'translate(50%, -50%)',
-            color: 'text.fade',
-          }
-        },
-      }}
-    >
-      {/* Grid Header */}
+    <>
       <Box
-        className="grid-header"
+        className="grid-container"
         sx={{
-          display: 'grid',
-          gridTemplateColumns: `6rem repeat(${dummyEmployeeData.length}, minmax(150px, 1fr)) 2rem`,
-          gridTemplateRows: `7rem`,
-          '& .header-item': {
+          width: '95%',
+          m: '0 auto',
+          flexGrow: 1,
+          minHeight: 0,
+          position: 'relative',
+          '& .grid-item': {
             display: 'flex',
             justifyContent: 'center',
-            '& .item-container': {
-              pt: 3,
-              mb: 3,
-              width: '80%',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              bgcolor: 'transparent',
-              borderTop: 'none',
-              borderBottom: `2px solid ${theme.palette.primary.light}`,
-            },
-            '& h4': {
-              fontWeight: 'bold',
-            },
-            '& .car-info': {
-              display: 'flex',
-              justifyContent: 'space-between',
-            },
-          },
-        }}
-      >
-        <div />
-
-        {dummyEmployeeData.map((employee, index) => (
-          <div key={employee.name} className="header-item">
-            <div className="item-container">
-              <Typography variant="h4">{employee.name}</Typography>
-              <Box className="car-info">
-                <div>
-                  Car-888
-                </div>
-
-                <div>
-                  tags
-                </div>
-              </Box>
-            </div>
-          </div>
-        ))}
-
-        <div />
-      </Box>
-
-      {/* Grid Body */}
-      <Box
-        id="grid-body"
-        sx={{
-          pb: 5,
-          position: 'relative',
-          overflowY: 'overlay',
-          height: 'calc(100% - 7rem)',
-          display: 'grid',
-          gridTemplateColumns: `4rem 2rem repeat(${dummyEmployeeData.length}, minmax(150px, 1fr)) 2rem`,
-          gridTemplateRows: `1rem repeat(${gridLength}, 60px)`,
-          gridAutoFlow: 'column',
-          '& .pure-item': {
-            bgcolor: 'background.default',
-          },
-          '& .grid-item.first-row': {
-            borderTop: 'none',
-          },
-          '& .first-col': {
-            mr: '0.75rem',
             position: 'relative',
-            display: 'inline-block',
-            bgcolor: 'transparent',
-            borderRight: `1px solid ${theme.palette.text.mid}`,
-            '&:not(:first-of-type)::before': {
-              zIndex: 3,
-              lineHeight: 1,
-              position: 'absolute',
-              content: '"○"',
-              top: 0,
-              right: 0,
-              transform: 'translate(calc(50% + 1px), -50%)',
-              color: 'text.mid',
-              bgcolor: 'text.light',
+            bgcolor: 'background.default',
+            borderTop: `1px solid ${theme.palette.text.fadest}`,
+            '&.active': {
+              bgcolor: alpha(theme.palette.primary.light, 0.1),
             },
-            '& span': {
-              display: 'inline-block',
-              color: 'text.third',
-              bgcolor: 'text.light',
-              position: 'absolute',
-              fontSize: '0.75rem',
-              top: '-0.75rem',
-              left: 0,
+            '&.blocked': {
+              bgcolor: alpha(theme.palette.text.primary, 0.1),
+            },
+            '&.full-hour': {
+              borderTop: `2px solid ${theme.palette.text.fade}`,
+            },
+            [`&:not(:nth-of-type(n + ${nthNum}))::before`]: {
+              content: '"·"',
               zIndex: 2,
-            },
-          },
-          '& .first-col.full-hour': {
-            '& span': {
-              fontWeight: 'bold',
-              fontSize: '1rem',
-            },
-            '&::before': {
-              content: '"●"',
-            },
+              position: 'absolute',
+              top: '50%',
+              right: 0,
+              transform: 'translate(50%, -50%)',
+              color: 'text.fade',
+            }
           },
         }}
       >
-        <div className="pure-item first-row first-col" />
-        {Array.from(new Array(gridLength)).map((item, index) => {
-          const fullHour = index % timePerHour === 0 ? 'full-hour' : ''
+        {/* Grid Header */}
+        <Box
+          className="grid-header"
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: `6rem repeat(${dummyEmployeeData.length}, minmax(150px, 1fr)) 2rem`,
+            gridTemplateRows: `7rem`,
+            '& .header-item': {
+              display: 'flex',
+              justifyContent: 'center',
+              '& .item-container': {
+                pt: 3,
+                mb: 3,
+                width: '80%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                bgcolor: 'transparent',
+                borderTop: 'none',
+                borderBottom: `2px solid ${theme.palette.primary.light}`,
+              },
+              '& h4': {
+                fontWeight: 'bold',
+              },
+              '& .car-info': {
+                display: 'flex',
+                justifyContent: 'space-between',
+              },
+            },
+          }}
+        >
+          <div />
 
-          return (
-            <div key={'a' + index} className={`first-col ${fullHour}`}>
-              <span>
-                {showInterval(index)}
-              </span>
+          {dummyEmployeeData.map((employee, index) => (
+            <div key={employee.name} className="header-item">
+              <div className="item-container">
+                <Typography variant="h4">{employee.name}</Typography>
+                <Box className="car-info">
+                  <div>
+                    Car-888
+                  </div>
+
+                  <div>
+                    tags
+                  </div>
+                </Box>
+              </div>
             </div>
-          )
-        })}
+          ))}
 
-        <div className="pure-item first-row" />
-        {Array.from(new Array(gridLength)).map((item, index) => (
-          <div key={'b' + index} className="pure-item"></div>
-        ))}
+          <div />
+        </Box>
 
-
-        {dummyEmployeeData.map((employee, index) => {
-          const eventStartTimeMapping = employeesStartTimeMapping[employee.id]
-          const restItems = Array.from(new Array(gridLength)).map((item, index) => {
-            const newIndex = index + startInterval
-            const eventInfo = eventStartTimeMapping && eventStartTimeMapping[newIndex]
-
-            // const startTimestamp = selectDateMs + newIndex * intervalMS
-            const fullHour = index % timePerHour === 0 ? ' full-hour' : ''
-            // const active = (new Date(employee.start).getTime() <= startTimestamp && new Date(employee.end).getTime() > startTimestamp)
-            //   ? ' active'
-            //   : ''
+        {/* Grid Body */}
+        <Box
+          id="grid-body"
+          sx={{
+            pb: 5,
+            position: 'relative',
+            overflowY: 'overlay',
+            height: 'calc(100% - 7rem)',
+            display: 'grid',
+            gridTemplateColumns: `4rem 2rem repeat(${dummyEmployeeData.length}, minmax(150px, 1fr)) 2rem`,
+            gridTemplateRows: `1rem repeat(${gridLength}, 60px)`,
+            gridAutoFlow: 'column',
+            '& .pure-item': {
+              bgcolor: 'background.default',
+            },
+            '& .grid-item.first-row': {
+              borderTop: 'none',
+            },
+            '& .first-col': {
+              mr: '0.75rem',
+              position: 'relative',
+              display: 'inline-block',
+              bgcolor: 'transparent',
+              borderRight: `1px solid ${theme.palette.text.mid}`,
+              '&:not(:first-of-type)::before': {
+                zIndex: 3,
+                lineHeight: 1,
+                position: 'absolute',
+                content: '"○"',
+                top: 0,
+                right: 0,
+                transform: 'translate(calc(50% + 1px), -50%)',
+                color: 'text.mid',
+                bgcolor: 'text.light',
+              },
+              '& span': {
+                display: 'inline-block',
+                color: 'text.third',
+                bgcolor: 'text.light',
+                position: 'absolute',
+                fontSize: '0.75rem',
+                top: '-0.75rem',
+                left: 0,
+                zIndex: 2,
+              },
+            },
+            '& .first-col.full-hour': {
+              '& span': {
+                fontWeight: 'bold',
+                fontSize: '1rem',
+              },
+              '&::before': {
+                content: '"●"',
+              },
+            },
+          }}
+        >
+          <div className="pure-item first-row first-col" />
+          {Array.from(new Array(gridLength)).map((item, index) => {
+            const fullHour = index % timePerHour === 0 ? 'full-hour' : ''
 
             return (
-              <MainItem
-                key={`dc${index}`}
-                className={`grid-item${fullHour}`}
-                data-id={employee.id}
-                data-index={newIndex}
-              >
-                {eventInfo
-                  ? <EventCard
-                    row={eventInfo.eventLength}
-                    pet={eventInfo?.event?.pet}
-                    event={eventInfo?.event}
-                    handleEditClick={handleEditClick}
-                    handleDelete={handleDeleteEvent(eventInfo?.event)}
-                    handleEventDrop={handleEventDrop}
-                    petReserveTypeMapping={petReserveTypeMapping}
-                  />
-                  : null
-                }
-              </MainItem>
+              <div key={'a' + index} className={`first-col ${fullHour}`}>
+                <span>
+                  {showInterval(index)}
+                </span>
+              </div>
             )
-          })
+          })}
 
-          return (
-            <Fragment key={index}>
-              <div className="pure-item first-row" />
-              {restItems}
-            </Fragment>
-          )
-        })}
+          <div className="pure-item first-row" />
+          {Array.from(new Array(gridLength)).map((item, index) => (
+            <div key={'b' + index} className="pure-item"></div>
+          ))}
 
-        <div className="pure-item first-row" />
-        {Array.from(new Array(gridLength)).map((item, index) => (
-          <div key={'e' + index} className="pure-item"></div>
-        ))}
+
+          {dummyEmployeeData.map((employee, index) => {
+            const eventStartTimeMapping = employeesStartTimeMapping[employee.id]
+            const restItems = Array.from(new Array(gridLength)).map((item, index) => {
+              const newIndex = index + startInterval
+              const eventInfo = eventStartTimeMapping && eventStartTimeMapping[newIndex]
+
+              // const startTimestamp = selectDateMs + newIndex * intervalMS
+              const fullHour = index % timePerHour === 0 ? ' full-hour' : ''
+              // const active = (new Date(employee.start).getTime() <= startTimestamp && new Date(employee.end).getTime() > startTimestamp)
+              //   ? ' active'
+              //   : ''
+
+              return (
+                <MainItem
+                  key={`dc${index}`}
+                  className={`grid-item${fullHour}`}
+                  employeesOccupiedTime={employeesOccupiedTime}
+                  locateEvent={locateEvent}
+                  data-id={employee.id}
+                  data-index={newIndex}
+                >
+                  {eventInfo
+                    ? <EventCard
+                      row={eventInfo.eventLength}
+                      event={eventInfo?.event}
+                      handleEditClick={handleEditClick}
+                      handleDelete={handleDeleteEvent(eventInfo?.event)}
+                      handleEventDrop={handleEventDrop}
+                      petReserveTypeMapping={petReserveTypeMapping}
+                    />
+                    : null
+                  }
+                </MainItem>
+              )
+            })
+
+            return (
+              <Fragment key={index}>
+                <div className="pure-item first-row" />
+                {restItems}
+              </Fragment>
+            )
+          })}
+
+          <div className="pure-item first-row" />
+          {Array.from(new Array(gridLength)).map((item, index) => (
+            <div key={'e' + index} className="pure-item"></div>
+          ))}
+        </Box>
+
       </Box>
 
-    </Box>
+      <BottomDrawer
+        open={bottomOpen}
+        handleEditClick={handleEditClick}
+        handleDeleteEvent={handleDeleteEvent}
+        handleEventDrop={handleEventDrop}
+        petReserveTypeMapping={petReserveTypeMapping}
+      />
+    </>
   )
 }
 
