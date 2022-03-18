@@ -1,5 +1,6 @@
 import React, { forwardRef, useState, useMemo, Fragment } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { omit } from 'lodash-es'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
@@ -55,13 +56,16 @@ const DialogEditContent = ({
     ...currentEvent,
     endTime: currentEvent ? new Date(currentEvent.end) : null
   })
+  const [errors, setErrors] = useState({})
   const [selectedDuration, setSelectedDuration] = useState('')
 
   const zeroTimeMs = getZeroTime().getTime()
   const selectDateMs = selectDate.getTime()
   const selectDateStartTimeMs = selectDateMs + getNearestTime(new Date()).getTime() - zeroTimeMs
-
-  const [startTime, setStartTime] = useState(currentEvent ? new Date(currentEvent.start) : new Date(selectDateStartTimeMs))
+  const [startTime, setStartTime] = useState(currentEvent
+    ? new Date(currentEvent.start)
+    : new Date(selectDateStartTimeMs)
+  )
 
   const petMapping = useMemo(() => {
     const newPetMapping = {}
@@ -72,6 +76,7 @@ const DialogEditContent = ({
   }, [])
 
   const handleChange = name => e => {
+    setErrors(omit(errors, name))
     setCreatingItem((prev) => ({
       ...prev,
       [name]: e.target.value,
@@ -79,6 +84,7 @@ const DialogEditContent = ({
   }
 
   const handlePetChange = (event) => {
+    setErrors(omit(errors, 'pet'))
     setCreatingItem(prev => ({
       ...prev,
       pet: petMapping[event.target.value],
@@ -108,13 +114,25 @@ const DialogEditContent = ({
     return true
   }
 
+  const validateInput = () => {
+    const newErrors = {}
+    if (!creatingItem.pet) newErrors.pet = '請選擇寵物'
+    if (!creatingItem.reserveType) newErrors.reserveType = '請選擇服務類別'
+    if (!(startTime instanceof Date) || isNaN(startTime)) newErrors.startTime = '請輸入開始日期'
+    if (!creatingItem.endTime) newErrors.endTime = '請輸入結束日期'
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length > 0
+  }
+
   const handleSubmit = () => {
+    if (validateInput()) return
     if (!validateTimeOccupied(currentEvent?.id)) return alert('該成員時間重複')
     const { id, endTime, remark, pet, employeeId, reserveType } = creatingItem
     const newEvent = {
       id: currentEvent ? id : Math.random().toString(36).substr(2, 9),
+      ...(employeeId && { employeeId }),
       pet,
-      employeeId,
       reserveType,
       start: startTime.getTime(),
       end: new Date(endTime).getTime(),
@@ -129,8 +147,10 @@ const DialogEditContent = ({
   }
 
   const handleStartDateChange = newValue => {
-    if (!(newValue instanceof Date) || isNaN(newValue)) return
     setStartTime(newValue)
+    if (!(newValue instanceof Date) || isNaN(newValue)) return
+    // if (!startTime) setStartTime(getNearestTime(newValue))
+    setErrors(omit(errors, 'startTime'))
 
     if (creatingItem.endTime) {
       const newEndTime = new Date(newValue)
@@ -143,14 +163,16 @@ const DialogEditContent = ({
     }
   }
 
-  const handleStartTimeChange = (newValue) => {
+  const handleStartTimeChange = newValue => {
     if (!validateInterval(newValue)) return
     setStartTime(newValue)
+    setErrors(omit(errors, 'startTime'))
 
     if (selectedDuration && newValue
       && (newValue instanceof Date && !isNaN(newValue))
       && newValue.getTime() + selectedDuration * intervalMS <= 86400000 + selectDateMs + startInterval * intervalMS
     ) {
+      setErrors(omit(errors, 'endTime'))
       setCreatingItem((prev) => ({
         ...prev,
         endTime: new Date(newValue.getTime() + selectedDuration * intervalMS),
@@ -167,6 +189,7 @@ const DialogEditContent = ({
   const handleDurationChange = (event) => {
     setSelectedDuration(event.target.value)
     if (startTime) {
+      setErrors(omit(errors, 'endTime'))
       setCreatingItem(prev => ({
         ...prev,
         endTime: new Date(startTime.getTime() + event.target.value * intervalMS),
@@ -176,7 +199,7 @@ const DialogEditContent = ({
 
   const handleEndTimeChange = (newValue) => {
     if (!validateInterval(newValue)) return
-
+    setErrors(omit(errors, 'endTime'))
     setCreatingItem((prev) => ({
       ...prev,
       endTime: newValue,
@@ -186,6 +209,7 @@ const DialogEditContent = ({
       && (newValue instanceof Date && !isNaN(newValue))
       && newValue.getTime() - selectDateMs - startInterval * intervalMS <= 86400000
     ) {
+      setErrors(omit(errors, 'startTime'))
       setStartTime(new Date(newValue.getTime() - selectedDuration * intervalMS))
     } else {
       setSelectedDuration('')
@@ -225,6 +249,11 @@ const DialogEditContent = ({
                 },
               }}
             >
+              <MenuItem value="">
+                <Typography variant="body1" noWrap>
+                  No one
+                </Typography>
+              </MenuItem>
               {dummyEmployeeData.map((option) => (
                 <MenuItem key={option.id} value={option.id}>
                   <Typography variant="body1" noWrap>
@@ -242,6 +271,8 @@ const DialogEditContent = ({
               label="寵物"
               value={creatingItem?.pet?.id || ''}
               onChange={handlePetChange}
+              error={Boolean(errors.pet)}
+              helperText={errors.pet}
               SelectProps={{
                 MenuProps: {
                   sx: { '& .MuiPaper-root': { width: 0, } },
@@ -265,6 +296,8 @@ const DialogEditContent = ({
               label="服務類別"
               value={creatingItem?.reserveType || ''}
               onChange={handleChange('reserveType')}
+              error={Boolean(errors.reserveType)}
+              helperText={errors.reserveType}
               SelectProps={{
                 MenuProps: {
                   sx: {
@@ -297,9 +330,11 @@ const DialogEditContent = ({
           <Grid item xs={3}>
             <DatePicker
               renderInput={(props) => <TextField
+                {...props}
                 variant="outlined"
                 required
-                {...props}
+                helperText={errors.startTime}
+                error={Boolean(errors.startTime || props.error)}
               />}
               // disabled
               // disableOpenPicker
@@ -318,7 +353,11 @@ const DialogEditContent = ({
               label="開始時刻"
               value={startTime}
               onChange={handleStartTimeChange}
-              renderInput={(params) => <TextField {...params} />}
+              renderInput={(props) => <TextField
+                {...props}
+                helperText={errors.startTime}
+                error={Boolean(errors.startTime || props.error)}
+              />}
             />
           </Grid>
 
@@ -364,8 +403,10 @@ const DialogEditContent = ({
           <Grid item xs={6}>
             <DateTimePicker
               renderInput={(props) => <TextField
-                variant="outlined"
                 {...props}
+                variant="outlined"
+                helperText={errors.endTime}
+                error={Boolean(errors.endTime || props.error)}
               />}
               ampm={false}
               openTo="hours"

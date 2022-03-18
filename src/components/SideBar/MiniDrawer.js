@@ -1,11 +1,12 @@
 import React, { memo } from 'react'
-import { styled } from '@mui/material/styles'
-import { Drawer as MuiDrawer, List, ListItemButton, ListItemIcon, ListItemText, Divider } from '@mui/material'
+import { styled, alpha } from '@mui/material/styles'
+import { Drawer as MuiDrawer, List, ListItemButton, ListItemIcon, ListItemText, Divider, Stack } from '@mui/material'
 import { Link } from 'react-router-dom'
 import InboxIcon from '@mui/icons-material/MoveToInbox'
 import MailIcon from '@mui/icons-material/Mail'
 import AudiotrackIcon from '@mui/icons-material/Audiotrack'
 import TwitterIcon from '@mui/icons-material/Twitter'
+import PatternButtons from '../UI/PatternButtons'
 
 const drawerWidth = 240
 
@@ -57,13 +58,13 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
       fontSize: '1.5rem',
     },
     '& .MuiListItemButton-root:hover': {
-      backgroundColor: 'rgb(182 255 235 / 15%)',
+      backgroundColor: alpha(theme.palette.primary.light, 0.1),
     },
     '& .MuiListItemButton-root .MuiTouchRipple-root': {
       color: 'rgb(179 197 192 / 75%)',
     },
     '& .MuiListItemButton-root:hover .MuiListItemIcon-root': {
-      color: '#3c97a4',
+      color: theme.palette.primary.editingText,
     },
     '&:hover': {
       // 以下取消註解變成可推擠其他內容的Drawer
@@ -77,40 +78,51 @@ function MiniDrawer() {
 
   return (
     <Drawer variant="permanent">
-      <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <Link to="/" key={text}>
-            <ListItemButton color="">
-              <ListItemText primary={text} />
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-            </ListItemButton>
-          </Link>
-        ))}
-      </List>
-      <Divider />
-      <List>
+      <Stack sx={{ justifyContent: 'space-between', height: '100%', }}>
+        <div>
 
-        <Link to="/purchase-record">
-          <ListItemButton key={'Tik Tok'}>
-            <ListItemText primary={'Tik Tok'} />
-            <ListItemIcon>
-              <AudiotrackIcon />
-            </ListItemIcon>
-          </ListItemButton>
-        </Link>
+          <List>
+            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+              <Link to="/" key={text}>
+                <ListItemButton color="">
+                  <ListItemText primary={text} />
+                  <ListItemIcon>
+                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  </ListItemIcon>
+                </ListItemButton>
+              </Link>
+            ))}
+          </List>
+          <Divider />
+          <List>
 
-        <Link to="/consultation">
-          <ListItemButton key={'Trash'}>
-            <ListItemText primary={'Trash'} />
-            <ListItemIcon>
-              <TwitterIcon />
-            </ListItemIcon>
-          </ListItemButton>
-        </Link>
+            <Link to="/purchase-record">
+              <ListItemButton key={'Tik Tok'}>
+                <ListItemText primary={'Tik Tok'} />
+                <ListItemIcon>
+                  <AudiotrackIcon />
+                </ListItemIcon>
+              </ListItemButton>
+            </Link>
 
-      </List>
+            <Link to="/consultation">
+              <ListItemButton key={'Trash'}>
+                <ListItemText primary={'Trash'} />
+                <ListItemIcon>
+                  <TwitterIcon />
+                </ListItemIcon>
+              </ListItemButton>
+            </Link>
+
+          </List>
+        </div>
+
+        <Stack sx={{ alignItems: 'flex-start', pb: 20, pl: 1 }}>
+          <PatternButtons />
+        </Stack>
+      </Stack>
+
+
     </Drawer>
   )
 }

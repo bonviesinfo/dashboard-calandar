@@ -97,8 +97,8 @@ export const dummyEventData = [
     employeeId: 'cm4',
     reserveType: 'tt2',
     remark: '看Netflix',
-    start: getSomeDateTimeMs(6, 15),
-    end: getSomeDateTimeMs(8, 15),
+    start: getOtherDateTimeMs(-1, 6, 15),
+    end: getOtherDateTimeMs(-1, 8, 15),
     pet: {
       id: 'p3',
       petName: 'Mimi',
@@ -285,8 +285,8 @@ export const dummyEventData = [
     id: 'ev17',
     reserveType: 'tt3',
     remark: '這是一個未分派的事件 4',
-    start: getSomeDateTimeMs(12),
-    end: getSomeDateTimeMs(13, 30),
+    start: getOtherDateTimeMs(1, 12),
+    end: getOtherDateTimeMs(1, 13, 30),
     pet: {
       id: 'p7',
       petName: 'Ba Ha',
@@ -299,8 +299,8 @@ export const dummyEventData = [
     id: 'ev18',
     reserveType: 'tt3',
     remark: '這是一個未分派的事件 5',
-    start: getSomeDateTimeMs(11, 30),
-    end: getSomeDateTimeMs(12),
+    start: getOtherDateTimeMs(2, 11, 30),
+    end: getOtherDateTimeMs(2, 12),
     pet: {
       id: 'p3',
       petName: 'Mimi',
@@ -313,8 +313,8 @@ export const dummyEventData = [
     id: 'ev19',
     reserveType: 'tt3',
     remark: '這是一個未分派的事件 6',
-    start: getSomeDateTimeMs(10, 15),
-    end: getSomeDateTimeMs(11, 15),
+    start: getOtherDateTimeMs(1, 10, 15),
+    end: getOtherDateTimeMs(1, 11, 15),
     pet: {
       id: 'p6',
       petName: 'Sachima',

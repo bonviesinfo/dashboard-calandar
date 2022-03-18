@@ -14,6 +14,12 @@ export const filterEventByDate = (date, events) => {
   })
 }
 
+export const filterAnonymousEvent = (events, isAnonymous) => {
+  return events.filter(event => {
+    return isAnonymous ? !Boolean(event.employeeId) : Boolean(event.employeeId)
+  })
+}
+
 const initialState = dummyEventData
 
 const employeesEventsSlice = createSlice({

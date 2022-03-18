@@ -205,6 +205,7 @@ const DateGrid = () => {
           locateEvent={locateEvent}
           selectDate={selectDate}
           setCurrentEvent={setCurrentEvent}
+          selectDateMs={selectDateMs}
         />
 
       </Box>

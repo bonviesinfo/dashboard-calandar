@@ -67,7 +67,7 @@ export default function ItineraryGroup(props) {
           pb: 0.5,
         },
         '& .card-title': {
-          color: '#399999',
+          color: 'primary.editingText',
           fontWeight: 'bold',
           letterSpacing: '0.025em',
           mb: '0.25rem',

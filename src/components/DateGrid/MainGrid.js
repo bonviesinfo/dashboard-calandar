@@ -10,7 +10,7 @@ import MainItem from './MainItem'
 
 import { dummyEmployeeData } from '../../data/dummyEmployeeData'
 import { dummyPetReserveType } from '../../data/dummyPetData'
-import { updateEmployeeEvent, deleteEmployeeEvent, selectEmployeeEvents, filterEventByDate } from '../../slices/employeesEventsSlice'
+import { updateEmployeeEvent, deleteEmployeeEvent, selectEmployeeEvents, filterEventByDate, filterAnonymousEvent } from '../../slices/employeesEventsSlice'
 import { replaceEmployeesEventsMapping } from '../../slices/employeesEventsMappingSlice'
 import { replaceEmployeesOccupiedTime, selectEmployeesOccupiedTime } from '../../slices/employeesOccupiedTimeSlice'
 
@@ -35,19 +35,18 @@ const showInterval = index => {
 
 const MainGrid = ({
   bottomOpen,
-  selectDate,
   setCurrentEvent,
   locateEvent,
+  selectDateMs,
 }) => {
   const theme = useTheme()
   const dispatch = useDispatch()
   const originalEmployeesEvents = useSelector(selectEmployeeEvents)
   const employeesOccupiedTime = useSelector(selectEmployeesOccupiedTime)
+
   const [employees, setEmployees] = useState([])
   const [employeesStartTimeMapping, setEmployeesStartTimeMapping] = useState({})
-
-  const selectDateMs = useMemo(() => selectDate.getTime(), [selectDate])
-  const employeesEvents = useMemo(() => filterEventByDate(selectDateMs, originalEmployeesEvents), [selectDateMs, originalEmployeesEvents])
+  const employeesEvents = useMemo(() => filterAnonymousEvent(filterEventByDate(selectDateMs, originalEmployeesEvents)), [selectDateMs, originalEmployeesEvents])
 
   const petReserveTypeMapping = useMemo(() => {
     const newPetReserveTypeMapping = {}
@@ -357,6 +356,7 @@ const MainGrid = ({
         handleDeleteEvent={handleDeleteEvent}
         handleEventDrop={handleEventDrop}
         petReserveTypeMapping={petReserveTypeMapping}
+        selectDateMs={selectDateMs}
       />
     </>
   )

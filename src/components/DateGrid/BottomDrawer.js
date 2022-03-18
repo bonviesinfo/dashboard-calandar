@@ -5,12 +5,7 @@ import EventCard from './EventCard'
 import { useDrop } from 'react-dnd'
 import { alpha } from '@mui/material/styles'
 import { useSelector } from 'react-redux'
-import { selectEmployeeEvents } from '../../slices/employeesEventsSlice'
-
-// import { alpha } from '@mui/material'
-const filterAnonymousEvent = events => {
-  return events.filter(event => !Boolean(event.employeeId))
-}
+import { selectEmployeeEvents, filterEventByDate, filterAnonymousEvent } from '../../slices/employeesEventsSlice'
 
 const BottomDrawer = ({
   open,
@@ -18,10 +13,14 @@ const BottomDrawer = ({
   handleDeleteEvent,
   handleEventDrop,
   petReserveTypeMapping,
+  selectDateMs,
   ...restProps
 }) => {
-  const employeesEvents = useSelector(selectEmployeeEvents)
-  const events = useMemo(() => filterAnonymousEvent(employeesEvents), [employeesEvents])
+  const originalEmployeesEvents = useSelector(selectEmployeeEvents)
+  const events = useMemo(() => filterAnonymousEvent(
+    filterEventByDate(selectDateMs, originalEmployeesEvents),
+    true,
+  ), [originalEmployeesEvents, selectDateMs])
 
   const [{ isOver }, drop] = useDrop(() => ({
     accept: 'CARD',
