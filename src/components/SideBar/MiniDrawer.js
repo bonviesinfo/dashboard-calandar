@@ -117,7 +117,7 @@ function MiniDrawer() {
           </List>
         </div>
 
-        <Stack sx={{ alignItems: 'flex-start', pb: 20, pl: 1 }}>
+        <Stack sx={{ alignItems: 'flex-start', pb: 24, pl: 1 }}>
           <PatternButtons />
         </Stack>
       </Stack>

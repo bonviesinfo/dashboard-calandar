@@ -107,7 +107,7 @@ const DialogEditContent = ({
     return true
   }
 
-  const validateInterval = newValue => {
+  const validateIntervalAndDateType = newValue => {
     if (!(newValue instanceof Date) || isNaN(newValue) || newValue.getMinutes() % intervalMinute !== 0) {
       return false
     }
@@ -147,9 +147,10 @@ const DialogEditContent = ({
   }
 
   const handleStartDateChange = newValue => {
+    console.log('date change')
+
     setStartTime(newValue)
     if (!(newValue instanceof Date) || isNaN(newValue)) return
-    // if (!startTime) setStartTime(getNearestTime(newValue))
     setErrors(omit(errors, 'startTime'))
 
     if (creatingItem.endTime) {
@@ -164,8 +165,14 @@ const DialogEditContent = ({
   }
 
   const handleStartTimeChange = newValue => {
-    if (!validateInterval(newValue)) return
+    console.log('newValue', newValue)
     setStartTime(newValue)
+
+    if (!validateIntervalAndDateType(newValue)) return
+    const newSelectedDate = new Date(selectDate)
+    newSelectedDate.setHours(newValue.getHours())
+    newSelectedDate.setMinutes(newValue.getMinutes())
+    setStartTime(newSelectedDate)
     setErrors(omit(errors, 'startTime'))
 
     if (selectedDuration && newValue
@@ -198,7 +205,7 @@ const DialogEditContent = ({
   }
 
   const handleEndTimeChange = (newValue) => {
-    if (!validateInterval(newValue)) return
+    if (!validateIntervalAndDateType(newValue)) return
     setErrors(omit(errors, 'endTime'))
     setCreatingItem((prev) => ({
       ...prev,

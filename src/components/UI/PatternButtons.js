@@ -17,7 +17,7 @@ const PatternButtons = () => {
         <CircleIcon sx={{
           color: '#4db6ac',
           borderRadius: '50%',
-          ...(theme.palette.pattern === 'teal' && { border: `2px solid ${theme.palette.text.mid}` })
+          ...(theme.palette.pattern === 'teal' && { border: `2px solid ${theme.palette.text.fader}` })
         }} />
       </IconButton>
 
@@ -28,7 +28,7 @@ const PatternButtons = () => {
         <CircleIcon sx={{
           color: '#e57373',
           borderRadius: '50%',
-          ...(theme.palette.pattern === 'red' && { border: `2px solid ${theme.palette.text.mid}` })
+          ...(theme.palette.pattern === 'red' && { border: `2px solid ${theme.palette.text.fader}` })
         }} />
       </IconButton>
     </>
