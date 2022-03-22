@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import { ThemeProvider, createTheme, responsiveFontSizes } from '@mui/material/styles'
 import { useMediaQuery, CssBaseline } from '@mui/material'
-import { amber, cyan, teal, grey, red } from '@mui/material/colors'
+import { amber, cyan, teal, grey, red, indigo, blue } from '@mui/material/colors'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import ColorModeContext from '../contexts/ColorModeContext'
@@ -17,6 +17,22 @@ const getDesignTokens = (mode, pattern) => {
         main: red[300],
         text: '#ff8d6b',
         editingText: '#ff756a',
+      }
+      break
+    case 'blue':
+      primary = {
+        editingBg: '#f8f9a4',
+        main: blue[300],
+        text: blue['A100'],
+        editingText: blue['A200'],
+      }
+      break
+    case 'indigo':
+      primary = {
+        editingBg: '#f8f9a4',
+        main: indigo[300],
+        text: indigo['A100'],
+        editingText: indigo['A200'],
       }
       break
     default:

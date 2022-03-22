@@ -11,6 +11,22 @@ const PatternButtons = () => {
   return (
     <>
       <IconButton
+        onClick={() => colorMode.togglePattern('red')}
+        color="inherit"
+        size="small"
+      >
+        <CircleIcon
+          className="pattern-icon"
+          fontSize="small"
+          sx={{
+            color: '#e57373',
+            borderRadius: '50%',
+            ...(theme.palette.pattern === 'red' && { border: `2px solid ${theme.palette.text.fader}` })
+          }}
+        />
+      </IconButton>
+
+      <IconButton
         onClick={() => colorMode.togglePattern('teal')}
         color="inherit"
         size="small"
@@ -26,8 +42,8 @@ const PatternButtons = () => {
         />
       </IconButton>
 
-      <IconButton
-        onClick={() => colorMode.togglePattern('red')}
+      {/* <IconButton
+        onClick={() => colorMode.togglePattern('blue')}
         color="inherit"
         size="small"
       >
@@ -35,9 +51,25 @@ const PatternButtons = () => {
           className="pattern-icon"
           fontSize="small"
           sx={{
-            color: '#e57373',
+            color: '#64b5f6',
             borderRadius: '50%',
-            ...(theme.palette.pattern === 'red' && { border: `2px solid ${theme.palette.text.fader}` })
+            ...(theme.palette.pattern === 'blue' && { border: `2px solid ${theme.palette.text.fader}` })
+          }}
+        />
+      </IconButton> */}
+
+      <IconButton
+        onClick={() => colorMode.togglePattern('indigo')}
+        color="inherit"
+        size="small"
+      >
+        <CircleIcon
+          className="pattern-icon"
+          fontSize="small"
+          sx={{
+            color: '#7986cb',
+            borderRadius: '50%',
+            ...(theme.palette.pattern === 'indigo' && { border: `2px solid ${theme.palette.text.fader}` })
           }}
         />
       </IconButton>

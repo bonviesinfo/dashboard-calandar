@@ -83,14 +83,27 @@ function MiniDrawer() {
 
           <List>
             {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-              <Link to="/" key={text}>
-                <ListItemButton color="">
-                  <ListItemText primary={text} />
-                  <ListItemIcon>
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                  </ListItemIcon>
-                </ListItemButton>
-              </Link>
+              index % 2 === 0
+                ? (
+                  <Link to="/" key={text}>
+                    <ListItemButton color="">
+                      <ListItemText primary={text} />
+                      <ListItemIcon>
+                        <MailIcon />
+                      </ListItemIcon>
+                    </ListItemButton>
+                  </Link>
+                )
+                : (
+                  <Link to="/date-grid" key={text}>
+                    <ListItemButton color="">
+                      <ListItemText primary={text} />
+                      <ListItemIcon>
+                        <InboxIcon />
+                      </ListItemIcon>
+                    </ListItemButton>
+                  </Link>
+                )
             ))}
           </List>
           <Divider />

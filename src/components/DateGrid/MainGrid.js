@@ -3,6 +3,7 @@ import { omit } from 'lodash-es'
 import { useTheme, alpha } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import Box from '@mui/material/Box'
+// import Chip from '@mui/material/Chip'
 import Typography from '@mui/material/Typography'
 import BottomDrawer from './BottomDrawer'
 import EventCard from './EventCard'
@@ -192,6 +193,7 @@ const MainGrid = ({
               },
               '& .car-info': {
                 display: 'flex',
+                alignItems: 'flex-end',
                 justifyContent: 'space-between',
               },
             },
@@ -208,9 +210,11 @@ const MainGrid = ({
                     Car-888
                   </div>
 
-                  <div>
-                    tags
-                  </div>
+                  <Box>
+                    <Typography variant="body2" sx={{ px: 0.75, mb: 0.75, bgcolor: theme => alpha(theme.palette.secondary.main, 0.2) }}>
+                      tags
+                    </Typography>
+                  </Box>
                 </Box>
               </div>
             </div>
