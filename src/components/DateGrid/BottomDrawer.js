@@ -18,7 +18,7 @@ const BottomDrawer = ({
 }) => {
   const originalEmployeesEvents = useSelector(selectEmployeeEvents)
   const events = useMemo(() => filterAnonymousEvent(
-    filterEventByDate(selectDateMs, originalEmployeesEvents),
+    filterEventByDate(originalEmployeesEvents, selectDateMs),
     true,
   ), [originalEmployeesEvents, selectDateMs])
 

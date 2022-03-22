@@ -2,6 +2,10 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {}
 
+// const getOneEmployeeOccupiedTime = filteredEvents => {
+
+// }
+
 const employeesOccupiedTimeSlice = createSlice({
   name: 'employeesOccupiedTime',
   initialState,

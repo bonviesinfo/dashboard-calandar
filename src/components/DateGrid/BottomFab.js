@@ -8,7 +8,7 @@ import AddIcon from '@mui/icons-material/Add'
 
 const BottomFab = ({
   locateEvent,
-  selectDate,
+  selectDateMs,
   bottomOpen,
   toggleBottomDrawer,
 }) => {
@@ -63,7 +63,7 @@ const BottomFab = ({
 
       <DialogEdit
         open={open}
-        selectDate={selectDate}
+        selectDateMs={selectDateMs}
         handleClose={handleClose}
         locateEvent={locateEvent}
       />

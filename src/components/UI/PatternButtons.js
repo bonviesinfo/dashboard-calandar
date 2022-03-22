@@ -13,23 +13,33 @@ const PatternButtons = () => {
       <IconButton
         onClick={() => colorMode.togglePattern('teal')}
         color="inherit"
+        size="small"
       >
-        <CircleIcon sx={{
-          color: '#4db6ac',
-          borderRadius: '50%',
-          ...(theme.palette.pattern === 'teal' && { border: `2px solid ${theme.palette.text.fader}` })
-        }} />
+        <CircleIcon
+          className="pattern-icon"
+          fontSize="small"
+          sx={{
+            color: '#4db6ac',
+            borderRadius: '50%',
+            ...(theme.palette.pattern === 'teal' && { border: `2px solid ${theme.palette.text.fader}` })
+          }}
+        />
       </IconButton>
 
       <IconButton
         onClick={() => colorMode.togglePattern('red')}
         color="inherit"
+        size="small"
       >
-        <CircleIcon sx={{
-          color: '#e57373',
-          borderRadius: '50%',
-          ...(theme.palette.pattern === 'red' && { border: `2px solid ${theme.palette.text.fader}` })
-        }} />
+        <CircleIcon
+          className="pattern-icon"
+          fontSize="small"
+          sx={{
+            color: '#e57373',
+            borderRadius: '50%',
+            ...(theme.palette.pattern === 'red' && { border: `2px solid ${theme.palette.text.fader}` })
+          }}
+        />
       </IconButton>
     </>
   )

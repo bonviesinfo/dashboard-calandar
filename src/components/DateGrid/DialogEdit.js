@@ -44,7 +44,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 })
 
 const DialogEditContent = ({
-  selectDate,
+  selectDateMs,
   handleClose,
   currentEvent,
   locateEvent,
@@ -60,7 +60,6 @@ const DialogEditContent = ({
   const [selectedDuration, setSelectedDuration] = useState('')
 
   const zeroTimeMs = getZeroTime().getTime()
-  const selectDateMs = selectDate.getTime()
   const selectDateStartTimeMs = selectDateMs + getNearestTime(new Date()).getTime() - zeroTimeMs
   const [startTime, setStartTime] = useState(currentEvent
     ? new Date(currentEvent.start)
@@ -147,9 +146,8 @@ const DialogEditContent = ({
   }
 
   const handleStartDateChange = newValue => {
-    console.log('date change')
-
     setStartTime(newValue)
+
     if (!(newValue instanceof Date) || isNaN(newValue)) return
     setErrors(omit(errors, 'startTime'))
 
@@ -165,11 +163,11 @@ const DialogEditContent = ({
   }
 
   const handleStartTimeChange = newValue => {
-    console.log('newValue', newValue)
     setStartTime(newValue)
 
     if (!validateIntervalAndDateType(newValue)) return
-    const newSelectedDate = new Date(selectDate)
+    newValue.setSeconds(0, 0)
+    const newSelectedDate = new Date(selectDateMs)
     newSelectedDate.setHours(newValue.getHours())
     newSelectedDate.setMinutes(newValue.getMinutes())
     setStartTime(newSelectedDate)
@@ -206,6 +204,7 @@ const DialogEditContent = ({
 
   const handleEndTimeChange = (newValue) => {
     if (!validateIntervalAndDateType(newValue)) return
+    newValue.setSeconds(0, 0)
     setErrors(omit(errors, 'endTime'))
     setCreatingItem((prev) => ({
       ...prev,
@@ -452,7 +451,7 @@ const DialogEditContent = ({
 
 const DialogEdit = ({
   open,
-  selectDate,
+  selectDateMs,
   currentEvent,
   handleClose,
   locateEvent,
@@ -475,7 +474,7 @@ const DialogEdit = ({
       }}
     >
       <DialogEditContent
-        selectDate={selectDate}
+        selectDateMs={selectDateMs}
         handleClose={handleClose}
         currentEvent={currentEvent}
         locateEvent={locateEvent}

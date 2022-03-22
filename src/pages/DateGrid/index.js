@@ -194,8 +194,8 @@ const DateGrid = () => {
         </Box>
 
         <BottomFab
+          selectDateMs={selectDateMs}
           locateEvent={locateEvent}
-          selectDate={selectDate}
           bottomOpen={bottomOpen}
           toggleBottomDrawer={toggleBottomDrawer}
         />

@@ -46,7 +46,7 @@ const MainGrid = ({
 
   const [employees, setEmployees] = useState([])
   const [employeesStartTimeMapping, setEmployeesStartTimeMapping] = useState({})
-  const employeesEvents = useMemo(() => filterAnonymousEvent(filterEventByDate(selectDateMs, originalEmployeesEvents)), [selectDateMs, originalEmployeesEvents])
+  const employeesEvents = useMemo(() => filterAnonymousEvent(filterEventByDate(originalEmployeesEvents, selectDateMs)), [selectDateMs, originalEmployeesEvents])
 
   const petReserveTypeMapping = useMemo(() => {
     const newPetReserveTypeMapping = {}

@@ -54,7 +54,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
     '& .MuiListItemIcon-root': {
       minWidth: 0,
     },
-    '& .MuiSvgIcon-root': {
+    '& .MuiSvgIcon-root:not(.pattern-icon)': {
       fontSize: '1.5rem',
     },
     '& .MuiListItemButton-root:hover': {
@@ -117,7 +117,7 @@ function MiniDrawer() {
           </List>
         </div>
 
-        <Stack sx={{ alignItems: 'flex-start', pb: 24, pl: 1 }}>
+        <Stack sx={{ alignItems: 'flex-start', pb: 24, pl: 2 }}>
           <PatternButtons />
         </Stack>
       </Stack>
