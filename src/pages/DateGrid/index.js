@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import { useTheme, alpha } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -10,8 +10,7 @@ import DialogEdit from '../../components/DateGrid/DialogEdit'
 
 import ArrowBackIosRoundedIcon from '@mui/icons-material/ArrowBackIosRounded'
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded'
-import { getZeroTime } from '../../utils/timeUtils'
-import { intervalMS } from '../../constants/dateGrid'
+import { getZeroTime, locateEvent } from '../../utils/timeUtils'
 
 const DateGrid = () => {
   const theme = useTheme()
@@ -21,19 +20,19 @@ const DateGrid = () => {
 
   const selectDateMs = useMemo(() => selectDate.getTime(), [selectDate])
 
-  const locateEvent = useCallback(event => {
-    const eventStartMs = new Date(event.start).getTime()
-    const eventEndMs = new Date(event.end).getTime()
-    const eventStartIndex = Math.floor((eventStartMs - selectDateMs) / intervalMS)
-    const eventEndIndex = Math.ceil((eventEndMs - selectDateMs) / intervalMS) - 1
-    const eventLength = eventEndIndex - eventStartIndex + 1
+  // const locateEvent = useCallback(event => {
+  //   const eventStartMs = new Date(event.start).getTime()
+  //   const eventEndMs = new Date(event.end).getTime()
+  //   const eventStartIndex = Math.floor((eventStartMs - selectDateMs) / intervalMS)
+  //   const eventEndIndex = Math.ceil((eventEndMs - selectDateMs) / intervalMS) - 1
+  //   const eventLength = eventEndIndex - eventStartIndex + 1
 
-    return {
-      eventStartIndex,
-      eventEndIndex,
-      eventLength,
-    }
-  }, [selectDateMs])
+  //   return {
+  //     eventStartIndex,
+  //     eventEndIndex,
+  //     eventLength,
+  //   }
+  // }, [selectDateMs])
 
 
   const handleDateChangeConfirm = (date) => { }
@@ -148,7 +147,6 @@ const DateGrid = () => {
               selectDate={selectDate}
               currentEvent={currentEvent}
               handleClose={handleEditClose}
-              locateEvent={locateEvent}
             />
 
             <IconButton sx={{ mr: 3 }} onClick={toPrevDay}>
@@ -195,7 +193,6 @@ const DateGrid = () => {
 
         <BottomFab
           selectDateMs={selectDateMs}
-          locateEvent={locateEvent}
           bottomOpen={bottomOpen}
           toggleBottomDrawer={toggleBottomDrawer}
         />

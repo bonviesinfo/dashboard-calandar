@@ -7,7 +7,6 @@ import DialogEdit from './DialogEdit'
 import AddIcon from '@mui/icons-material/Add'
 
 const BottomFab = ({
-  locateEvent,
   selectDateMs,
   bottomOpen,
   toggleBottomDrawer,
@@ -65,7 +64,6 @@ const BottomFab = ({
         open={open}
         selectDateMs={selectDateMs}
         handleClose={handleClose}
-        locateEvent={locateEvent}
       />
 
       <Button

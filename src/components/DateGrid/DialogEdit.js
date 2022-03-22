@@ -15,7 +15,7 @@ import Slide from '@mui/material/Slide'
 import TimePicker from '@mui/lab/TimePicker'
 import DatePicker from '@mui/lab/DatePicker'
 import DateTimePicker from '@mui/lab/DateTimePicker'
-import { getZeroTime } from '../../utils/timeUtils'
+import { getZeroTime, locateEvent } from '../../utils/timeUtils'
 import { dummyEmployeeData } from '../../data/dummyEmployeeData'
 import { dummyPetData, dummyPetReserveType } from '../../data/dummyPetData'
 
@@ -47,7 +47,6 @@ const DialogEditContent = ({
   selectDateMs,
   handleClose,
   currentEvent,
-  locateEvent,
 }) => {
   const dispatch = useDispatch()
   const employeesOccupiedTime = useSelector(selectEmployeesOccupiedTime)
@@ -92,7 +91,7 @@ const DialogEditContent = ({
 
   const validateTimeOccupied = (editingEventId) => {
     const { endTime, employeeId } = creatingItem
-    const { eventStartIndex, eventEndIndex } = locateEvent({ start: startTime, end: endTime })
+    const { eventStartIndex, eventEndIndex } = locateEvent({ start: startTime, end: endTime }, selectDateMs)
 
     const occupiedTime = employeesOccupiedTime[employeeId]
     if (occupiedTime) {
@@ -454,7 +453,6 @@ const DialogEdit = ({
   selectDateMs,
   currentEvent,
   handleClose,
-  locateEvent,
 }) => {
 
 
@@ -477,7 +475,6 @@ const DialogEdit = ({
         selectDateMs={selectDateMs}
         handleClose={handleClose}
         currentEvent={currentEvent}
-        locateEvent={locateEvent}
       />
     </Dialog>
   )

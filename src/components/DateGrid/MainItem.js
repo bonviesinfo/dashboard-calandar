@@ -1,11 +1,12 @@
 import React from 'react'
 import { useDrop } from 'react-dnd'
+import { locateEvent } from '../../utils/timeUtils'
 // import {
 //   timePerHour,
 //   intervalMinute,
 // } from '../../constants/dateGrid'
 
-const MainItem = ({ children, className, employeesOccupiedTime, locateEvent, ...restProps }) => {
+const MainItem = ({ children, className, employeesOccupiedTime, selectDateMs, ...restProps }) => {
   const gridIndex = restProps['data-index']
   const employeeId = restProps['data-id']
 
@@ -19,7 +20,7 @@ const MainItem = ({ children, className, employeesOccupiedTime, locateEvent, ...
     canDrop: (item, monitor) => {
       const eventId = item.id
       if (!eventId) return false
-      const { eventLength } = locateEvent(item)
+      const { eventLength } = locateEvent(item, selectDateMs)
 
       const occupiedTime = employeesOccupiedTime[employeeId]
       if (occupiedTime) {

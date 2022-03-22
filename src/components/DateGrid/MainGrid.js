@@ -8,6 +8,7 @@ import BottomDrawer from './BottomDrawer'
 import EventCard from './EventCard'
 import MainItem from './MainItem'
 
+import { locateEvent } from '../../utils/timeUtils'
 import { dummyEmployeeData } from '../../data/dummyEmployeeData'
 import { dummyPetReserveType } from '../../data/dummyPetData'
 import { updateEmployeeEvent, deleteEmployeeEvent, selectEmployeeEvents, filterEventByDate, filterAnonymousEvent } from '../../slices/employeesEventsSlice'
@@ -36,7 +37,6 @@ const showInterval = index => {
 const MainGrid = ({
   bottomOpen,
   setCurrentEvent,
-  locateEvent,
   selectDateMs,
 }) => {
   const theme = useTheme()
@@ -89,7 +89,7 @@ const MainGrid = ({
           eventStartIndex,
           eventLength,
           eventEndIndex,
-        } = locateEvent(event)
+        } = locateEvent(event, selectDateMs)
 
         for (let i = eventStartIndex; i <= eventEndIndex; i++) {
           occupiedTime[i] = event.id
@@ -108,7 +108,7 @@ const MainGrid = ({
     dispatch(replaceEmployeesEventsMapping(newEmployeesEventsMapping))
     dispatch(replaceEmployeesOccupiedTime(employeesOccupiedTime))
 
-  }, [employees, employeesEvents, locateEvent, dispatch])
+  }, [employees, employeesEvents, selectDateMs, dispatch])
 
   const handleEditClick = useCallback(event => {
     setCurrentEvent(event)
@@ -315,9 +315,9 @@ const MainGrid = ({
                   key={`dc${index}`}
                   className={`grid-item${fullHour}`}
                   employeesOccupiedTime={employeesOccupiedTime}
-                  locateEvent={locateEvent}
                   data-id={employee.id}
                   data-index={newIndex}
+                  selectDateMs={selectDateMs}
                 >
                   {eventInfo
                     ? <EventCard
