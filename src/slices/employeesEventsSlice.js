@@ -14,6 +14,19 @@ export const filterEventByDate = (events, dateMs) => {
   })
 }
 
+export const filterEventBetweenMs = (events, startMs, endMs) => {
+  return events.filter(event => {
+
+    const eventStartMs = new Date(event.start).getTime()
+    const eventEndMs = new Date(event.end).getTime()
+
+    const beforeStartCheck = eventStartMs < startMs && eventEndMs < startMs
+    const afterEndCheck = eventStartMs > endMs && eventEndMs > endMs
+
+    return !beforeStartCheck && !afterEndCheck
+  })
+}
+
 export const filterEventByEmployeeId = (events, employeeId) => {
   return events.filter(event => event.employeeId === employeeId)
 }

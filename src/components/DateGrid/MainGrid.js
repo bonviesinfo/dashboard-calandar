@@ -82,9 +82,6 @@ const MainGrid = ({
 
       const events = newEmployeesEventsMapping[employeeId]
       events.forEach(event => {
-        // const startTimeIndex = new Date(event.start).getHours() * timePerHour + Math.ceil(new Date(event.start).getMinutes() / intervalMinute)
-        // const endTimeIndex = new Date(event.end).getHours() * timePerHour + Math.ceil(new Date(event.end).getMinutes() / intervalMinute)
-
         const {
           eventStartIndex,
           eventLength,

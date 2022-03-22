@@ -1,10 +1,23 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { locateEvent } from '../utils/timeUtils'
 
 const initialState = {}
 
-// const getOneEmployeeOccupiedTime = filteredEvents => {
+export const getOneEmployeeOccupiedTime = (filteredEvents, selectDateMs) => {
+  const occupiedTime = {}
+  filteredEvents.forEach(event => {
+    const {
+      eventStartIndex,
+      eventEndIndex,
+    } = locateEvent(event, selectDateMs)
 
-// }
+    for (let i = eventStartIndex; i <= eventEndIndex; i++) {
+      occupiedTime[i] = event.id
+    }
+  })
+
+  return occupiedTime
+}
 
 const employeesOccupiedTimeSlice = createSlice({
   name: 'employeesOccupiedTime',

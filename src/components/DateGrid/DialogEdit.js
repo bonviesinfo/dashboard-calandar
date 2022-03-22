@@ -19,16 +19,14 @@ import { getZeroTime, locateEvent } from '../../utils/timeUtils'
 import { dummyEmployeeData } from '../../data/dummyEmployeeData'
 import { dummyPetData, dummyPetReserveType } from '../../data/dummyPetData'
 
-import { selectEmployeesOccupiedTime } from '../../slices/employeesOccupiedTimeSlice'
-import { addEmployeeEvent, updateEmployeeEvent } from '../../slices/employeesEventsSlice'
+import { getOneEmployeeOccupiedTime } from '../../slices/employeesOccupiedTimeSlice'
+import { selectEmployeeEvents, addEmployeeEvent, updateEmployeeEvent, filterEventBetweenMs, filterEventByEmployeeId } from '../../slices/employeesEventsSlice'
 
 import {
   intervalMinute,
   timePerHour,
   startInterval,
   intervalMS,
-  // gridLength,
-  // nthNum,
 } from '../../constants/dateGrid'
 
 const getNearestTime = time => {
@@ -49,7 +47,7 @@ const DialogEditContent = ({
   currentEvent,
 }) => {
   const dispatch = useDispatch()
-  const employeesOccupiedTime = useSelector(selectEmployeesOccupiedTime)
+  const originalEvents = useSelector(selectEmployeeEvents)
 
   const [creatingItem, setCreatingItem] = useState({
     ...currentEvent,
@@ -93,7 +91,13 @@ const DialogEditContent = ({
     const { endTime, employeeId } = creatingItem
     const { eventStartIndex, eventEndIndex } = locateEvent({ start: startTime, end: endTime }, selectDateMs)
 
-    const occupiedTime = employeesOccupiedTime[employeeId]
+    const filteredEvents = filterEventBetweenMs(
+      filterEventByEmployeeId(originalEvents, employeeId),
+      startTime.getTime(),
+      endTime.getTime(),
+    )
+
+    const occupiedTime = getOneEmployeeOccupiedTime(filteredEvents, selectDateMs)
     if (occupiedTime) {
       for (let i = eventStartIndex; i <= eventEndIndex; i += 1) {
         if (occupiedTime[i] && occupiedTime[i] !== editingEventId) {
@@ -133,7 +137,7 @@ const DialogEditContent = ({
       pet,
       reserveType,
       start: startTime.getTime(),
-      end: new Date(endTime).getTime(),
+      end: endTime.getTime(),
       remark,
     }
 
@@ -165,16 +169,17 @@ const DialogEditContent = ({
     setStartTime(newValue)
 
     if (!validateIntervalAndDateType(newValue)) return
-    newValue.setSeconds(0, 0)
-    const newSelectedDate = new Date(selectDateMs)
-    newSelectedDate.setHours(newValue.getHours())
-    newSelectedDate.setMinutes(newValue.getMinutes())
-    setStartTime(newSelectedDate)
+    if (!startTime) {
+      newValue.setSeconds(0, 0)
+      const newSelectedDate = new Date(selectDateMs)
+      newSelectedDate.setHours(newValue.getHours())
+      newSelectedDate.setMinutes(newValue.getMinutes())
+      setStartTime(newSelectedDate)
+    }
     setErrors(omit(errors, 'startTime'))
 
     if (selectedDuration && newValue
-      && (newValue instanceof Date && !isNaN(newValue))
-      && newValue.getTime() + selectedDuration * intervalMS <= 86400000 + selectDateMs + startInterval * intervalMS
+      // && newValue.getTime() + selectedDuration * intervalMS <= 86400000 + selectDateMs + startInterval * intervalMS
     ) {
       setErrors(omit(errors, 'endTime'))
       setCreatingItem((prev) => ({

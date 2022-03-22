@@ -20,20 +20,6 @@ const DateGrid = () => {
 
   const selectDateMs = useMemo(() => selectDate.getTime(), [selectDate])
 
-  // const locateEvent = useCallback(event => {
-  //   const eventStartMs = new Date(event.start).getTime()
-  //   const eventEndMs = new Date(event.end).getTime()
-  //   const eventStartIndex = Math.floor((eventStartMs - selectDateMs) / intervalMS)
-  //   const eventEndIndex = Math.ceil((eventEndMs - selectDateMs) / intervalMS) - 1
-  //   const eventLength = eventEndIndex - eventStartIndex + 1
-
-  //   return {
-  //     eventStartIndex,
-  //     eventEndIndex,
-  //     eventLength,
-  //   }
-  // }, [selectDateMs])
-
 
   const handleDateChangeConfirm = (date) => { }
 
@@ -52,7 +38,6 @@ const DateGrid = () => {
   const toPrevDay = () => {
     setSelectDate(new Date(selectDate.getTime() - 86400000))
   }
-
 
   // 底下抽屜相關
   const toggleBottomDrawer = () => {
@@ -144,7 +129,7 @@ const DateGrid = () => {
           <Box className="date-picker-container" sx={{ m: '0 auto', width: '95%', display: 'flex', justifyContent: 'flex-end', }}>
 
             <DialogEdit
-              selectDate={selectDate}
+              selectDateMs={selectDateMs}
               currentEvent={currentEvent}
               handleClose={handleEditClose}
             />
