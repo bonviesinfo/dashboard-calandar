@@ -137,9 +137,13 @@ const MainGrid = ({
         sx={{
           width: '95%',
           m: '0 auto',
-          flexGrow: 1,
           minHeight: 0,
+          flexGrow: 1,
+          display: 'flex',
           position: 'relative',
+          overflowX: 'overlay',
+          zIndex: 10,
+          transform: 'rotateX(180deg)',
           '& .grid-item': {
             display: 'flex',
             justifyContent: 'center',
@@ -156,7 +160,7 @@ const MainGrid = ({
               borderTop: `2px solid ${theme.palette.text.fade}`,
             },
             [`&:not(:nth-of-type(n + ${nthNum}))::before`]: {
-              content: '"·"',
+              content: '"."',
               zIndex: 2,
               position: 'absolute',
               top: '50%',
@@ -167,186 +171,214 @@ const MainGrid = ({
           },
         }}
       >
-        {/* Grid Header */}
         <Box
-          className="grid-header"
+          className="scroll-container"
           sx={{
-            display: 'grid',
-            gridTemplateColumns: `6rem repeat(${dummyEmployeeData.length}, minmax(150px, 1fr)) 2rem`,
-            gridTemplateRows: `7rem`,
-            '& .header-item': {
-              display: 'flex',
-              justifyContent: 'center',
-              '& .item-container': {
-                pt: 3,
-                mb: 3,
-                width: '80%',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                bgcolor: 'transparent',
-                borderTop: 'none',
-                borderBottom: `2px solid ${theme.palette.primary.light}`,
-              },
-              '& h4': {
-                fontWeight: 'bold',
-              },
-              '& .car-info': {
-                display: 'flex',
-                alignItems: 'flex-end',
-                justifyContent: 'space-between',
-              },
-            },
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: 0,
+            flexGrow: 1,
+            overflowX: 'visible',
+            transform: 'rotateX(180deg)',
+
           }}
         >
-          <div />
 
-          {dummyEmployeeData.map((employee, index) => (
-            <div key={employee.name} className="header-item">
-              <div className="item-container">
-                <Typography variant="h4">{employee.name}</Typography>
-                <Box className="car-info">
-                  <div>
-                    Car-888
-                  </div>
+          {/* Grid Header */}
+          <Box
+            className="grid-header"
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: `6rem repeat(${dummyEmployeeData.length}, minmax(270px, 1fr)) 2rem`,
+              gridTemplateRows: `7rem`,
+              position: 'sticky',
+              top: 0,
+              left: 0,
+              zIndex: 10,
+              flex: '0 0 7rem',
+              '& > div': {
+                bgcolor: 'text.light',
+              },
+              '& .header-item': {
+                display: 'flex',
+                justifyContent: 'center',
+                // scrollSnapAlign: 'start',
+                '& .item-container': {
+                  pt: 3,
+                  mb: 3,
+                  width: '80%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  bgcolor: 'transparent',
+                  borderTop: 'none',
+                  borderBottom: `2px solid ${theme.palette.primary.light}`,
+                },
+                '& h4': {
+                  fontWeight: 'bold',
+                },
+                '& .car-info': {
+                  display: 'flex',
+                  alignItems: 'flex-end',
+                  justifyContent: 'space-between',
+                },
+              },
+            }}
+          >
+            <div />
 
-                  <Box>
-                    <Typography variant="body2" sx={{ px: 0.75, mb: 0.75, bgcolor: theme => alpha(theme.palette.secondary.main, 0.2) }}>
-                      tags
-                    </Typography>
+            {dummyEmployeeData.map((employee, index) => (
+              <div key={employee.name} className="header-item">
+                <div className="item-container">
+                  <Typography variant="h4">{employee.name}</Typography>
+                  <Box className="car-info">
+                    <div>
+                      Car-888
+                    </div>
+
+                    <Box>
+                      <Typography variant="body2" sx={{ px: 0.75, mb: 0.75, bgcolor: theme => alpha(theme.palette.secondary.main, 0.2) }}>
+                        tags
+                      </Typography>
+                    </Box>
                   </Box>
-                </Box>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
 
-          <div />
-        </Box>
+            <div />
+          </Box>
 
-        {/* Grid Body */}
-        <Box
-          id="grid-body"
-          sx={{
-            pb: 5,
-            position: 'relative',
-            overflowY: 'overlay',
-            height: 'calc(100% - 7rem)',
-            display: 'grid',
-            gridTemplateColumns: `4rem 2rem repeat(${dummyEmployeeData.length}, minmax(150px, 1fr)) 2rem`,
-            gridTemplateRows: `1rem repeat(${gridLength}, 60px)`,
-            gridAutoFlow: 'column',
-            '& .pure-item': {
-              bgcolor: 'background.default',
-            },
-            '& .grid-item.first-row': {
-              borderTop: 'none',
-            },
-            '& .first-col': {
-              mr: '0.75rem',
+          {/* Grid Body */}
+          <Box
+            id="grid-body"
+            sx={{
+              pb: 5,
               position: 'relative',
-              display: 'inline-block',
-              bgcolor: 'transparent',
-              borderRight: `1px solid ${theme.palette.text.mid}`,
-              '&:not(:first-of-type)::before': {
-                zIndex: 3,
-                lineHeight: 1,
-                position: 'absolute',
-                content: '"○"',
-                top: 0,
-                right: 0,
-                transform: 'translate(calc(50% + 1px), -50%)',
-                color: 'text.mid',
-                bgcolor: 'text.light',
+              display: 'grid',
+              gridAutoFlow: 'column',
+              gridTemplateRows: `1rem repeat(${gridLength}, 60px)`,
+              gridTemplateColumns: `4rem 2rem repeat(${dummyEmployeeData.length}, minmax(270px, 1fr)) 2rem`,
+
+              minHeight: 0,
+              flexGrow: 1,
+              overflowX: 'visible',
+              overflowY: 'overlay',
+
+              '& .pure-item': {
+                bgcolor: 'background.default',
               },
-              '& span': {
+              '& .grid-item.first-row': {
+                borderTop: 'none',
+              },
+              '& .first-col': {
+                mr: '0.75rem',
+                position: 'relative',
                 display: 'inline-block',
-                color: 'text.third',
-                bgcolor: 'text.light',
-                position: 'absolute',
-                fontSize: '0.75rem',
-                top: '-0.75rem',
-                left: 0,
-                zIndex: 2,
+                bgcolor: 'transparent',
+                borderRight: `1px solid ${theme.palette.text.mid}`,
+                '&:not(:first-of-type)::before': {
+                  zIndex: 3,
+                  lineHeight: 1,
+                  position: 'absolute',
+                  content: '"○"',
+                  top: 0,
+                  right: 0,
+                  transform: 'translate(calc(50% + 1px), -50%)',
+                  color: 'text.mid',
+                  bgcolor: 'text.light',
+                },
+                '& span': {
+                  display: 'inline-block',
+                  color: 'text.third',
+                  bgcolor: 'text.light',
+                  position: 'absolute',
+                  fontSize: '0.75rem',
+                  top: '-0.75rem',
+                  left: 0,
+                  zIndex: 2,
+                },
               },
-            },
-            '& .first-col.full-hour': {
-              '& span': {
-                fontWeight: 'bold',
-                fontSize: '1rem',
+              '& .first-col.full-hour': {
+                '& span': {
+                  fontWeight: 'bold',
+                  fontSize: '1rem',
+                },
+                '&::before': {
+                  content: '"●"',
+                },
               },
-              '&::before': {
-                content: '"●"',
-              },
-            },
-          }}
-        >
-          <div className="pure-item first-row first-col" />
-          {Array.from(new Array(gridLength)).map((item, index) => {
-            const fullHour = index % timePerHour === 0 ? 'full-hour' : ''
-
-            return (
-              <div key={'a' + index} className={`first-col ${fullHour}`}>
-                <span>
-                  {showInterval(index)}
-                </span>
-              </div>
-            )
-          })}
-
-          <div className="pure-item first-row" />
-          {Array.from(new Array(gridLength)).map((item, index) => (
-            <div key={'b' + index} className="pure-item"></div>
-          ))}
-
-
-          {dummyEmployeeData.map((employee, index) => {
-            const eventStartTimeMapping = employeesStartTimeMapping[employee.id]
-            const restItems = Array.from(new Array(gridLength)).map((item, index) => {
-              const newIndex = index + startInterval
-              const eventInfo = eventStartTimeMapping && eventStartTimeMapping[newIndex]
-
-              // const startTimestamp = selectDateMs + newIndex * intervalMS
-              const fullHour = index % timePerHour === 0 ? ' full-hour' : ''
-              // const active = (new Date(employee.start).getTime() <= startTimestamp && new Date(employee.end).getTime() > startTimestamp)
-              //   ? ' active'
-              //   : ''
+            }}
+          >
+            <div className="pure-item first-row first-col" />
+            {Array.from(new Array(gridLength)).map((item, index) => {
+              const fullHour = index % timePerHour === 0 ? 'full-hour' : ''
 
               return (
-                <MainItem
-                  key={`dc${index}`}
-                  className={`grid-item${fullHour}`}
-                  employeesOccupiedTime={employeesOccupiedTime}
-                  data-id={employee.id}
-                  data-index={newIndex}
-                  selectDateMs={selectDateMs}
-                >
-                  {eventInfo
-                    ? <EventCard
-                      row={eventInfo.eventLength}
-                      event={eventInfo?.event}
-                      handleEditClick={handleEditClick}
-                      handleDelete={handleDeleteEvent(eventInfo?.event)}
-                      handleEventDrop={handleEventDrop}
-                      petReserveTypeMapping={petReserveTypeMapping}
-                    />
-                    : null
-                  }
-                </MainItem>
+                <div key={'a' + index} className={`first-col ${fullHour}`}>
+                  <span>
+                    {showInterval(index)}
+                  </span>
+                </div>
               )
-            })
+            })}
 
-            return (
-              <Fragment key={index}>
-                <div className="pure-item first-row" />
-                {restItems}
-              </Fragment>
-            )
-          })}
+            <div className="pure-item first-row" />
+            {Array.from(new Array(gridLength)).map((item, index) => (
+              <div key={'b' + index} className="pure-item"></div>
+            ))}
 
-          <div className="pure-item first-row" />
-          {Array.from(new Array(gridLength)).map((item, index) => (
-            <div key={'e' + index} className="pure-item"></div>
-          ))}
+
+            {dummyEmployeeData.map((employee, index) => {
+              const eventStartTimeMapping = employeesStartTimeMapping[employee.id]
+              const restItems = Array.from(new Array(gridLength)).map((item, index) => {
+                const newIndex = index + startInterval
+                const eventInfo = eventStartTimeMapping && eventStartTimeMapping[newIndex]
+
+                // const startTimestamp = selectDateMs + newIndex * intervalMS
+                const fullHour = index % timePerHour === 0 ? ' full-hour' : ''
+                // const active = (new Date(employee.start).getTime() <= startTimestamp && new Date(employee.end).getTime() > startTimestamp)
+                //   ? ' active'
+                //   : ''
+
+                return (
+                  <MainItem
+                    key={`dc${index}`}
+                    className={`grid-item${fullHour}`}
+                    employeesOccupiedTime={employeesOccupiedTime}
+                    data-id={employee.id}
+                    data-index={newIndex}
+                    selectDateMs={selectDateMs}
+                  >
+                    {eventInfo
+                      ? <EventCard
+                        row={eventInfo.eventLength}
+                        event={eventInfo?.event}
+                        handleEditClick={handleEditClick}
+                        handleDelete={handleDeleteEvent(eventInfo?.event)}
+                        handleEventDrop={handleEventDrop}
+                        petReserveTypeMapping={petReserveTypeMapping}
+                      />
+                      : null
+                    }
+                  </MainItem>
+                )
+              })
+
+              return (
+                <Fragment key={index}>
+                  <div className="pure-item first-row" />
+                  {restItems}
+                </Fragment>
+              )
+            })}
+
+            <div className="pure-item first-row" />
+            {Array.from(new Array(gridLength)).map((item, index) => (
+              <div key={'e' + index} className="pure-item"></div>
+            ))}
+          </Box>
+
         </Box>
 
       </Box>

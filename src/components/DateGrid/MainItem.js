@@ -1,6 +1,8 @@
 import React from 'react'
 import { useDrop } from 'react-dnd'
 import { locateEvent } from '../../utils/timeUtils'
+import IconButton from '@mui/material/IconButton'
+import AddIcon from '@mui/icons-material/Add'
 // import {
 //   timePerHour,
 //   intervalMinute,
@@ -44,6 +46,9 @@ const MainItem = ({ children, className, employeesOccupiedTime, selectDateMs, ..
 
   return (
     <div {...restProps} ref={drop} className={`${className}${bgClassName}`}>
+      {/* <IconButton>
+        <AddIcon />
+      </IconButton> */}
       {children}
     </div>
   )

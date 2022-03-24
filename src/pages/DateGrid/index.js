@@ -48,7 +48,7 @@ const DateGrid = () => {
     <Box
       sx={{
         // py: { xs: 2, sm: 3 },
-        overflowX: 'hidden',
+        // overflowX: 'hidden',
         bgcolor: 'text.light',
         userSelect: 'none',
         position: 'relative',
@@ -123,6 +123,7 @@ const DateGrid = () => {
           display: 'flex',
           flexDirection: 'column',
           height: '100vh',
+          minHeight: 0,
         }}
       >
         <Box sx={{ py: 1, bgcolor: 'background.default' }}>
@@ -190,6 +191,9 @@ const DateGrid = () => {
           selectDateMs={selectDateMs}
         />
 
+
+
+        <Box sx={{ flex: '0 0 2rem' }}></Box>
       </Box>
     </Box>
   )

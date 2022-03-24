@@ -44,13 +44,11 @@ const EventCard = ({
       }
     },
     collect: (monitor) => ({
+      currentItem: monitor.getItem(),
       isDragging: monitor.isDragging(),
       // handlerId: monitor.getHandlerId(),
-      currentItem: monitor.getItem(),
     }),
   }), [event])
-
-  // console.log(currentItem)
 
   const isOtherDragging = (event && currentItem && currentItem.id !== event.id) || isDragging
 

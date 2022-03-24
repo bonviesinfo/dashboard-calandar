@@ -242,11 +242,11 @@ const DialogEditContent = ({
 
   return (
     <Fragment>
-      <DialogTitle sx={{ fontWeight: 'bold' }}>新增預約</DialogTitle>
+      <DialogTitle sx={{ fontWeight: 'bold' }}>{currentEvent ? '編輯預約' : '新增預約'}</DialogTitle>
       <DialogContent sx={{ overflow: 'initial' }}>
         <Grid container spacing={3} sx={{ pt: 1 }}>
 
-          <Grid item xs={4}>
+          <Grid item xs={12} md={4}>
             <TextField
               id="selected-employee"
               select
@@ -274,7 +274,7 @@ const DialogEditContent = ({
             </TextField>
           </Grid>
 
-          <Grid item xs={4}>
+          <Grid item xs={12} md={4}>
             <TextField
               id="selected-pet"
               select
@@ -299,7 +299,7 @@ const DialogEditContent = ({
             </TextField>
           </Grid>
 
-          <Grid item xs={4}>
+          <Grid item xs={12} md={4}>
             <TextField
               id="selected-reserve-type"
               select
@@ -337,7 +337,7 @@ const DialogEditContent = ({
           columns={16}
         >
 
-          <Grid item xs={3}>
+          <Grid item xs={16} md={3}>
             <DatePicker
               renderInput={(props) => <TextField
                 {...props}
@@ -356,7 +356,7 @@ const DialogEditContent = ({
             />
           </Grid>
 
-          <Grid item xs={3}>
+          <Grid item xs={16} md={3}>
             <TimePicker
               ampm={false}
               minutesStep={15}
@@ -371,7 +371,7 @@ const DialogEditContent = ({
             />
           </Grid>
 
-          <Grid item xs={4} sx={{ position: 'relative' }}>
+          <Grid item xs={16} md={4} sx={{ position: 'relative' }}>
             <TextField
               select
               label="持續時間"
@@ -410,7 +410,7 @@ const DialogEditContent = ({
             </Box>
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid item xs={16} md={6}>
             <DateTimePicker
               renderInput={(props) => <TextField
                 {...props}

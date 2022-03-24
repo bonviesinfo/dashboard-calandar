@@ -36,14 +36,22 @@ export const dummyEmployeeData = [
     id: 'cm5',
     name: '瑞華',
   },
-  // {
-  //   id: 'cm6',
-  //   name: '卡比',
-  // },
-  // {
-  //   id: 'cm7',
-  //   name: '波波',
-  // },
+  {
+    id: 'cm6',
+    name: '卡比',
+  },
+  {
+    id: 'cm7',
+    name: '波波',
+  },
+  {
+    id: 'cm8',
+    name: '波波2',
+  },
+  {
+    id: 'cm9',
+    name: '波波3',
+  },
 ]
 
 export const dummyEventData = [
