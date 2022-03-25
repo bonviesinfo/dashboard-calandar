@@ -14,7 +14,7 @@ import MainItem from './MainItem'
 import { locateEvent } from '../../utils/timeUtils'
 import { dummyEmployeeData } from '../../data/dummyEmployeeData'
 import { dummyPetReserveType } from '../../data/dummyPetData'
-import { updateEmployeeEvent, deleteEmployeeEvent, selectEmployeeEvents, filterEventByDate, filterAnonymousEvent } from '../../slices/employeesEventsSlice'
+import { updateEmployeeEvent, deleteEmployeeEvent, selectEmployeeEvents, filterEventByDate, filterAnonymousEvent, limitEventStartEnd } from '../../slices/employeesEventsSlice'
 import { replaceEmployeesEventsMapping } from '../../slices/employeesEventsMappingSlice'
 import { replaceEmployeesOccupiedTime, selectEmployeesOccupiedTime } from '../../slices/employeesOccupiedTimeSlice'
 
@@ -41,8 +41,9 @@ const showInterval = index => {
 
 const MainGrid = ({
   bottomOpen,
-  setCurrentEvent,
   selectDateMs,
+  isTimeSupport,
+  setCurrentEvent,
 }) => {
   const theme = useTheme()
   const dispatch = useDispatch()
@@ -66,7 +67,13 @@ const MainGrid = ({
   }, [carouselIndex, carouselMaxNum])
 
 
-  const employeesEvents = useMemo(() => filterAnonymousEvent(filterEventByDate(originalEmployeesEvents, selectDateMs)), [selectDateMs, originalEmployeesEvents])
+  const employeesEvents = useMemo(() => (
+    limitEventStartEnd(
+      filterAnonymousEvent(
+        filterEventByDate(originalEmployeesEvents, selectDateMs)
+      ), selectDateMs)
+  ), [selectDateMs, originalEmployeesEvents])
+
   const petReserveTypeMapping = useMemo(() => {
     const newPetReserveTypeMapping = {}
     dummyPetReserveType.forEach((petReserveType) => {
@@ -111,6 +118,8 @@ const MainGrid = ({
           eventEndIndex,
         } = locateEvent(event, selectDateMs)
 
+        console.log('eventStartIndex', eventStartIndex)
+
         for (let i = eventStartIndex; i <= eventEndIndex; i++) {
           occupiedTime[i] = event.id
         }
@@ -139,13 +148,18 @@ const MainGrid = ({
   }
 
   const handleEventDrop = (event, startTimeIndex, targetEmployeeId, anonymous) => {
+    const { id, pet, reserveType, remark } = event
     const newEvent = anonymous
       ? omit(event, ['employeeId'])
       : {
-        ...event,
+        // ...omit(event, ['pseudoStart', 'pseudoEnd']),
+        employeeId: targetEmployeeId,
         start: selectDateMs + startTimeIndex * intervalMS,
         end: selectDateMs + startTimeIndex * intervalMS + (event.end - event.start),
-        employeeId: targetEmployeeId,
+        id,
+        pet,
+        remark,
+        reserveType,
       }
 
     dispatch(updateEmployeeEvent(newEvent))
@@ -169,7 +183,7 @@ const MainGrid = ({
 
 
   return (
-    <>
+    <Fragment>
       <Box
         className="grid-container"
         sx={{
@@ -205,14 +219,14 @@ const MainGrid = ({
               top: '50%',
               right: 0,
               transform: 'translate(50%, -50%)',
-              color: 'text.fade',
+              color: 'text.mid',
             }
           },
           '& .time-sign': {
             position: 'absolute',
             top: 0,
             left: '50%',
-            color: 'text.fade',
+            color: 'text.fader',
             transform: 'translate(-50%, -50%)',
             fontSize: '0.75rem',
           },
@@ -321,21 +335,20 @@ const MainGrid = ({
             </Box>
           </Box>
 
-
-
           {/* Grid Body */}
           <Box
-            className="grid-body-container"
+            className="grid-body-container thick-scrollbar"
             sx={{
+              pt: '2px',
               display: 'flex',
               position: 'relative',
-
               minHeight: 0,
               flexGrow: 1,
               overflowX: 'visible',
               overflowY: 'overlay',
-
               '& .pure-item': {
+                display: 'flex',
+                justifyContent: 'center',
                 bgcolor: 'background.default',
               },
               '& .grid-item.first-row': {
@@ -347,6 +360,9 @@ const MainGrid = ({
                 display: 'inline-block',
                 bgcolor: 'transparent',
                 borderRight: `1px solid ${theme.palette.text.mid}`,
+                '&.first-row': {
+                  borderRight: `1px dashed ${theme.palette.text.mid}`,
+                },
                 '&:not(:first-of-type)::before': {
                   zIndex: 3,
                   lineHeight: 1,
@@ -387,15 +403,16 @@ const MainGrid = ({
                 position: 'relative',
                 display: 'grid',
                 gridAutoFlow: 'column',
-                gridTemplateRows: `1rem repeat(${gridLength}, 60px)`,
+                gridTemplateRows: `60px repeat(${gridLength}, 60px)`,
                 gridTemplateColumns: `4rem 3rem`,
 
               }}
             >
-              <div className="pure-item first-row first-col" />
+              <div className="pure-item first-row first-col">
+                .Before
+              </div>
               {Array.from(new Array(gridLength)).map((item, index) => {
                 const fullHour = index % timePerHour === 0 ? 'full-hour' : ''
-
                 return (
                   <div key={'a' + index} className={`first-col ${fullHour}`}>
                     <span>
@@ -419,12 +436,10 @@ const MainGrid = ({
                 position: 'relative',
                 display: 'grid',
                 gridAutoFlow: 'column',
-                gridTemplateRows: `1rem repeat(${gridLength}, 60px)`,
+                gridTemplateRows: `60px repeat(${gridLength}, 60px)`,
                 gridTemplateColumns: `repeat(${carouselEmployees.length}, minmax(270px, 1fr)) 2rem`,
               }}
             >
-
-
 
               {carouselEmployees.map((employee, index) => {
                 const eventStartTimeMapping = employeesStartTimeMapping[employee.id]
@@ -440,7 +455,7 @@ const MainGrid = ({
 
                   return (
                     <MainItem
-                      key={`${employee.id}dc${index}`}
+                      key={`${employee.id}ce${index}`}
                       className={`grid-item${fullHour}`}
                       employeesOccupiedTime={employeesOccupiedTime}
                       data-id={employee.id}
@@ -458,16 +473,38 @@ const MainGrid = ({
                         />
                         : null
                       }
-                      {/* <span className="time-sign">
-                        {showInterval(index)}
-                      </span> */}
+                      {
+                        isTimeSupport
+                          ? <span className="time-sign">
+                            {showInterval(index)}
+                          </span>
+                          : null
+                      }
+
                     </MainItem>
                   )
                 })
 
                 return (
-                  <Fragment key={index}>
-                    <div className="pure-item first-row" />
+                  <Fragment key={`${employee.id}c${selectDateMs}`}>
+                    <div
+                      data-id={employee.id}
+                      data-index={startInterval - 1}
+                      className="pure-item first-row"
+                    >
+                      {
+                        eventStartTimeMapping && eventStartTimeMapping[startInterval - 1] && (
+                          <EventCard
+                            row={eventStartTimeMapping[startInterval - 1].eventLength}
+                            event={eventStartTimeMapping[startInterval - 1]?.event}
+                            handleEditClick={handleEditClick}
+                            handleDelete={handleDeleteEvent(eventStartTimeMapping[startInterval - 1]?.event)}
+                            handleEventDrop={handleEventDrop}
+                            petReserveTypeMapping={petReserveTypeMapping}
+                          />
+                        )
+                      }
+                    </div>
                     {restItems}
                   </Fragment>
                 )
@@ -495,75 +532,8 @@ const MainGrid = ({
         petReserveTypeMapping={petReserveTypeMapping}
         selectDateMs={selectDateMs}
       />
-    </>
+    </Fragment>
   )
 }
 
 export default memo(MainGrid)
-
-
-
-
-  // const appendEvents = useCallback((events) => {
-  //   return events.forEach(event => {
-  //     const {
-  //       eventStartIndex,
-  //       eventLength,
-  //     } = locateEvent(event)
-
-  //     const targetDOM = document.querySelector(`[data-id="${event.employeeId}"][data-index="${eventStartIndex}"]`)
-
-  //     targetDOM && reactDom.render(<EventCard
-  //       row={eventLength}
-  //       pet={event.pet}
-  //       event={event}
-  //       handleEditClick={handleEditClick}
-  //       handleDelete={handleDeleteEvent(event)}
-  //       petReserveTypeMapping={petReserveTypeMapping}
-  //     />, targetDOM)
-  //   })
-  // }, [locateEvent, handleDeleteEvent, petReserveTypeMapping, handleEditClick])
-
-  // useEffect(() => {
-
-  //   appendEvents(employeesEvents)
-
-  // }, [employeesEvents, appendEvents])
-
-  // const positionedEvents = useMemo(() => {
-  //   const gridBody = document.querySelector('#grid-body')
-  //   const left = gridBody ? gridBody.getBoundingClientRect().left : 0
-  //   const top = gridBody ? gridBody.getBoundingClientRect().top : 0
-
-  //   return employeesEvents.map(event => {
-  //     const {
-  //       eventStartIndex,
-  //       eventLength,
-  //     } = locateEvent(event)
-
-  //     const targetDOM = document.querySelector(`[data-id="${event.employeeId}"][data-index="${eventStartIndex}"]`)
-
-  //     if (!targetDOM) return null
-
-  //     const targetRec = targetDOM.getBoundingClientRect()
-  //     console.log(targetRec.left)
-  //     const result = targetDOM
-  //       ? <EventCard
-  //         key={event.id}
-  //         style={{
-  //           width: targetRec.width * 0.8,
-  //           top: targetRec.top - top,
-  //           left: targetRec.left - left,
-  //         }}
-  //         row={eventLength}
-  //         pet={event.pet}
-  //         event={event}
-  //         handleEditClick={handleEditClick}
-  //         handleDelete={handleDeleteEvent(event)}
-  //         petReserveTypeMapping={petReserveTypeMapping}
-  //       />
-  //       : null
-
-  //     return result
-  //   })
-  // })

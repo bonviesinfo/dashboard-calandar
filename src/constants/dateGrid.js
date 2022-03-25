@@ -4,4 +4,4 @@ export const timePerHour = 60 / intervalMinute
 export const startInterval = startHour * timePerHour
 export const intervalMS = intervalMinute * 60 * 1000
 export const gridLength = (24 * timePerHour)
-export const nthNum = (gridLength + 1) * 6 + 1
+export const nthNum = (gridLength + 1) * 4 + 1

@@ -18,9 +18,6 @@ const getDuration = (start, end) => {
   return `${hr ? `${hr}小時` : ''}${min ? `${min}分` : ''}`
 }
 
-
-// reserveType: 'tt2',
-
 const EventCard = ({
   row,
   event,
@@ -31,10 +28,12 @@ const EventCard = ({
 }) => {
   const smallMode = !row || row <= 4
   const ultraSmallMode = !row || row <= 3
+  const isCross = event.pseudoStart || event.pseudoEnd
 
   const [{ isDragging, currentItem }, drag] = useDrag(() => ({
     type: 'CARD',
     item: event || {},
+    canDrag: () => !isCross,
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult()
       if (dropResult && dropResult.gridIndex && dropResult.employeeId && item) {
@@ -50,19 +49,19 @@ const EventCard = ({
     }),
   }), [event])
 
-  const isOtherDragging = (event && currentItem && currentItem.id !== event.id) || isDragging
 
   const opacity = isDragging ? 0.4 : 1
+  const isOtherDragging = (event && currentItem && currentItem.id !== event.id) || isDragging
 
   return (
-    <Card className={`event-card${isOtherDragging ? ' dragging' : ''}`}
+    <Card className={`event-card${isOtherDragging ? ' dragging' : ''}${isCross ? ' cross' : ''}`}
       ref={drag}
       sx={{
         height: row * 60 || 120,
         opacity,
       }}
     >
-      <div className="card-container">
+      <div className={`card-container${isCross ? ' cross' : ''}`}>
 
         <div className="content">
 

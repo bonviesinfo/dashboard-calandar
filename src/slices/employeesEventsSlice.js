@@ -1,16 +1,31 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { dummyEventData } from '../data/dummyEmployeeData'
-import { startHour } from '../constants/dateGrid'
+import { startHour, intervalMS } from '../constants/dateGrid'
+
+// export const filterEventByDate = (events, dateMs) => {
+//   const startCheckMs = dateMs + startHour * 60 * 60 * 1000
+//   const endCheckMs = dateMs + (startHour + 24) * 60 * 60 * 1000
+
+//   return events.filter(event => {
+//     const todayCheck = new Date(event.start).getTime() >= startCheckMs
+//     const tomorrowCheck = new Date(event.start).getTime() < endCheckMs
+
+//     return todayCheck && tomorrowCheck
+//   })
+// }
 
 export const filterEventByDate = (events, dateMs) => {
   const startCheckMs = dateMs + startHour * 60 * 60 * 1000
   const endCheckMs = dateMs + (startHour + 24) * 60 * 60 * 1000
 
   return events.filter(event => {
-    const todayCheck = new Date(event.start).getTime() >= startCheckMs
-    const tomorrowCheck = new Date(event.start).getTime() < endCheckMs
+    const eventStartMs = new Date(event.start).getTime()
+    const eventEndMs = new Date(event.end).getTime()
 
-    return todayCheck && tomorrowCheck
+    const beforeStartCheck = eventStartMs < startCheckMs && eventEndMs < startCheckMs
+    const afterEndCheck = eventStartMs > endCheckMs && eventEndMs > endCheckMs
+
+    return !beforeStartCheck && !afterEndCheck
   })
 }
 
@@ -34,6 +49,21 @@ export const filterEventByEmployeeId = (events, employeeId) => {
 export const filterAnonymousEvent = (events, isAnonymous) => {
   return events.filter(event => {
     return isAnonymous ? !Boolean(event.employeeId) : Boolean(event.employeeId)
+  })
+}
+
+export const limitEventStartEnd = (events, datesMs) => {
+  const originalStartMs = datesMs + startHour * 60 * 60 * 1000
+  const originalEndMs = datesMs + (startHour + 24) * 60 * 60 * 1000
+
+  return events.map(event => {
+    const newEvent = { ...event }
+    if (event.start < originalStartMs) {
+      newEvent.pseudoStart = originalStartMs - intervalMS
+    } else if (event.end > originalEndMs) {
+      newEvent.pseudoEnd = originalEndMs + intervalMS
+    }
+    return newEvent
   })
 }
 

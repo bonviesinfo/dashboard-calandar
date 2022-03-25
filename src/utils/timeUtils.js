@@ -10,8 +10,8 @@ export const getZeroTime = () => {
 }
 
 export const locateEvent = (event, selectDateMs) => {
-  const eventStartMs = new Date(event.start).getTime()
-  const eventEndMs = new Date(event.end).getTime()
+  const eventStartMs = new Date(event.pseudoStart || event.start).getTime()
+  const eventEndMs = new Date(event.pseudoEnd || event.end).getTime()
   const eventStartIndex = Math.floor((eventStartMs - selectDateMs) / intervalMS)
   const eventEndIndex = Math.ceil((eventEndMs - selectDateMs) / intervalMS) - 1
   const eventLength = eventEndIndex - eventStartIndex + 1
