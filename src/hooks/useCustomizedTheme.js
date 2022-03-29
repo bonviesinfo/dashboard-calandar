@@ -15,7 +15,7 @@ const getDesignTokens = (mode, pattern) => {
       primary = {
         editingBg: '#f8f9a4',
         main: red[300],
-        text: '#ff8d6b',
+        text: '#f5673c',
         editingText: '#ff756a',
       }
       break
@@ -31,7 +31,7 @@ const getDesignTokens = (mode, pattern) => {
       primary = {
         editingBg: '#f8f9a4',
         main: indigo[300],
-        text: indigo['A100'],
+        text: '#5568d3',
         editingText: indigo['A200'],
       }
       break

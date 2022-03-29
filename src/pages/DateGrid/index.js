@@ -75,6 +75,9 @@ const DateGrid = () => {
             cursor: 'not-allowed',
             border: `2px solid ${alpha(theme.palette.primary.light, 0.25)}`,
           },
+          '&.cross .MuiTypography-h5': {
+            color: 'primary.dark',
+          },
         },
         '& .card-container': {
           width: '100%',

@@ -148,7 +148,7 @@ export const dummyEventData = [
     id: 'ev7',
     employeeId: 'cm2',
     reserveType: 'tt2',
-    remark: '這個是有跨日的預約',
+    remark: '這個是有跨日的預約，所以當日跟隔日都會有相同的事件',
     start: getOtherDateTimeMs(1, 5, 30),
     end: getOtherDateTimeMs(1, 8, 15),
     pet: {
