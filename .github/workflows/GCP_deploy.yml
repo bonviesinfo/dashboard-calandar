@@ -72,9 +72,12 @@ jobs:
             --image asia.gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }} \
             --platform "managed" \
             --allow-unauthenticated \
-            --vpc-connector=drvet-vpc-connectors \
-            --vpc-egress=all-traffic \
+            
             --quiet
   # --add-cloudsql-instances=drvet-server-sysstore-bonvies:asia-east1:bonvies-postgresql \
 
 # --add-cloudsql-instances=drvet-server-sysstore-bonvies:asia-east1:go-mysql
+
+# In run
+# --vpc-connector=drvet-vpc-connectors \
+# --vpc-egress=all-traffic \
