@@ -1,4 +1,4 @@
-export const startHour = 8 //hour
+export const startHour = 9 //hour
 export const intervalMinute = 15 //min
 export const timePerHour = 60 / intervalMinute
 export const startInterval = startHour * timePerHour

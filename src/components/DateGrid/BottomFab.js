@@ -31,10 +31,6 @@ const BottomFab = ({
     setOpen(false)
   }
 
-  // const handleAnchorChange = e => {
-  //   setScrollAnchor(e.target.value)
-  // }
-
   return (
     <Box
       sx={{

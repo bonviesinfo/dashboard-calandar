@@ -22,8 +22,8 @@ export const filterEventByDate = (events, dateMs) => {
     const eventStartMs = new Date(event.start).getTime()
     const eventEndMs = new Date(event.end).getTime()
 
-    const beforeStartCheck = eventStartMs < startCheckMs && eventEndMs < startCheckMs
-    const afterEndCheck = eventStartMs > endCheckMs && eventEndMs > endCheckMs
+    const beforeStartCheck = eventStartMs <= startCheckMs && eventEndMs <= startCheckMs
+    const afterEndCheck = eventStartMs >= endCheckMs && eventEndMs >= endCheckMs
 
     return !beforeStartCheck && !afterEndCheck
   })
