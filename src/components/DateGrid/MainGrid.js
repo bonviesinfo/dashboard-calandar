@@ -3,15 +3,15 @@ import { omit } from 'lodash-es'
 import { useTheme, alpha } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import ForwardRoundedIcon from '@mui/icons-material/ForwardRounded'
-// import Chip from '@mui/material/Chip'
-import Typography from '@mui/material/Typography'
-import BottomDrawer from './BottomDrawer'
-import EventCard from './EventCard'
-import MainItem from './MainItem'
 
-import { locateEvent } from '../../utils/timeUtils'
+import MainItem from './MainItem'
+import EventCard from './EventCard'
+import BottomDrawer from './BottomDrawer'
+
+import { locateEvent, showInterval } from '../../utils/timeUtils'
 import { dummyEmployeeData } from '../../data/dummyEmployeeData'
 import { dummyPetReserveType } from '../../data/dummyPetData'
 import { updateEmployeeEvent, deleteEmployeeEvent, selectEmployeeEvents, filterEventByDate, filterAnonymousEvent, limitEventStartEnd } from '../../slices/employeesEventsSlice'
@@ -19,9 +19,8 @@ import { replaceEmployeesEventsMapping } from '../../slices/employeesEventsMappi
 import { replaceEmployeesOccupiedTime, selectEmployeesOccupiedTime } from '../../slices/employeesOccupiedTimeSlice'
 
 import {
-  intervalMinute,
-  timePerHour,
   startInterval,
+  timePerHour,
   intervalMS,
   gridLength,
   nthNum,
@@ -29,21 +28,16 @@ import {
 
 const maxCarouselNum = 5
 
-const showInterval = index => {
-  const newIndex = index + startInterval
-  const quo = Math.floor(newIndex / timePerHour)
-  const rem = index % timePerHour
-  const hour = (quo >= 24) ? (quo - 24).toString().padStart(2, '0') : quo.toString().padStart(2, '0')
-  const min = (rem * intervalMinute).toString().padStart(2, '0')
-
-  return `${hour}:${min}`
-}
-
 const MainGrid = ({
   bottomOpen,
   selectDateMs,
   isTimeSupport,
   setCurrentEvent,
+  scrollAnchor,
+  setScrollAnchor,
+  firstAnchorRef,
+  secondAnchorRef,
+  thirdAnchorRef,
 }) => {
   const theme = useTheme()
   const dispatch = useDispatch()
@@ -54,6 +48,8 @@ const MainGrid = ({
   const [employeesStartTimeMapping, setEmployeesStartTimeMapping] = useState({})
   const [carouselIndex, setCarouselIndex] = useState(0)
   const [carouselMaxNum, setCarouselMaxNum] = useState(maxCarouselNum)
+
+  console.log(scrollAnchor)
 
 
   const carouselEmployees = useMemo(() => {
@@ -118,8 +114,6 @@ const MainGrid = ({
           eventEndIndex,
         } = locateEvent(event, selectDateMs)
 
-        console.log('eventStartIndex', eventStartIndex)
-
         for (let i = eventStartIndex; i <= eventEndIndex; i++) {
           occupiedTime[i] = event.id
         }
@@ -139,13 +133,10 @@ const MainGrid = ({
 
   }, [employees, employeesEvents, selectDateMs, dispatch])
 
+  // 事件處理相關
   const handleEditClick = useCallback(event => {
     setCurrentEvent(event)
   }, [setCurrentEvent])
-
-  const handleDeleteEvent = (event) => () => {
-    dispatch(deleteEmployeeEvent(event.id))
-  }
 
   const handleEventDrop = (event, startTimeIndex, targetEmployeeId, anonymous) => {
     const { id, pet, reserveType, remark } = event
@@ -165,6 +156,11 @@ const MainGrid = ({
     dispatch(updateEmployeeEvent(newEvent))
   }
 
+  const handleDeleteEvent = (event) => () => {
+    dispatch(deleteEmployeeEvent(event.id))
+  }
+
+  // 日期變更相關
   const onPrevClick = () => {
     if (carouselIndex <= 0) {
       setCarouselIndex(dummyEmployeeData.length - 1)
@@ -181,6 +177,21 @@ const MainGrid = ({
     }
   }
 
+  // 滾動相關
+  const secondOffsetTop = secondAnchorRef.current?.offsetTop
+  const thirdOffsetTop = thirdAnchorRef.current?.offsetTop
+
+  const onGridBodyScroll = event => {
+
+    if (event.target.scrollTop < (secondOffsetTop - 2)) {
+      (scrollAnchor !== 'first') && setScrollAnchor('first')
+    } else if (event.target.scrollTop < (thirdOffsetTop - 2)) {
+      (scrollAnchor !== 'second') && setScrollAnchor('second')
+    } else if (event.target.scrollTop >= (thirdOffsetTop - 2)) {
+      (scrollAnchor !== 'third') && setScrollAnchor('third')
+    }
+
+  }
 
   return (
     <Fragment>
@@ -337,6 +348,7 @@ const MainGrid = ({
 
           {/* Grid Body */}
           <Box
+            onScroll={onGridBodyScroll}
             className="grid-body-container thick-scrollbar"
             sx={{
               pt: '2px',
@@ -408,13 +420,24 @@ const MainGrid = ({
 
               }}
             >
-              <div className="pure-item first-row first-col">
+              <div className="pure-item first-row first-col" ref={firstAnchorRef}>
                 .Before
               </div>
               {Array.from(new Array(gridLength)).map((item, index) => {
                 const fullHour = index % timePerHour === 0 ? 'full-hour' : ''
+                let ref
+                switch (index / (timePerHour * 8)) {
+                  case 1:
+                    ref = secondAnchorRef
+                    break
+                  case 2:
+                    ref = thirdAnchorRef
+                    break
+                  default:
+                    ref = null
+                }
                 return (
-                  <div key={'a' + index} className={`first-col ${fullHour}`}>
+                  <div key={'a' + index} className={`first-col ${fullHour}`} ref={ref}>
                     <span>
                       {showInterval(index)}
                     </span>
@@ -518,19 +541,17 @@ const MainGrid = ({
           </Box>
 
 
-
-
         </Box>
 
       </Box>
 
       <BottomDrawer
         open={bottomOpen}
-        handleEditClick={handleEditClick}
-        handleDeleteEvent={handleDeleteEvent}
-        handleEventDrop={handleEventDrop}
-        petReserveTypeMapping={petReserveTypeMapping}
         selectDateMs={selectDateMs}
+        handleEditClick={handleEditClick}
+        handleEventDrop={handleEventDrop}
+        handleDeleteEvent={handleDeleteEvent}
+        petReserveTypeMapping={petReserveTypeMapping}
       />
     </Fragment>
   )

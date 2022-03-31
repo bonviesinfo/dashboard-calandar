@@ -1,4 +1,4 @@
-import { intervalMS } from '../constants/dateGrid'
+import { intervalMS, startInterval, timePerHour, intervalMinute } from '../constants/dateGrid'
 
 export const getZeroTime = () => {
   const date = new Date()
@@ -21,4 +21,15 @@ export const locateEvent = (event, selectDateMs) => {
     eventEndIndex,
     eventLength,
   }
+}
+
+export const showInterval = index => {
+  const newIndex = index + startInterval
+  const quo = Math.floor(newIndex / timePerHour)
+  const rem = index % timePerHour
+  const hour = (quo >= 24) ? (quo - 24).toString().padStart(2, '0') : quo.toString().padStart(2, '0')
+  const min = (rem * intervalMinute).toString().padStart(2, '0')
+  const decoration = newIndex >= (24 * timePerHour) ? '*' : ''
+
+  return `${hour}:${min}${decoration}`
 }

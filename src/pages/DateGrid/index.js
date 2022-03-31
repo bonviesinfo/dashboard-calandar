@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useRef, useMemo } from 'react'
 import { useTheme, alpha } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -20,10 +20,14 @@ const DateGrid = () => {
   const [bottomOpen, setBottomOpen] = useState(false)
   const [selectDate, setSelectDate] = useState(getZeroTime())
   const [currentEvent, setCurrentEvent] = useState(null)
-  const [isTimeSupport, setIsTimeSupport] = useState(false)
+  const [isTimeSupport, setIsTimeSupport] = useState(true)
+  const [scrollAnchor, setScrollAnchor] = useState('first')
+
+  const firstAnchorRef = useRef(null)
+  const secondAnchorRef = useRef(null)
+  const thirdAnchorRef = useRef(null)
 
   const selectDateMs = useMemo(() => selectDate.getTime(), [selectDate])
-
 
   const handleDateChangeConfirm = (date) => { }
 
@@ -33,6 +37,20 @@ const DateGrid = () => {
 
   const handleToggle = (event) => {
     setIsTimeSupport(event.target.checked)
+  }
+
+  const handleAnchorClick = e => {
+    const value = e.target.dataset.value
+    const container = document.querySelector('.grid-body-container')
+    if (value === 'first') {
+      container.scroll({ top: firstAnchorRef.current.offsetTop, behavior: 'smooth' })
+    }
+    if (value === 'second') {
+      container.scroll({ top: secondAnchorRef.current.offsetTop, behavior: 'smooth' })
+    }
+    if (value === 'third') {
+      container.scroll({ top: thirdAnchorRef.current.offsetTop, behavior: 'smooth' })
+    }
   }
 
   const backToToday = () => {
@@ -155,7 +173,8 @@ const DateGrid = () => {
               />
             </FormGroup>
 
-            <Box sx={{ display: 'flex' }}>
+            <Box display="flex">
+
               <DialogEdit
                 selectDateMs={selectDateMs}
                 currentEvent={currentEvent}
@@ -209,7 +228,9 @@ const DateGrid = () => {
         <BottomFab
           selectDateMs={selectDateMs}
           bottomOpen={bottomOpen}
+          scrollAnchor={scrollAnchor}
           toggleBottomDrawer={toggleBottomDrawer}
+          handleAnchorClick={handleAnchorClick}
         />
 
         <MainGrid
@@ -217,8 +238,12 @@ const DateGrid = () => {
           isTimeSupport={isTimeSupport}
           selectDateMs={selectDateMs}
           setCurrentEvent={setCurrentEvent}
+          scrollAnchor={scrollAnchor}
+          setScrollAnchor={setScrollAnchor}
+          firstAnchorRef={firstAnchorRef}
+          secondAnchorRef={secondAnchorRef}
+          thirdAnchorRef={thirdAnchorRef}
         />
-
 
 
         <Box sx={{ flex: '0 0 1.5rem' }}></Box>

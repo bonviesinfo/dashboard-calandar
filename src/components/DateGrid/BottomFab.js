@@ -1,15 +1,22 @@
 import React, { useState } from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import MenuItem from '@mui/material/MenuItem'
+import TextField from '@mui/material/TextField'
 import { useTheme, alpha } from '@mui/material/styles'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import DialogEdit from './DialogEdit'
 import AddIcon from '@mui/icons-material/Add'
 
+import { showInterval } from '../../utils/timeUtils'
+import { timePerHour } from '../../constants/dateGrid'
+
 const BottomFab = ({
   selectDateMs,
   bottomOpen,
+  scrollAnchor,
   toggleBottomDrawer,
+  handleAnchorClick,
 }) => {
   const theme = useTheme()
 
@@ -24,6 +31,10 @@ const BottomFab = ({
     setOpen(false)
   }
 
+  // const handleAnchorChange = e => {
+  //   setScrollAnchor(e.target.value)
+  // }
+
   return (
     <Box
       sx={{
@@ -37,7 +48,7 @@ const BottomFab = ({
           easing: theme.transitions.easing.easeOut,
           duration: theme.transitions.duration.enteringScreen,
         }),
-        '& .MuiButton-root': {
+        '& .MuiButton-root, .MuiIconButton-root': {
           px: 2,
           boxShadow: 0,
           borderRadius: 5,
@@ -49,6 +60,33 @@ const BottomFab = ({
         },
       }}
     >
+      <TextField select variant="standard"
+        // onChange={handleAnchorChange}
+        value={scrollAnchor}
+        onClick={handleAnchorClick}
+        sx={{
+          mr: 3,
+          bgcolor: 'background.default',
+          '& .MuiInput-root': {
+            px: 1,
+            bgcolor: theme => alpha(theme.palette.primary.light, 0.2),
+            color: 'text.secondary',
+            fontWeight: 'bold',
+            fontSize: '1.25rem',
+          },
+        }}
+      >
+        <MenuItem value="first">
+          {showInterval(0)}
+        </MenuItem>
+        <MenuItem value="second">
+          {showInterval(8 * timePerHour)}
+        </MenuItem>
+        <MenuItem value="third">
+          {showInterval(16 * timePerHour)}
+        </MenuItem>
+
+      </TextField>
 
       <Button
         startIcon={<AddIcon />}
@@ -73,6 +111,7 @@ const BottomFab = ({
         onClick={toggleBottomDrawer}
         startIcon={<KeyboardArrowUpIcon />}
         sx={{
+          // mr: 2,
           '& svg': {
             transition: theme.transitions.create('transform', {
               easing: theme.transitions.easing.easeOut,
@@ -84,6 +123,10 @@ const BottomFab = ({
       >
         待分配池
       </Button>
+
+      {/* <IconButton>
+        <AddIcon />
+      </IconButton> */}
     </Box>
   )
 }
