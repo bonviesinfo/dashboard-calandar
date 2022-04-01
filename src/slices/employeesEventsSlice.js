@@ -2,18 +2,6 @@ import { createSlice } from '@reduxjs/toolkit'
 import { dummyEventData } from '../data/dummyEmployeeData'
 import { startHour, intervalMS } from '../constants/dateGrid'
 
-// export const filterEventByDate = (events, dateMs) => {
-//   const startCheckMs = dateMs + startHour * 60 * 60 * 1000
-//   const endCheckMs = dateMs + (startHour + 24) * 60 * 60 * 1000
-
-//   return events.filter(event => {
-//     const todayCheck = new Date(event.start).getTime() >= startCheckMs
-//     const tomorrowCheck = new Date(event.start).getTime() < endCheckMs
-
-//     return todayCheck && tomorrowCheck
-//   })
-// }
-
 export const filterEventByDate = (events, dateMs) => {
   const startCheckMs = dateMs + startHour * 60 * 60 * 1000
   const endCheckMs = dateMs + (startHour + 24) * 60 * 60 * 1000
@@ -34,9 +22,8 @@ export const filterEventBetweenMs = (events, startMs, endMs) => {
 
     const eventStartMs = new Date(event.start).getTime()
     const eventEndMs = new Date(event.end).getTime()
-
-    const beforeStartCheck = eventStartMs < startMs && eventEndMs < startMs
-    const afterEndCheck = eventStartMs > endMs && eventEndMs > endMs
+    const beforeStartCheck = eventStartMs <= startMs && eventEndMs <= startMs
+    const afterEndCheck = eventStartMs >= endMs && eventEndMs >= endMs
 
     return !beforeStartCheck && !afterEndCheck
   })
