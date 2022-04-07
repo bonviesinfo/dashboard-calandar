@@ -54,14 +54,14 @@ const EventCard = ({
   const isOtherDragging = (event && currentItem && currentItem.id !== event.id) || isDragging
 
   return (
-    <Card className={`event-card${isOtherDragging ? ' dragging' : ''}${isCross ? ' cross' : ''}`}
+    <Card className={`event-card${isOtherDragging ? ' dragging' : ''}${isCross ? ' cross' : ''}${event.isCheckIn ? ' check-in' : ''}`}
       ref={drag}
       sx={{
         height: row * 60 || 120,
         opacity,
       }}
     >
-      <div className={`card-container${isCross ? ' cross' : ''}`}>
+      <div className={'card-container'}>
 
         <div className="content">
 

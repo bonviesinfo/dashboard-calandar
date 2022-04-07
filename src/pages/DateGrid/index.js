@@ -91,10 +91,22 @@ const DateGrid = () => {
             boxShadow: 0,
             bgcolor: 'text.lightest',
             cursor: 'not-allowed',
-            border: `2px solid ${alpha(theme.palette.primary.light, 0.25)}`,
+            border: `2px solid ${alpha(theme.palette.primary.light, 0.7)}`,
           },
           '&.cross .MuiTypography-h5': {
             color: 'primary.dark',
+          },
+          '&.cross .card-container': {
+            bgcolor: 'unset',
+          },
+          '&.check-in': {
+            bgcolor: 'background.default',
+          },
+          '&.check-in .card-container': {
+            bgcolor: alpha(theme.palette.primary.light, 0.2),
+          },
+          '&.check-in .actions': {
+            bgcolor: alpha(theme.palette.secondary.light, 0.5),
           },
         },
         '& .card-container': {
@@ -102,9 +114,6 @@ const DateGrid = () => {
           bgcolor: alpha(theme.palette.primary.dark, 0.03),
           display: 'flex',
           flexDirection: 'column',
-          '&.cross': {
-            bgcolor: 'unset',
-          },
         },
         '& .content': {
           pt: 1.5,

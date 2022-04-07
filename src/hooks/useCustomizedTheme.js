@@ -30,7 +30,7 @@ const getDesignTokens = (mode, pattern) => {
     case 'indigo':
       primary = {
         editingBg: '#f8f9a4',
-        main: indigo[300],
+        main: indigo[400],
         text: '#5568d3',
         editingText: indigo['A200'],
       }

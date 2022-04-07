@@ -49,9 +49,6 @@ const MainGrid = ({
   const [carouselIndex, setCarouselIndex] = useState(0)
   const [carouselMaxNum, setCarouselMaxNum] = useState(maxCarouselNum)
 
-  console.log(scrollAnchor)
-
-
   const carouselEmployees = useMemo(() => {
     const prevEmployees = dummyEmployeeData.slice(carouselIndex, carouselIndex + carouselMaxNum)
     if (carouselIndex + carouselMaxNum > dummyEmployeeData.length) {
@@ -139,18 +136,18 @@ const MainGrid = ({
   }, [setCurrentEvent])
 
   const handleEventDrop = (event, startTimeIndex, targetEmployeeId, anonymous) => {
-    const { id, pet, reserveType, remark } = event
+    // const { id, pet, reserveType, remark } = event
     const newEvent = anonymous
       ? omit(event, ['employeeId'])
       : {
-        // ...omit(event, ['pseudoStart', 'pseudoEnd']),
+        ...omit(event, ['pseudoStart', 'pseudoEnd']),
         employeeId: targetEmployeeId,
         start: selectDateMs + startTimeIndex * intervalMS,
         end: selectDateMs + startTimeIndex * intervalMS + (event.end - event.start),
-        id,
-        pet,
-        remark,
-        reserveType,
+        // id,
+        // pet,
+        // remark,
+        // reserveType,
       }
 
     dispatch(updateEmployeeEvent(newEvent))
@@ -243,7 +240,6 @@ const MainGrid = ({
           },
         }}
       >
-
         <Box
           className="scroll-container"
           sx={{
@@ -271,10 +267,10 @@ const MainGrid = ({
           <IconButton className="carousel-btn left-btn" onClick={onPrevClick} size="large">
             <ForwardRoundedIcon fontSize="large" />
           </IconButton>
-
           <IconButton className="carousel-btn right-btn" onClick={onNextClick} size="large">
             <ForwardRoundedIcon fontSize="large" />
           </IconButton>
+
           <Box
             sx={{
               position: 'sticky',
@@ -284,7 +280,6 @@ const MainGrid = ({
               flex: '0 0 7rem',
             }}
           >
-
             {/* Grid Header */}
             <Box
               className="grid-header"
@@ -344,6 +339,7 @@ const MainGrid = ({
 
               <div />
             </Box>
+
           </Box>
 
           {/* Grid Body */}
@@ -408,6 +404,7 @@ const MainGrid = ({
               },
             }}
           >
+
             <Box
               id="grid-body-time"
               sx={{
@@ -542,7 +539,6 @@ const MainGrid = ({
 
 
         </Box>
-
       </Box>
 
       <BottomDrawer

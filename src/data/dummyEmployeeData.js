@@ -60,8 +60,8 @@ export const dummyEventData = [
     employeeId: 'cm4',
     reserveType: 'tt2',
     remark: '我是一些提醒事項，可能也不會太長，大概兩三行左右 你說什麼你說什麼你說什麼你說什麼你說什麼你說什麼你說什麼',
-    start: getSomeDateTimeMs(12),
-    end: getSomeDateTimeMs(13),
+    start: getSomeDateTimeMs(9, 30),
+    end: getSomeDateTimeMs(10, 30),
     pet: {
       id: 'p1',
       petName: '純正法國血統 英國皇家訓練畢業 大家的小工舉 凱特琳十八世 -  Bobby·J·McArthur',
@@ -77,6 +77,7 @@ export const dummyEventData = [
     remark: '吃韓式炸雞',
     start: getSomeDateTimeMs(10, 30),
     end: getSomeDateTimeMs(12),
+    isCheckIn: true,
     pet: {
       id: 'p2',
       petName: 'Cochi',
@@ -117,11 +118,11 @@ export const dummyEventData = [
   },
   {
     id: 'ev5',
-    employeeId: 'cm1',
+    employeeId: 'cm5',
     reserveType: 'tt2',
     remark: '喝CASA啤酒',
-    start: getSomeDateTimeMs(9, 15),
-    end: getSomeDateTimeMs(10, 45),
+    start: getSomeDateTimeMs(12, 45),
+    end: getSomeDateTimeMs(14, 15),
     pet: {
       id: 'p4',
       petName: 'Chi Chi',

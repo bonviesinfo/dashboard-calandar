@@ -129,16 +129,18 @@ const DialogEditContent = ({
 
   const handleSubmit = () => {
     if (validateInput()) return
-    if (!validateTimeOccupied(currentEvent?.id)) return alert('該成員時間重複')
-    const { id, endTime, remark, pet, employeeId, reserveType } = creatingItem
+    const { id, employeeId, endTime } = creatingItem
+    if (employeeId && !validateTimeOccupied(id)) return alert('該成員時間重複')
     const newEvent = {
-      id: currentEvent ? id : Math.random().toString(36).substr(2, 9),
+      ...omit(creatingItem, ['endTime', 'employeeId', 'pseudoStart', 'pseudoEnd']),
+      ...(!id && { id: Math.random().toString(36).substr(2, 9) }),
       ...(employeeId && { employeeId }),
-      pet,
-      reserveType,
+      // id: currentEvent ? id : Math.random().toString(36).substr(2, 9),
+      // pet,
+      // remark,
+      // reserveType,
       start: startTime.getTime(),
       end: endTime.getTime(),
-      remark,
     }
 
     currentEvent

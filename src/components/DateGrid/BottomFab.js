@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
-import MenuItem from '@mui/material/MenuItem'
-import TextField from '@mui/material/TextField'
 import { useTheme, alpha } from '@mui/material/styles'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import DialogEdit from './DialogEdit'
@@ -44,7 +43,7 @@ const BottomFab = ({
           easing: theme.transitions.easing.easeOut,
           duration: theme.transitions.duration.enteringScreen,
         }),
-        '& .MuiButton-root, .MuiIconButton-root': {
+        '& .MuiButton-root:not(.anchor-btn), .MuiIconButton-root': {
           px: 2,
           boxShadow: 0,
           borderRadius: 5,
@@ -56,7 +55,7 @@ const BottomFab = ({
         },
       }}
     >
-      <TextField select variant="standard"
+      {/* <TextField select variant="standard"
         // onChange={handleAnchorChange}
         value={scrollAnchor}
         onClick={handleAnchorClick}
@@ -82,7 +81,7 @@ const BottomFab = ({
           {showInterval(16 * timePerHour)}
         </MenuItem>
 
-      </TextField>
+      </TextField> */}
 
       <Button
         startIcon={<AddIcon />}
@@ -120,9 +119,24 @@ const BottomFab = ({
         待分配池
       </Button>
 
-      {/* <IconButton>
-        <AddIcon />
-      </IconButton> */}
+      <Stack sx={{
+        zIndex: 20,
+        right: 3,
+        bottom: '3rem',
+        position: 'absolute',
+        '& .MuiButton-root': {
+          mb: 2,
+          '&.active': {
+            color: 'background.default',
+            bgcolor: alpha(theme.palette.primary.light, 1),
+          },
+        },
+      }}>
+        <Button className={`anchor-btn${scrollAnchor === 'first' ? ' active' : ''}`} variant="outlined" disableElevation onClick={handleAnchorClick} data-value="first">{showInterval(0)}</Button>
+        <Button className={`anchor-btn${scrollAnchor === 'second' ? ' active' : ''}`} variant="outlined" disableElevation key="two" onClick={handleAnchorClick} data-value="second">{showInterval(8 * timePerHour)}</Button>
+        <Button className={`anchor-btn${scrollAnchor === 'third' ? ' active' : ''}`} variant="outlined" disableElevation key="three" onClick={handleAnchorClick} data-value="third">{showInterval(16 * timePerHour)}</Button>
+      </Stack>
+
     </Box>
   )
 }

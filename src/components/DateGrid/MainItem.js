@@ -8,7 +8,13 @@ import { locateEvent } from '../../utils/timeUtils'
 //   intervalMinute,
 // } from '../../constants/dateGrid'
 
-const MainItem = ({ children, className, employeesOccupiedTime, selectDateMs, ...restProps }) => {
+const MainItem = ({
+  children,
+  className,
+  selectDateMs,
+  employeesOccupiedTime,
+  ...restProps
+}) => {
   const gridIndex = restProps['data-index']
   const employeeId = restProps['data-id']
 
