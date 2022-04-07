@@ -103,7 +103,7 @@ const DateGrid = () => {
             bgcolor: 'background.default',
           },
           '&.check-in .card-container': {
-            bgcolor: alpha(theme.palette.primary.light, 0.2),
+            bgcolor: alpha(theme.palette.primary.light, 0.12),
           },
           '&.check-in .actions': {
             bgcolor: alpha(theme.palette.secondary.light, 0.5),
@@ -143,11 +143,12 @@ const DateGrid = () => {
           wordBreak: 'break-word',
         },
         '& .actions': {
-          py: 1,
+          py: 0,
           px: 1.5,
           bgcolor: alpha(theme.palette.primary.main, 0.1),
-          '&.small': {
-            py: 0,
+          alignItems: 'stretch',
+          '&.anonymous': {
+            px: 0.5,
           },
         },
         '& .edit-btn': {
@@ -156,9 +157,22 @@ const DateGrid = () => {
         '& .delete-btn': {
           color: theme.palette.jewelry.darkRed,
         },
+        '& .check-in-btn': {
+          py: 0.5,
+          my: 0.75,
+          lineHeight: 1,
+          color: 'background.default',
+        },
+        '& .check-in-icon-btn.cancel': {
+          color: 'background.default',
+        },
+        '& .check-in-icon-btn .MuiSvgIcon-root': {
+          fontSize: '1.5em',
+        },
         '& .MuiTypography-root': {
           color: 'text.secondary',
           '&.duration-text': {
+            mr: 1,
             color: 'secondary.dark',
           },
         },

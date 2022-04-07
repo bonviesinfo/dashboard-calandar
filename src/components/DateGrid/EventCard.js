@@ -3,12 +3,15 @@ import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import Card from '@mui/material/Card'
 import Avatar from '@mui/material/Avatar'
+import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import { useDrag } from 'react-dnd'
 
 import EditRoundedIcon from '@mui/icons-material/EditRounded'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
+import DoDisturbOnRoundedIcon from '@mui/icons-material/DoDisturbOnRounded'
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
 
 const getDuration = (start, end) => {
   const duration = end - start
@@ -24,6 +27,7 @@ const EventCard = ({
   handleDelete,
   handleEditClick,
   handleEventDrop,
+  handleCheckInToggle,
   petReserveTypeMapping,
 }) => {
   const smallMode = !row || row <= 4
@@ -102,9 +106,19 @@ const EventCard = ({
 
         </div>
 
-        <Box className={`actions ${smallMode ? 'small' : 'small'}`} display="flex" justifyContent="space-between" alignItems="center">
+        <Box className={`actions${event.employeeId ? '' : ' anonymous'}`} display="flex" justifyContent="space-between" alignItems="center">
 
-          <div>
+          <Box display="flex" justifyContent="space-between" alignItems="center" position="relative">
+            <IconButton size="small" className="edit-btn" onClick={() => handleEditClick(event)}>
+              <EditRoundedIcon fontSize="small" />
+            </IconButton>
+
+            <IconButton size="small" className="delete-btn" onClick={handleDelete}>
+              <DeleteRoundedIcon fontSize="small" />
+            </IconButton>
+          </Box>
+
+          <Box display="flex" justifyContent="space-between" alignItems="center" position="relative">
             {
               !event.employeeId && (
                 <>
@@ -117,18 +131,26 @@ const EventCard = ({
                 </>
               )
             }
-          </div>
-
-
-          <div>
-            <IconButton size="small" className="edit-btn" onClick={() => handleEditClick(event)}>
-              <EditRoundedIcon fontSize="small" />
-            </IconButton>
-
-            <IconButton size="small" className="delete-btn" onClick={handleDelete}>
-              <DeleteRoundedIcon fontSize="small" />
-            </IconButton>
-          </div>
+            {
+              !event.isCheckIn
+                ? (
+                  event.employeeId ? (
+                    <Button className="check-in-btn" size="small" variant="contained" disableElevation onClick={() => handleCheckInToggle(event.id)}>
+                      完成
+                    </Button>
+                  ) : (
+                    <IconButton size="small" className="check-in-icon-btn" color="primary" onClick={() => handleCheckInToggle(event.id)}>
+                      <CheckCircleRoundedIcon />
+                    </IconButton>
+                  )
+                )
+                : (
+                  <IconButton size="small" className="check-in-icon-btn cancel" color="default" onClick={() => handleCheckInToggle(event.id)}>
+                    <DoDisturbOnRoundedIcon />
+                  </IconButton>
+                )
+            }
+          </Box>
 
         </Box>
 

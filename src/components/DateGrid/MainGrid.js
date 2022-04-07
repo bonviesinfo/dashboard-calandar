@@ -14,7 +14,7 @@ import BottomDrawer from './BottomDrawer'
 import { locateEvent, showInterval } from '../../utils/timeUtils'
 import { dummyEmployeeData } from '../../data/dummyEmployeeData'
 import { dummyPetReserveType } from '../../data/dummyPetData'
-import { updateEmployeeEvent, deleteEmployeeEvent, selectEmployeeEvents, filterEventByDate, filterAnonymousEvent, limitEventStartEnd } from '../../slices/employeesEventsSlice'
+import { updateEmployeeEvent, deleteEmployeeEvent, toggleEmployeeEventCheckIn, selectEmployeeEvents, filterEventByDate, filterAnonymousEvent, limitEventStartEnd } from '../../slices/employeesEventsSlice'
 import { replaceEmployeesEventsMapping } from '../../slices/employeesEventsMappingSlice'
 import { replaceEmployeesOccupiedTime, selectEmployeesOccupiedTime } from '../../slices/employeesOccupiedTimeSlice'
 
@@ -155,6 +155,10 @@ const MainGrid = ({
 
   const handleDeleteEvent = (event) => () => {
     dispatch(deleteEmployeeEvent(event.id))
+  }
+
+  const handleCheckInToggle = id => {
+    dispatch(toggleEmployeeEventCheckIn(id))
   }
 
   // 日期變更相關
@@ -489,6 +493,7 @@ const MainGrid = ({
                           handleEditClick={handleEditClick}
                           handleDelete={handleDeleteEvent(eventInfo?.event)}
                           handleEventDrop={handleEventDrop}
+                          handleCheckInToggle={handleCheckInToggle}
                           petReserveTypeMapping={petReserveTypeMapping}
                         />
                         : null
@@ -547,6 +552,7 @@ const MainGrid = ({
         handleEditClick={handleEditClick}
         handleEventDrop={handleEventDrop}
         handleDeleteEvent={handleDeleteEvent}
+        handleCheckInToggle={handleCheckInToggle}
         petReserveTypeMapping={petReserveTypeMapping}
       />
     </Fragment>

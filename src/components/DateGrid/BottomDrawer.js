@@ -12,6 +12,7 @@ const BottomDrawer = ({
   handleEditClick,
   handleDeleteEvent,
   handleEventDrop,
+  handleCheckInToggle,
   petReserveTypeMapping,
   selectDateMs,
   ...restProps
@@ -43,8 +44,9 @@ const BottomDrawer = ({
       open={open}
       sx={{
         '& .MuiCard-root': {
-          flex: '0 0 17%',
-          mr: '2%',
+          flex: '0 0 18%',
+          maxWidth: 300,
+          mr: '1.5%',
           mt: 4,
           mb: 3,
           '&:first-of-type': {
@@ -86,9 +88,10 @@ const BottomDrawer = ({
             <EventCard
               key={event.id}
               event={event}
-              handleEditClick={handleEditClick}
               handleDelete={handleDeleteEvent(event)}
+              handleEditClick={handleEditClick}
               handleEventDrop={handleEventDrop}
+              handleCheckInToggle={handleCheckInToggle}
               petReserveTypeMapping={petReserveTypeMapping}
             />
           ))

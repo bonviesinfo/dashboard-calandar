@@ -75,6 +75,12 @@ const employeesEventsSlice = createSlice({
     'replaceEmployeeEvents': (state, action) => {
       return action.payload
     },
+    'toggleEmployeeEventCheckIn': (state, action) => {
+      return state.map(event => (event.id === action.payload)
+        ? { ...event, isCheckIn: !event.isCheckIn }
+        : event
+      )
+    },
   }
 })
 
@@ -82,7 +88,8 @@ export const {
   addEmployeeEvent,
   updateEmployeeEvent,
   deleteEmployeeEvent,
-  replaceEmployeeEvents
+  replaceEmployeeEvents,
+  toggleEmployeeEventCheckIn,
 } = employeesEventsSlice.actions
 export const selectEmployeeEvents = state => state.employeesEvents
 
