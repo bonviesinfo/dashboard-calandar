@@ -77,11 +77,26 @@ const DateGrid = () => {
         bgcolor: 'text.light',
         userSelect: 'none',
         position: 'relative',
-        '& .event-card': {
+        '& .event-card-wrapper': {
           zIndex: 4,
+          width: '80%',
+          position: 'relative',
+        },
+        '& .subInfo': {
+          position: 'absolute',
+          top: theme.spacing(-0.5),
+          left: theme.spacing(-1.5),
+          '& .MuiTypography-root': {
+            px: 0.75,
+            lineHeight: 1.5,
+            fontWeight: 'bold',
+            color: 'background.default',
+            bgcolor: alpha(theme.palette.primary.light, 0.6),
+          },
+        },
+        '& .event-card': {
           boxShadow: 2,
           borderRadius: 3,
-          width: '80%',
           display: 'flex',
           cursor: 'grab',
           '&.dragging': {
@@ -122,6 +137,10 @@ const DateGrid = () => {
           display: 'flex',
           flexDirection: 'column',
           minHeight: 0,
+        },
+        '& .name-title': {
+          letterSpacing: '0.025em',
+          alignSelf: 'flex-end',
         },
         '& .chip': {
           ml: 1.5,

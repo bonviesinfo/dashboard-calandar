@@ -23,6 +23,10 @@ export const locateEvent = (event, selectDateMs) => {
   }
 }
 
+export const getTimeIndex = durationMs => {
+  return Math.floor(durationMs / intervalMS)
+}
+
 export const showInterval = index => {
   const newIndex = index + startInterval
   const quo = Math.floor(newIndex / timePerHour)

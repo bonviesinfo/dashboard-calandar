@@ -43,7 +43,7 @@ const BottomDrawer = ({
       anchor="bottom"
       open={open}
       sx={{
-        '& .MuiCard-root': {
+        '& .event-card-wrapper': {
           flex: '0 0 18%',
           maxWidth: 300,
           mr: '1.5%',
@@ -52,6 +52,8 @@ const BottomDrawer = ({
           '&:first-of-type': {
             ml: '2%',
           },
+        },
+        '& .MuiCard-root': {
         },
         '& .MuiDrawer-paper': {
           zIndex: 1251,

@@ -11,8 +11,9 @@ import MainItem from './MainItem'
 import EventCard from './EventCard'
 import BottomDrawer from './BottomDrawer'
 
-import { locateEvent, showInterval } from '../../utils/timeUtils'
+import { locateEvent, showInterval, getTimeIndex } from '../../utils/timeUtils'
 import { dummyEmployeeData } from '../../data/dummyEmployeeData'
+import { dummyScheduleData } from '../../data/dummyScheduleData'
 import { dummyPetReserveType } from '../../data/dummyPetData'
 import { updateEmployeeEvent, deleteEmployeeEvent, toggleEmployeeEventCheckIn, selectEmployeeEvents, filterEventByDate, filterAnonymousEvent, limitEventStartEnd } from '../../slices/employeesEventsSlice'
 import { replaceEmployeesEventsMapping } from '../../slices/employeesEventsMappingSlice'
@@ -46,8 +47,23 @@ const MainGrid = ({
 
   const [employees, setEmployees] = useState([])
   const [employeesStartTimeMapping, setEmployeesStartTimeMapping] = useState({})
+  // const [scheduleMapping, setScheduleMapping] = useState({})
   const [carouselIndex, setCarouselIndex] = useState(0)
   const [carouselMaxNum, setCarouselMaxNum] = useState(maxCarouselNum)
+
+  useEffect(() => {
+    setCarouselMaxNum(dummyEmployeeData.length > maxCarouselNum ? maxCarouselNum : 4)
+  }, [])
+
+  useEffect(() => {
+    setEmployees(dummyEmployeeData)
+  }, [])
+
+  const dayOfWeek = useMemo(() => {
+    const date = new Date(selectDateMs)
+    const day = date.getDay()
+    return day
+  }, [selectDateMs])
 
   const carouselEmployees = useMemo(() => {
     const prevEmployees = dummyEmployeeData.slice(carouselIndex, carouselIndex + carouselMaxNum)
@@ -58,7 +74,6 @@ const MainGrid = ({
       return prevEmployees
     }
   }, [carouselIndex, carouselMaxNum])
-
 
   const employeesEvents = useMemo(() => (
     limitEventStartEnd(
@@ -75,12 +90,12 @@ const MainGrid = ({
     return newPetReserveTypeMapping
   }, [])
 
-  useEffect(() => {
-    setCarouselMaxNum(dummyEmployeeData.length > maxCarouselNum ? maxCarouselNum : 4)
-  }, [])
-
-  useEffect(() => {
-    setEmployees(dummyEmployeeData)
+  const employeesScheduleMapping = useMemo(() => {
+    const newScheduleMapping = {}
+    dummyScheduleData.forEach(schedule => {
+      newScheduleMapping[schedule.employeeId] = schedule
+    })
+    return newScheduleMapping
   }, [])
 
   useEffect(() => {
@@ -129,6 +144,7 @@ const MainGrid = ({
     dispatch(replaceEmployeesOccupiedTime(employeesOccupiedTime))
 
   }, [employees, employeesEvents, selectDateMs, dispatch])
+
 
   // 事件處理相關
   const handleEditClick = useCallback(event => {
@@ -215,11 +231,14 @@ const MainGrid = ({
             position: 'relative',
             bgcolor: 'background.default',
             borderTop: `1px solid ${theme.palette.text.fadest}`,
+            '&.unavailable': {
+              bgcolor: 'text.lighter',
+            },
             '&.active': {
-              bgcolor: alpha(theme.palette.primary.light, 0.1),
+              bgcolor: alpha(theme.palette.primary.light, 0.25),
             },
             '&.blocked': {
-              bgcolor: alpha(theme.palette.text.primary, 0.1),
+              bgcolor: alpha(theme.palette.text.primary, 0.2),
             },
             '&.full-hour': {
               borderTop: `2px solid ${theme.palette.text.fade}`,
@@ -464,26 +483,29 @@ const MainGrid = ({
                 gridTemplateColumns: `repeat(${carouselEmployees.length}, minmax(270px, 1fr)) 2rem`,
               }}
             >
-
+              {/* 網格本身 */}
               {carouselEmployees.map((employee, index) => {
                 const eventStartTimeMapping = employeesStartTimeMapping[employee.id]
-                const restItems = Array.from(new Array(gridLength)).map((item, index) => {
+                const schedule = employeesScheduleMapping[employee.id]
+                const scheduleStart = schedule?.startTime ? getTimeIndex(schedule.startTime) : startInterval
+                const scheduleEnd = schedule?.endTime ? getTimeIndex(schedule.endTime) : (startInterval + timePerHour * 24)
+
+                const mainItems = Array.from(new Array(gridLength)).map((item, index) => {
                   const newIndex = index + startInterval
                   const eventInfo = eventStartTimeMapping && eventStartTimeMapping[newIndex]
-
-                  // const startTimestamp = selectDateMs + newIndex * intervalMS
                   const fullHour = index % timePerHour === 0 ? ' full-hour' : ''
-                  // const active = (new Date(employee.start).getTime() <= startTimestamp && new Date(employee.end).getTime() > startTimestamp)
-                  //   ? ' active'
-                  //   : ''
+                  const scheduleCheck = !schedule || !(newIndex < scheduleStart || newIndex >= scheduleEnd)
+                  const dayOfWeekCheck = schedule?.daysOfWeek ? schedule.daysOfWeek.includes(dayOfWeek) : true
+                  const unavailable = (!scheduleCheck || !dayOfWeekCheck) ? ' unavailable' : ''
 
                   return (
                     <MainItem
                       key={`${employee.id}ce${index}`}
-                      className={`grid-item${fullHour}`}
+                      className={`grid-item${fullHour}${unavailable}`}
                       employeesOccupiedTime={employeesOccupiedTime}
                       data-id={employee.id}
                       data-index={newIndex}
+                      data-unavailable={unavailable}
                       selectDateMs={selectDateMs}
                     >
                       {eventInfo
@@ -523,14 +545,15 @@ const MainGrid = ({
                             row={eventStartTimeMapping[startInterval - 1].eventLength}
                             event={eventStartTimeMapping[startInterval - 1]?.event}
                             handleEditClick={handleEditClick}
-                            handleDelete={handleDeleteEvent(eventStartTimeMapping[startInterval - 1]?.event)}
                             handleEventDrop={handleEventDrop}
+                            handleCheckInToggle={handleCheckInToggle}
+                            handleDelete={handleDeleteEvent(eventStartTimeMapping[startInterval - 1]?.event)}
                             petReserveTypeMapping={petReserveTypeMapping}
                           />
                         )
                       }
                     </div>
-                    {restItems}
+                    {mainItems}
                   </Fragment>
                 )
               })}

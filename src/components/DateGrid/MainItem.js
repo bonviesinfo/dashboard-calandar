@@ -17,6 +17,7 @@ const MainItem = ({
 }) => {
   const gridIndex = restProps['data-index']
   const employeeId = restProps['data-id']
+  const unavailable = restProps['data-unavailable']
 
   const [{ isOver, canDrop }, drop] = useDrop(() => ({
     accept: 'CARD',
@@ -26,6 +27,7 @@ const MainItem = ({
       canDrop: monitor.canDrop(),
     }),
     canDrop: (item, monitor) => {
+      if (unavailable) return false
       const eventId = item.id
       if (!eventId) return false
       const { eventLength } = locateEvent(item, selectDateMs)
