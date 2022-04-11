@@ -27,6 +27,7 @@ import Transition from '../UI/TransitionSlideUp'
 import { dummyEmployeeData } from '../../data/dummyEmployeeData'
 import {
   intervalMinute,
+  intervalMS,
   timePerHour,
 } from '../../constants/dateGrid'
 
@@ -50,8 +51,7 @@ const DialogScheduleContent = ({
   const [startTime, setStartTime] = useState(null)
   const [endTime, setEndTime] = useState(null)
 
-  console.log(startTime)
-  console.log(endTime)
+  console.log(selectedDuration)
 
   const handleStartTimeChange = newValue => {
     setStartTime(newValue)
@@ -250,7 +250,7 @@ const DialogScheduleContent = ({
           <Grid item xs={12} md={4}>
             <TimePicker
               ampm={false}
-              minutesStep={15}
+              minutesStep={30}
               label="開始時刻"
               value={startTime}
               onChange={handleStartTimeChange}
@@ -287,7 +287,7 @@ const DialogScheduleContent = ({
           <Grid item xs={12} md={4}>
             <TimePicker
               ampm={false}
-              minutesStep={15}
+              minutesStep={30}
               label="結束時刻"
               value={endTime}
               onChange={handleEndTimeChange}
