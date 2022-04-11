@@ -118,7 +118,7 @@ const DateGrid = () => {
             bgcolor: 'background.default',
           },
           '&.check-in .card-container': {
-            bgcolor: alpha(theme.palette.primary.light, 0.12),
+            bgcolor: alpha(theme.palette.primary.editingBg, 0.15),
           },
           '&.check-in .actions': {
             bgcolor: alpha(theme.palette.secondary.light, 0.5),

@@ -381,6 +381,9 @@ const MainGrid = ({
                 display: 'flex',
                 justifyContent: 'center',
                 bgcolor: 'background.default',
+                '&.unavailable': {
+                  bgcolor: 'text.lighter',
+                },
               },
               '& .grid-item.first-row': {
                 borderTop: 'none',
@@ -489,13 +492,13 @@ const MainGrid = ({
                 const schedule = employeesScheduleMapping[employee.id]
                 const scheduleStart = schedule?.startTime ? getTimeIndex(schedule.startTime) : startInterval
                 const scheduleEnd = schedule?.endTime ? getTimeIndex(schedule.endTime) : (startInterval + timePerHour * 24)
+                const dayOfWeekCheck = schedule?.daysOfWeek ? schedule.daysOfWeek.includes(dayOfWeek) : true
 
                 const mainItems = Array.from(new Array(gridLength)).map((item, index) => {
                   const newIndex = index + startInterval
                   const eventInfo = eventStartTimeMapping && eventStartTimeMapping[newIndex]
                   const fullHour = index % timePerHour === 0 ? ' full-hour' : ''
                   const scheduleCheck = !schedule || !(newIndex < scheduleStart || newIndex >= scheduleEnd)
-                  const dayOfWeekCheck = schedule?.daysOfWeek ? schedule.daysOfWeek.includes(dayOfWeek) : true
                   const unavailable = (!scheduleCheck || !dayOfWeekCheck) ? ' unavailable' : ''
 
                   return (
@@ -537,7 +540,7 @@ const MainGrid = ({
                     <div
                       data-id={employee.id}
                       data-index={startInterval - 1}
-                      className="pure-item first-row"
+                      className={`pure-item first-row`}
                     >
                       {
                         eventStartTimeMapping && eventStartTimeMapping[startInterval - 1] && (
@@ -583,3 +586,5 @@ const MainGrid = ({
 }
 
 export default memo(MainGrid)
+
+// ${(startInterval < scheduleStart) || !dayOfWeekCheck ? ' unavailable' : ''}

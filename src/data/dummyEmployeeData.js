@@ -50,7 +50,7 @@ export const dummyEmployeeData = [
   },
   {
     id: 'cm9',
-    name: '波波3',
+    name: '周休二日',
   },
 ]
 
@@ -153,11 +153,11 @@ export const dummyEventData = [
     start: getOtherDateTimeMs(1, 7),
     end: getOtherDateTimeMs(1, 9, 45),
     pet: {
-      id: 'p7',
-      petName: 'Ba Ha',
+      id: 'p6',
+      petName: 'Sachima',
       petAge: 9,
-      petCategory: 'Dog',
-      avatar: 'https://live.staticflickr.com/2610/3682417399_71259837d3_b.jpg',
+      petCategory: 'Cat',
+      avatar: 'https://live.staticflickr.com/2851/33522734484_655cb6c80c_n.jpg',
     },
   },
   {

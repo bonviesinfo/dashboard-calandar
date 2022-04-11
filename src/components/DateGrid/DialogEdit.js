@@ -1,4 +1,4 @@
-import React, { forwardRef, useState, useMemo, Fragment } from 'react'
+import React, { useState, useMemo, Fragment } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { omit } from 'lodash-es'
 import Box from '@mui/material/Box'
@@ -11,10 +11,11 @@ import Typography from '@mui/material/Typography'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
-import Slide from '@mui/material/Slide'
 import TimePicker from '@mui/lab/TimePicker'
 import DatePicker from '@mui/lab/DatePicker'
 import DateTimePicker from '@mui/lab/DateTimePicker'
+import Transition from '../UI/TransitionSlideUp'
+
 import { getZeroTime, locateEvent } from '../../utils/timeUtils'
 import { dummyEmployeeData } from '../../data/dummyEmployeeData'
 import { dummyPetData, dummyPetReserveType } from '../../data/dummyPetData'
@@ -37,9 +38,9 @@ const getNearestTime = time => {
   return nearestTime
 }
 
-const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />
-})
+// const Transition = forwardRef(function Transition(props, ref) {
+//   return <Slide direction="up" ref={ref} {...props} />
+// })
 
 const DialogEditContent = ({
   selectDateMs,
@@ -246,7 +247,7 @@ const DialogEditContent = ({
     <Fragment>
       <DialogTitle sx={{ fontWeight: 'bold' }}>{currentEvent ? '編輯預約' : '新增預約'}</DialogTitle>
       <DialogContent sx={{ overflow: 'initial' }}>
-        <Grid container spacing={3} sx={{ pt: 1 }}>
+        <Grid container spacing={3}>
 
           <Grid item xs={12} md={4}>
             <TextField

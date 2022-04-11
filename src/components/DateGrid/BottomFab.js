@@ -5,7 +5,9 @@ import Button from '@mui/material/Button'
 import { useTheme, alpha } from '@mui/material/styles'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import DialogEdit from './DialogEdit'
+import DialogSchedule from './DialogSchedule'
 import AddIcon from '@mui/icons-material/Add'
+import EventNoteRoundedIcon from '@mui/icons-material/EventNoteRounded'
 
 import { showInterval } from '../../utils/timeUtils'
 import { timePerHour } from '../../constants/dateGrid'
@@ -20,6 +22,7 @@ const BottomFab = ({
   const theme = useTheme()
 
   const [open, setOpen] = useState(false)
+  const [scheduleOpen, setScheduleOpen] = useState(false)
 
 
   const handleOpen = () => {
@@ -28,6 +31,14 @@ const BottomFab = ({
 
   const handleClose = () => {
     setOpen(false)
+  }
+
+  const handleScheduleOpen = () => {
+    setScheduleOpen(true)
+  }
+
+  const handleScheduleClose = () => {
+    setScheduleOpen(false)
   }
 
   return (
@@ -55,33 +66,22 @@ const BottomFab = ({
         },
       }}
     >
-      {/* <TextField select variant="standard"
-        // onChange={handleAnchorChange}
-        value={scrollAnchor}
-        onClick={handleAnchorClick}
+
+      <Button
+        startIcon={<EventNoteRoundedIcon />}
+        onClick={handleScheduleOpen}
         sx={{
-          mr: 3,
-          bgcolor: 'background.default',
-          '& .MuiInput-root': {
-            px: 1,
-            bgcolor: theme => alpha(theme.palette.primary.light, 0.2),
-            color: 'text.secondary',
-            fontWeight: 'bold',
-            fontSize: '1.25rem',
-          },
+          mr: 2,
         }}
       >
-        <MenuItem value="first">
-          {showInterval(0)}
-        </MenuItem>
-        <MenuItem value="second">
-          {showInterval(8 * timePerHour)}
-        </MenuItem>
-        <MenuItem value="third">
-          {showInterval(16 * timePerHour)}
-        </MenuItem>
+        排班編輯
+      </Button>
 
-      </TextField> */}
+      <DialogSchedule
+        open={scheduleOpen}
+        handleClose={handleScheduleClose}
+      />
+
 
       <Button
         startIcon={<AddIcon />}
