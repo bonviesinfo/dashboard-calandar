@@ -1,29 +1,27 @@
 import React, { Fragment, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { omit } from 'lodash-es'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
+import Radio from '@mui/material/Radio'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import Divider from '@mui/material/Divider'
+import Checkbox from '@mui/material/Checkbox'
 import MenuItem from '@mui/material/MenuItem'
+import FormGroup from '@mui/material/FormGroup'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+import FormControl from '@mui/material/FormControl'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
+import FormHelperText from '@mui/material/FormHelperText'
+import FormControlLabel from '@mui/material/FormControlLabel'
 import TimePicker from '@mui/lab/TimePicker'
 import DatePicker from '@mui/lab/DatePicker'
-
-import Radio from '@mui/material/Radio'
-import Checkbox from '@mui/material/Checkbox'
-// import RadioGroup from '@mui/material/RadioGroup'
-import FormGroup from '@mui/material/FormGroup'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import FormControl from '@mui/material/FormControl'
-import FormHelperText from '@mui/material/FormHelperText'
-
 import Transition from '../UI/TransitionSlideUp'
-
+import { updateEmployeeSchedule, deleteEmployeeSchedule, selectEmployeesSchedule } from '../../slices/employeesScheduleSlice'
 import { dummyEmployeeData } from '../../data/dummyEmployeeData'
 import {
   intervalMinute,
@@ -41,52 +39,159 @@ const weekStringMapping = {
   6: '星期六',
 }
 
+const parseObjectTrueKeyToNumArray = (obj) => {
+  const result = []
+  for (const key in obj) {
+    if (obj[key]) {
+      result.push(Number(key))
+    }
+  }
+  return result
+}
+
 const DialogScheduleContent = ({
   handleClose,
 }) => {
+  const dispatch = useDispatch()
+  const employeesSchedule = useSelector(selectEmployeesSchedule)
+  console.log(employeesSchedule)
+
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null)
   const [recurType, setRecurType] = useState('')
-  const [state, setState] = useState({})
-  const [selectedDuration, setSelectedDuration] = useState('')
+  const [selectedDays, setSelectedDays] = useState({})
   const [startTime, setStartTime] = useState(null)
   const [endTime, setEndTime] = useState(null)
+  const [selectedDuration, setSelectedDuration] = useState('')
+  const [startRecur, setStartRecur] = useState(null)
+  const [endRecur, setEndRecur] = useState(null)
+  const [recurDuration, setRecurDuration] = useState('')
 
-  console.log(selectedDuration)
+  // console.log('startRecur', startRecur)
+  // console.log('endRecur', endRecur)
+  // console.log(selectedDuration)
+
+  const handleSubmit = () => {
+    console.log('recurType', recurType)
+    console.log('selectedEmployeeId', selectedEmployeeId)
+    console.log('selectedDays', parseObjectTrueKeyToNumArray(selectedDays))
+    console.log('startTime', startTime && startTime.getTime())
+    console.log('startRecur', startRecur && startRecur.getTime())
+
+    if (recurType === '') {
+      dispatch(deleteEmployeeSchedule(selectedEmployeeId))
+      return
+    }
+
+    const newSchedule = {
+      employeeId: selectedEmployeeId,
+      ...(startTime && { startTime: startTime.getTime() % 86400000 }),
+      ...(endTime && { endTime: endTime.getTime() % 86400000 }),
+      ...(startRecur && { startRecur: startRecur.getTime() % 86400000 }),
+      ...(endRecur && { endRecur: endRecur.getTime() % 86400000 }),
+    }
+
+    if (recurType === 'everyday') {
+      dispatch(updateEmployeeSchedule(newSchedule))
+    } else if (recurType === 'week') {
+      newSchedule.daysOfWeek = parseObjectTrueKeyToNumArray(selectedDays)
+      dispatch(updateEmployeeSchedule(newSchedule))
+    }
+  }
+
+  // 時間日期相關 >>
+  const validateDateType = newValue => {
+    if (!(newValue instanceof Date) || isNaN(newValue)) {
+      return false
+    }
+    return true
+  }
 
   const handleStartTimeChange = newValue => {
     setStartTime(newValue)
+    if (!validateDateType(newValue)) return
+
+    if (selectedDuration) {
+      setEndTime(new Date(newValue.getTime() + Number(selectedDuration) * intervalMS))
+    } else if (endTime && (endTime.getTime() < newValue.getTime())) {
+      setEndTime(prev => new Date(prev.getTime() + 86400000))
+    }
+
   }
 
   const handleEndTimeChange = newValue => {
     setEndTime(newValue)
+    if (!validateDateType(newValue)) return
+
+    if (selectedDuration) {
+      setStartTime(new Date(newValue.getTime() - Number(selectedDuration) * intervalMS))
+    } else if (startTime && (startTime.getTime() > newValue.getTime())) {
+      setEndTime(new Date(newValue.getTime() + 86400000))
+    }
   }
+
+  const handleDurationChange = (event) => {
+    setSelectedDuration(event.target.value)
+    if (startTime) {
+      setEndTime(new Date(startTime.getTime() + Number(event.target.value) * intervalMS))
+    }
+  }
+
+  const handleStartRecurChange = newValue => {
+    setStartRecur(newValue)
+    if (!validateDateType(newValue)) return
+    newValue.setHours(0, 0, 0, 0)
+    setStartRecur(newValue)
+    if (recurDuration) {
+      const newEndRecurMs = new Date(newValue.getTime() + Number(recurDuration) * 86400000).setHours(0, 0, 1, 0)
+      setEndRecur(new Date(newEndRecurMs))
+    }
+  }
+
+  const handleEndRecurChange = newValue => {
+    setEndRecur(newValue)
+    if (!validateDateType(newValue)) return
+    newValue.setHours(0, 0, 1, 0)
+    setEndRecur(newValue)
+
+    if (recurDuration) {
+      const newStartRecurMs = new Date(newValue.getTime() - Number(recurDuration) * 86400000).setHours(0, 0, 0, 0)
+      setStartRecur(new Date(newStartRecurMs))
+    }
+  }
+  // 切記在Submit前要將endRecur多加一整天!
+
+  const handleRecurDurationChange = (event) => {
+    setRecurDuration(event.target.value)
+    if (startRecur) {
+      const newEndRecurMs = new Date(startRecur.getTime() + Number(event.target.value) * 86400000).setHours(0, 0, 1, 0)
+      setEndRecur(new Date(newEndRecurMs))
+    }
+  }
+  // 時間日期相關 <<
+
 
   const handleChange = (event) => {
     setRecurType(event.target.value)
   }
 
   const handleCheckBoxChange = (event) => {
-    state[event.target.name]
-      ? setState(omit(state, event.target.name))
-      : setState({ ...state, [event.target.name]: true })
+    selectedDays[event.target.name]
+      ? setSelectedDays(omit(selectedDays, event.target.name))
+      : setSelectedDays({ ...selectedDays, [event.target.name]: true })
   }
 
-  const isAllWeekdays = Boolean(Object.keys(state).length === 5 && state[1] && state[2] && state[3] && state[4] && state[5])
+  const isAllWeekdays = Boolean(Object.keys(selectedDays).length === 5 && selectedDays[1] && selectedDays[2] && selectedDays[3] && selectedDays[4] && selectedDays[5])
 
   const handleWeekdaysClick = () => {
     isAllWeekdays
-      ? setState(omit(state, [1, 2, 3, 4, 5]))
-      : setState({
+      ? setSelectedDays(omit(selectedDays, [1, 2, 3, 4, 5]))
+      : setSelectedDays({
         1: true,
         2: true,
         3: true,
         4: true,
         5: true,
       })
-  }
-
-  const handleDurationChange = (event) => {
-    setSelectedDuration(event.target.value)
   }
 
   const renderDurationOptions = () => {
@@ -229,7 +334,7 @@ const DialogScheduleContent = ({
                           control={
                             <Checkbox
                               disabled={recurType !== 'week'}
-                              checked={Boolean(state[index])}
+                              checked={Boolean(selectedDays[index])}
                               onChange={handleCheckBoxChange}
                               name={`${index}`}
                             />
@@ -253,6 +358,7 @@ const DialogScheduleContent = ({
               minutesStep={30}
               label="開始時刻"
               value={startTime}
+              disabled={recurType === ''}
               onChange={handleStartTimeChange}
               renderInput={(props) => <TextField
                 {...props}
@@ -265,6 +371,7 @@ const DialogScheduleContent = ({
               select
               label="持續時間"
               value={selectedDuration}
+              disabled={recurType === ''}
               onChange={handleDurationChange}
               // sx={{
               //   transform: theme => `translate(0, ${theme.spacing(-1.5)})`,
@@ -290,6 +397,7 @@ const DialogScheduleContent = ({
               minutesStep={30}
               label="結束時刻"
               value={endTime}
+              disabled={recurType === ''}
               onChange={handleEndTimeChange}
               renderInput={(props) => <TextField
                 {...props}
@@ -307,8 +415,11 @@ const DialogScheduleContent = ({
             <DatePicker
               label="開始日期"
               mask="____/__/__"
+              maxDate={endRecur}
+              value={startRecur}
               inputFormat='yyyy/MM/dd'
-              onChange={() => { }}
+              disabled={recurType === ''}
+              onChange={handleStartRecurChange}
               renderInput={(props) => <TextField
                 {...props}
               />}
@@ -319,7 +430,9 @@ const DialogScheduleContent = ({
             <TextField
               select
               label="持續日數"
-              defaultValue=""
+              value={recurDuration}
+              onChange={handleRecurDurationChange}
+              disabled={recurType === ''}
               // sx={{
               //   transform: theme => `translate(0, ${theme.spacing(-1.5)})`,
               // }}
@@ -344,9 +457,12 @@ const DialogScheduleContent = ({
           <Grid item xs={12} md={4}>
             <DatePicker
               label="結束日期"
-              onChange={() => { }}
               mask="____/__/__"
+              minDate={startRecur}
+              value={endRecur}
               inputFormat='yyyy/MM/dd'
+              disabled={recurType === ''}
+              onChange={handleEndRecurChange}
               renderInput={(props) => <TextField
                 {...props}
               />}
@@ -365,7 +481,7 @@ const DialogScheduleContent = ({
           onClick={handleClose}>取消</Button>
         <Button
           // variant="contained" sx={{ color: 'background.default' }}
-          onClick={() => { }}>確認</Button>
+          onClick={handleSubmit}>確認</Button>
       </DialogActions>
     </Fragment>
   )
@@ -375,7 +491,6 @@ const DialogSchedule = ({
   open,
   handleClose,
 }) => {
-
 
   return (
     <Dialog

@@ -91,6 +91,6 @@ export const {
   replaceEmployeeEvents,
   toggleEmployeeEventCheckIn,
 } = employeesEventsSlice.actions
-export const selectEmployeeEvents = state => state.employeesEvents
+export const selectEmployeesEvents = state => state.employeesEvents
 
 export default employeesEventsSlice.reducer

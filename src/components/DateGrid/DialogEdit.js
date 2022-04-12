@@ -21,7 +21,7 @@ import { dummyEmployeeData } from '../../data/dummyEmployeeData'
 import { dummyPetData, dummyPetReserveType } from '../../data/dummyPetData'
 
 import { getOneEmployeeOccupiedTime } from '../../slices/employeesOccupiedTimeSlice'
-import { selectEmployeeEvents, addEmployeeEvent, updateEmployeeEvent, filterEventBetweenMs, filterEventByEmployeeId } from '../../slices/employeesEventsSlice'
+import { selectEmployeesEvents, addEmployeeEvent, updateEmployeeEvent, filterEventBetweenMs, filterEventByEmployeeId } from '../../slices/employeesEventsSlice'
 
 import {
   intervalMinute,
@@ -48,7 +48,7 @@ const DialogEditContent = ({
   currentEvent,
 }) => {
   const dispatch = useDispatch()
-  const originalEvents = useSelector(selectEmployeeEvents)
+  const originalEvents = useSelector(selectEmployeesEvents)
 
   const [creatingItem, setCreatingItem] = useState({
     ...currentEvent,
@@ -181,7 +181,7 @@ const DialogEditContent = ({
     }
     setErrors(omit(errors, 'startTime'))
 
-    if (selectedDuration && newValue
+    if (selectedDuration
       // && newValue.getTime() + selectedDuration * intervalMS <= 86400000 + selectDateMs + startInterval * intervalMS
     ) {
       setErrors(omit(errors, 'endTime'))
@@ -190,8 +190,7 @@ const DialogEditContent = ({
         endTime: new Date(newValue.getTime() + selectedDuration * intervalMS),
       }))
     } else {
-      setSelectedDuration('')
-      setCreatingItem((prev) => ({
+      setCreatingItem(prev => ({
         ...prev,
         endTime: null,
       }))

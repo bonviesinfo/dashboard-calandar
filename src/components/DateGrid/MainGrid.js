@@ -13,11 +13,11 @@ import BottomDrawer from './BottomDrawer'
 
 import { locateEvent, showInterval, getTimeIndex } from '../../utils/timeUtils'
 import { dummyEmployeeData } from '../../data/dummyEmployeeData'
-import { dummyScheduleData } from '../../data/dummyScheduleData'
 import { dummyPetReserveType } from '../../data/dummyPetData'
-import { updateEmployeeEvent, deleteEmployeeEvent, toggleEmployeeEventCheckIn, selectEmployeeEvents, filterEventByDate, filterAnonymousEvent, limitEventStartEnd } from '../../slices/employeesEventsSlice'
+import { updateEmployeeEvent, deleteEmployeeEvent, toggleEmployeeEventCheckIn, selectEmployeesEvents, filterEventByDate, filterAnonymousEvent, limitEventStartEnd } from '../../slices/employeesEventsSlice'
 import { replaceEmployeesEventsMapping } from '../../slices/employeesEventsMappingSlice'
 import { replaceEmployeesOccupiedTime, selectEmployeesOccupiedTime } from '../../slices/employeesOccupiedTimeSlice'
+import { selectEmployeesSchedule } from '../../slices/employeesScheduleSlice'
 
 import {
   startInterval,
@@ -42,8 +42,9 @@ const MainGrid = ({
 }) => {
   const theme = useTheme()
   const dispatch = useDispatch()
-  const originalEmployeesEvents = useSelector(selectEmployeeEvents)
+  const originalEmployeesEvents = useSelector(selectEmployeesEvents)
   const employeesOccupiedTime = useSelector(selectEmployeesOccupiedTime)
+  const employeesSchedule = useSelector(selectEmployeesSchedule)
 
   const [employees, setEmployees] = useState([])
   const [employeesStartTimeMapping, setEmployeesStartTimeMapping] = useState({})
@@ -92,11 +93,13 @@ const MainGrid = ({
 
   const employeesScheduleMapping = useMemo(() => {
     const newScheduleMapping = {}
-    dummyScheduleData.forEach(schedule => {
+    employeesSchedule.forEach(schedule => {
       newScheduleMapping[schedule.employeeId] = schedule
     })
     return newScheduleMapping
-  }, [])
+  }, [employeesSchedule])
+
+  console.log(employeesScheduleMapping)
 
   useEffect(() => {
     // 每個成員的事件表
