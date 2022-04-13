@@ -11,6 +11,7 @@ import MainGrid from '../../components/DateGrid/MainGrid'
 import PropsDatePicker from '../../components/UI/PropsDatePicker'
 import IOSSwitch from '../../components/UI/IOSSwitch'
 import DialogEdit from '../../components/DateGrid/DialogEdit'
+import TopBanner from '../../components/DateGrid/TopBanner'
 
 import ArrowBackIosRoundedIcon from '@mui/icons-material/ArrowBackIosRounded'
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded'
@@ -208,6 +209,8 @@ const DateGrid = () => {
         },
       }}
     >
+      <TopBanner />
+
       <Box
         sx={{
           display: 'flex',
