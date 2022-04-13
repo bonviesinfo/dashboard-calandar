@@ -2,6 +2,7 @@ import React, { useState, useRef, useMemo } from 'react'
 import { useTheme, alpha } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import FormGroup from '@mui/material/FormGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -14,6 +15,16 @@ import DialogEdit from '../../components/DateGrid/DialogEdit'
 import ArrowBackIosRoundedIcon from '@mui/icons-material/ArrowBackIosRounded'
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded'
 import { getZeroTime } from '../../utils/timeUtils'
+
+const numberToDayStringMapping = {
+  0: '星期日',
+  1: '星期一',
+  2: '星期二',
+  3: '星期三',
+  4: '星期四',
+  5: '星期五',
+  6: '星期六',
+}
 
 const DateGrid = () => {
   const theme = useTheme()
@@ -247,8 +258,8 @@ const DateGrid = () => {
                 setDateValue={setSelectDate}
                 handleDateChangeConfirm={handleDateChangeConfirm}
                 sx={{
-                  mr: 3,
-                  width: '11rem',
+                  mr: 1.5,
+                  width: '9rem',
                   '& .MuiInput-root': {
                     fontWeight: 'bold',
                     fontSize: '1.25rem',
@@ -258,6 +269,16 @@ const DateGrid = () => {
                   },
                 }}
               />
+              <Typography variant="h6" sx={{
+                m: 'auto',
+                fontWeight: 'bold',
+                letterSpacing: '0.05em',
+                // '&.MuiTypography-root': {
+                //   color: 'text.primary',
+                // },
+              }}>
+                {numberToDayStringMapping[selectDate.getDay()]}
+              </Typography>
 
               <IconButton onClick={toNextDay}>
                 <ArrowForwardIosRoundedIcon />

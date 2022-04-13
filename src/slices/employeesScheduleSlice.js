@@ -8,10 +8,15 @@ const employeesScheduleSlice = createSlice({
   initialState,
   reducers: {
     'updateEmployeeSchedule': (state, action) => {
-      return state.map(event => (event.employeeId === action.payload.employeeId)
-        ? action.payload
-        : event
-      )
+      return state.some(event => (event.employeeId === action.payload.employeeId))
+        ? state.map(event => (event.employeeId === action.payload.employeeId)
+          ? action.payload
+          : event
+        )
+        : [
+          ...state,
+          action.payload,
+        ]
     },
     'deleteEmployeeSchedule': (state, action) => {
       return state.filter(event => event.employeeId !== action.payload)

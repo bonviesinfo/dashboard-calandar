@@ -22,6 +22,7 @@ import TimePicker from '@mui/lab/TimePicker'
 import DatePicker from '@mui/lab/DatePicker'
 import Transition from '../UI/TransitionSlideUp'
 import { updateEmployeeSchedule, deleteEmployeeSchedule, selectEmployeesSchedule } from '../../slices/employeesScheduleSlice'
+import { calcMs } from '../../data/dummyScheduleData'
 import { dummyEmployeeData } from '../../data/dummyEmployeeData'
 import {
   intervalMinute,
@@ -49,6 +50,7 @@ const parseObjectTrueKeyToNumArray = (obj) => {
   return result
 }
 
+
 const DialogScheduleContent = ({
   handleClose,
 }) => {
@@ -71,11 +73,11 @@ const DialogScheduleContent = ({
   // console.log(selectedDuration)
 
   const handleSubmit = () => {
-    console.log('recurType', recurType)
-    console.log('selectedEmployeeId', selectedEmployeeId)
-    console.log('selectedDays', parseObjectTrueKeyToNumArray(selectedDays))
-    console.log('startTime', startTime && startTime.getTime())
-    console.log('startRecur', startRecur && startRecur.getTime())
+    // console.log('recurType', recurType)
+    // console.log('selectedEmployeeId', selectedEmployeeId)
+    // console.log('selectedDays', parseObjectTrueKeyToNumArray(selectedDays))
+    console.log('startTime', startTime)
+    console.log('startRecur', startRecur)
 
     if (recurType === '') {
       dispatch(deleteEmployeeSchedule(selectedEmployeeId))
@@ -84,10 +86,10 @@ const DialogScheduleContent = ({
 
     const newSchedule = {
       employeeId: selectedEmployeeId,
-      ...(startTime && { startTime: startTime.getTime() % 86400000 }),
-      ...(endTime && { endTime: endTime.getTime() % 86400000 }),
-      ...(startRecur && { startRecur: startRecur.getTime() % 86400000 }),
-      ...(endRecur && { endRecur: endRecur.getTime() % 86400000 }),
+      ...(startTime && { startTime: calcMs(0, startTime.getHours(), startTime.getMinutes()) }),
+      ...(endTime && { endTime: calcMs(0, endTime.getHours(), endTime.getMinutes()) }),
+      ...(startRecur && { startRecur: startRecur.getTime() }),
+      ...(endRecur && { endRecur: endRecur.getTime() + 86400000 }),
     }
 
     if (recurType === 'everyday') {
@@ -96,6 +98,8 @@ const DialogScheduleContent = ({
       newSchedule.daysOfWeek = parseObjectTrueKeyToNumArray(selectedDays)
       dispatch(updateEmployeeSchedule(newSchedule))
     }
+
+    handleClose()
   }
 
   // 時間日期相關 >>
