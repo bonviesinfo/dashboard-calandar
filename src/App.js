@@ -10,7 +10,6 @@ const DateGrid = lazy(() => import('./pages/DateGrid'))
 const TestCalendar = lazy(() => import('./pages/TestCalendar'))
 const ConsultationManage = lazy(() => import('./pages/ConsultationManage'))
 const PurchaseRecordsAccordion = lazy(() => import('./pages/PurchaseRecordsAccordion'))
-const DnDTest = lazy(() => import('./pages/DnDTest'))
 
 const App = () => {
   const { CustomizedThemeProvider } = useCustomizedTheme()
@@ -30,7 +29,6 @@ const App = () => {
                 <Route exact path="/calendar" element={<TestCalendar />} />
                 <Route exact path="/consultation" element={<ConsultationManage />} />
                 <Route exact path="/purchase-record" element={<PurchaseRecordsAccordion />} />
-                <Route exact path="/dnd" element={<DnDTest />} />
               </Routes>
             </Suspense>
           </Box>

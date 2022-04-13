@@ -2,16 +2,16 @@ import React, { useState, useRef, useMemo } from 'react'
 import { useTheme, alpha } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import FormGroup from '@mui/material/FormGroup'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
-import FormGroup from '@mui/material/FormGroup'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import BottomFab from '../../components/DateGrid/BottomFab'
-import MainGrid from '../../components/DateGrid/MainGrid'
-import PropsDatePicker from '../../components/UI/PropsDatePicker'
 import IOSSwitch from '../../components/UI/IOSSwitch'
-import DialogEdit from '../../components/DateGrid/DialogEdit'
+import MainGrid from '../../components/DateGrid/MainGrid'
 import TopBanner from '../../components/DateGrid/TopBanner'
+import BottomFab from '../../components/DateGrid/BottomFab'
+import DialogEdit from '../../components/DateGrid/DialogEdit'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import PropsDatePicker from '../../components/UI/PropsDatePicker'
 
 import ArrowBackIosRoundedIcon from '@mui/icons-material/ArrowBackIosRounded'
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded'
@@ -261,7 +261,7 @@ const DateGrid = () => {
                 setDateValue={setSelectDate}
                 handleDateChangeConfirm={handleDateChangeConfirm}
                 sx={{
-                  mr: 1.5,
+                  mr: 2,
                   width: '9rem',
                   '& .MuiInput-root': {
                     fontWeight: 'bold',
@@ -273,7 +273,8 @@ const DateGrid = () => {
                 }}
               />
               <Typography variant="h6" sx={{
-                m: 'auto',
+                my: 'auto',
+                mr: 0.5,
                 fontWeight: 'bold',
                 letterSpacing: '0.05em',
                 // '&.MuiTypography-root': {
