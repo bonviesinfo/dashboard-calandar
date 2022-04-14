@@ -98,14 +98,14 @@ const DialogScheduleContent = ({
     setErrors(omit(errors, 'endTime'))
     if (selectedDuration) {
       setStartTime(new Date(newValue.getTime() - Number(selectedDuration) * intervalMS))
-    } else if (startTime && (startTime.getTime() > newValue.getTime())) {
+    } else if (validateDateType(startTime) && (startTime.getTime() > newValue.getTime())) {
       setEndTime(new Date(newValue.getTime() + 86400000))
     }
   }
 
   const handleDurationChange = (event) => {
     setSelectedDuration(event.target.value)
-    if (startTime) {
+    if (validateDateType(startTime)) {
       setEndTime(new Date(startTime.getTime() + Number(event.target.value) * intervalMS))
     }
   }
@@ -140,7 +140,7 @@ const DialogScheduleContent = ({
 
   const handleRecurDurationChange = (event) => {
     setRecurDuration(event.target.value)
-    if (startRecur) {
+    if (validateDateType(startRecur)) {
       const newEndRecurMs = new Date(
         startRecur.getTime() + (Number(event.target.value) - 1) * 86400000
       ).setHours(0, 0, 1, 0)
