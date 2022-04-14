@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { omit } from 'lodash-es'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
@@ -21,7 +21,7 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import TimePicker from '@mui/lab/TimePicker'
 import DatePicker from '@mui/lab/DatePicker'
 import Transition from '../UI/TransitionSlideUp'
-import { updateEmployeeSchedule, deleteEmployeeSchedule, selectEmployeesSchedule } from '../../slices/employeesScheduleSlice'
+import { updateEmployeeSchedule, deleteEmployeeSchedule } from '../../slices/employeesScheduleSlice'
 import { calcMs } from '../../data/dummyScheduleData'
 import { dummyEmployeeData } from '../../data/dummyEmployeeData'
 import {
@@ -55,8 +55,6 @@ const DialogScheduleContent = ({
   handleClose,
 }) => {
   const dispatch = useDispatch()
-  const employeesSchedule = useSelector(selectEmployeesSchedule)
-  console.log(employeesSchedule)
 
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null)
   const [recurType, setRecurType] = useState('')
@@ -67,39 +65,11 @@ const DialogScheduleContent = ({
   const [startRecur, setStartRecur] = useState(null)
   const [endRecur, setEndRecur] = useState(null)
   const [recurDuration, setRecurDuration] = useState('')
+  const [errors, setErrors] = useState({})
 
-  // console.log('startRecur', startRecur)
-  // console.log('endRecur', endRecur)
-  // console.log(selectedDuration)
-
-  const handleSubmit = () => {
-    // console.log('recurType', recurType)
-    // console.log('selectedEmployeeId', selectedEmployeeId)
-    // console.log('selectedDays', parseObjectTrueKeyToNumArray(selectedDays))
-    console.log('startTime', startTime)
-    console.log('startRecur', startRecur)
-
-    if (recurType === '') {
-      dispatch(deleteEmployeeSchedule(selectedEmployeeId))
-      return
-    }
-
-    const newSchedule = {
-      employeeId: selectedEmployeeId,
-      ...(startTime && { startTime: calcMs(0, startTime.getHours(), startTime.getMinutes()) }),
-      ...(endTime && { endTime: calcMs(0, endTime.getHours(), endTime.getMinutes()) }),
-      ...(startRecur && { startRecur: startRecur.getTime() }),
-      ...(endRecur && { endRecur: endRecur.getTime() + 86400000 }),
-    }
-
-    if (recurType === 'everyday') {
-      dispatch(updateEmployeeSchedule(newSchedule))
-    } else if (recurType === 'week') {
-      newSchedule.daysOfWeek = parseObjectTrueKeyToNumArray(selectedDays)
-      dispatch(updateEmployeeSchedule(newSchedule))
-    }
-
-    handleClose()
+  const handleEmployeeChange = (event) => {
+    setErrors(omit(errors, 'employeeId'))
+    setSelectedEmployeeId(event.target.value)
   }
 
   // 時間日期相關 >>
@@ -113,7 +83,7 @@ const DialogScheduleContent = ({
   const handleStartTimeChange = newValue => {
     setStartTime(newValue)
     if (!validateDateType(newValue)) return
-
+    setErrors(omit(errors, 'startTime'))
     if (selectedDuration) {
       setEndTime(new Date(newValue.getTime() + Number(selectedDuration) * intervalMS))
     } else if (endTime && (endTime.getTime() < newValue.getTime())) {
@@ -125,7 +95,7 @@ const DialogScheduleContent = ({
   const handleEndTimeChange = newValue => {
     setEndTime(newValue)
     if (!validateDateType(newValue)) return
-
+    setErrors(omit(errors, 'endTime'))
     if (selectedDuration) {
       setStartTime(new Date(newValue.getTime() - Number(selectedDuration) * intervalMS))
     } else if (startTime && (startTime.getTime() > newValue.getTime())) {
@@ -143,6 +113,8 @@ const DialogScheduleContent = ({
   const handleStartRecurChange = newValue => {
     setStartRecur(newValue)
     if (!validateDateType(newValue)) return
+    setErrors(omit(errors, 'startRecur'))
+
     newValue.setHours(0, 0, 0, 0)
     setStartRecur(newValue)
     if (recurDuration) {
@@ -154,6 +126,8 @@ const DialogScheduleContent = ({
   const handleEndRecurChange = newValue => {
     setEndRecur(newValue)
     if (!validateDateType(newValue)) return
+    setErrors(omit(errors, 'endRecur'))
+
     newValue.setHours(0, 0, 1, 0)
     setEndRecur(newValue)
 
@@ -200,6 +174,51 @@ const DialogScheduleContent = ({
       })
   }
 
+  const validateForm = () => {
+    const newErrors = {}
+    const recurCheck = Boolean(recurType)
+
+    if (!selectedEmployeeId) newErrors.employeeId = '提醒: 必須選擇員工'
+    if (recurCheck && !startTime) newErrors.startTime = '提醒: 必須選擇開始時間'
+    if (startTime && !validateDateType(startTime)) newErrors.startTime = '提醒: 開始時間格式錯誤'
+    if (recurCheck && !endTime) newErrors.endTime = '提醒: 必須選擇結束時間'
+    if (endTime && !validateDateType(endTime)) newErrors.endTime = '提醒: 結束時間格式錯誤'
+
+    if (startRecur && !validateDateType(startRecur)) newErrors.startRecur = '提醒:開始日期格式錯誤'
+    if (endRecur && !validateDateType(endRecur)) newErrors.endRecur = '提醒: 結束時間格式錯誤'
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length > 0
+  }
+
+  console.log(errors)
+
+  const handleSubmit = () => {
+    if (validateForm()) return
+    console.log('endTime', endTime)
+    console.log('endRecur', endRecur)
+
+    if (recurType === '') {
+      dispatch(deleteEmployeeSchedule(selectedEmployeeId))
+      return
+    }
+
+    const newSchedule = {
+      employeeId: selectedEmployeeId,
+      ...(startTime && { startTime: calcMs(0, startTime.getHours(), startTime.getMinutes()) }),
+      ...(endTime && { endTime: calcMs(0, endTime.getHours(), endTime.getMinutes()) }),
+      ...(startRecur && { startRecur: startRecur.getTime() }),
+      ...(endRecur && { endRecur: endRecur.getTime() + 86400000 }),
+      ...((recurType === 'week') && { daysOfWeek: parseObjectTrueKeyToNumArray(selectedDays) }),
+    }
+
+    console.log('newSchedule', newSchedule)
+
+    dispatch(updateEmployeeSchedule(newSchedule))
+
+    handleClose()
+  }
+
   const renderDurationOptions = () => {
     return Array.from({ length: 24 * timePerHour / 2 }).map((item, index) => {
       const newIndex = (index + 1) * 2
@@ -238,7 +257,9 @@ const DialogScheduleContent = ({
               select
               label="服務人員"
               value={selectedEmployeeId || ''}
-              onChange={(e) => setSelectedEmployeeId(e.target.value)}
+              onChange={handleEmployeeChange}
+              error={!!errors.employeeId}
+              helperText={errors.employeeId}
               SelectProps={{
                 MenuProps: {
                   sx: { '& .MuiPaper-root': { width: 0, } },
@@ -368,6 +389,8 @@ const DialogScheduleContent = ({
               onChange={handleStartTimeChange}
               renderInput={(props) => <TextField
                 {...props}
+                error={!!errors.startTime || props.error}
+                helperText={errors.startTime || props.helperText}
               />}
             />
           </Grid>
@@ -407,6 +430,8 @@ const DialogScheduleContent = ({
               onChange={handleEndTimeChange}
               renderInput={(props) => <TextField
                 {...props}
+                error={!!errors.endTime || props.error}
+                helperText={errors.endTime || props.helperText}
               />}
             />
           </Grid>
@@ -428,6 +453,8 @@ const DialogScheduleContent = ({
               onChange={handleStartRecurChange}
               renderInput={(props) => <TextField
                 {...props}
+                error={!!errors.startRecur || props.error}
+                helperText={errors.startRecur || props.helperText}
               />}
             />
           </Grid>
@@ -471,12 +498,14 @@ const DialogScheduleContent = ({
               onChange={handleEndRecurChange}
               renderInput={(props) => <TextField
                 {...props}
+                error={!!errors.endRecur || props.error}
+                helperText={errors.endRecur || props.helperText}
               />}
             />
           </Grid>
         </Grid>
         <FormHelperText>
-          若不選擇「日期範圍」則將無限延續，也可在此單日排班
+          若不選擇「日期範圍」則將無限延續。可在此單日排班，若開始與結束日期同日則表示單日排班
         </FormHelperText>
 
       </DialogContent>

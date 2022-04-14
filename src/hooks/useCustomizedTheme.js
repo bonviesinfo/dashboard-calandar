@@ -123,7 +123,7 @@ const useCustomizedTheme = () => {
       ? 'dark'
       : 'light'
   )
-  const [pattern, setPattern] = useState('teal')
+  const [pattern, setPattern] = useState('red')
 
   const colorMode = useMemo(
     () => ({

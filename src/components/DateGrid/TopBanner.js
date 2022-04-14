@@ -1,17 +1,20 @@
 import React from 'react'
+// import { styled } from '@mui/material/styles'
 import { useSpring, animated } from 'react-spring'
 import { useTheme, alpha } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import background1 from '../../images/hookah.png'
 import dogBg from '../../images/dog-bg.png'
 
+// const AnimatedBox = styled(props => <animated.div {...props} />)(() => { })
+
 
 const TopBanner = () => {
   const theme = useTheme()
   // const [flipA, setFlipA] = useState(false)
   const styles = useSpring({
-    from: { x: 0 },
-    to: { x: 270 },
+    from: { x: '-50%' },
+    to: { x: '25%' },
     loop: { reverse: true },
     // reset: true,
     // reverse: flipA,
@@ -32,15 +35,15 @@ const TopBanner = () => {
     },
   })
 
-  const yStyles = useSpring({
+  const [yStyles] = useSpring(() => ({
     loop: { reverse: true },
-    from: { y: 90 },
-    to: { y: -120 },
+    from: { y: '20%' },
+    to: { y: '-20%' },
     delay: 150,
     config: {
       duration: 2400
     },
-  })
+  }))
 
 
   return (
@@ -51,6 +54,7 @@ const TopBanner = () => {
         justifyContent: 'center',
         width: '100%',
         height: '100vh',
+        overflow: 'hidden',
       }}
     >
       <Box className="top-banner-content"
@@ -82,9 +86,10 @@ const TopBanner = () => {
         >
           <Box className="hookah-wrapper"
             sx={{
+              position: 'relative',
               width: '30%',
-              height: '70%',
-              bgcolor: theme.palette.text.third,
+              height: '60%',
+              bgcolor: theme.palette.background.paper,
               borderBottomRightRadius: '50%',
             }}
           >
@@ -93,8 +98,8 @@ const TopBanner = () => {
                 position: 'absolute',
                 top: '0%',
                 left: '0%',
-                width: '100%',
-                height: '60%',
+                width: '150%',
+                height: '90%',
                 transform: 'translate(-50%, 0%)',
                 borderRadius: 16,
                 background: `url(${dogBg}) no-repeat center`,
@@ -116,7 +121,7 @@ const TopBanner = () => {
             position: 'absolute',
             width: '66%',
             height: '62%',
-            top: '66%',
+            top: '60%',
             left: '52%',
             transform: 'translate(-50%, -50%)',
             // border: `2px dashed ${theme.palette.secondary.light}`,
@@ -124,16 +129,39 @@ const TopBanner = () => {
         >
           <Box className="dachshund-wrapper"
             sx={{
+              position: 'relative',
               width: '70%',
               height: '100%',
-              bgcolor: theme.palette.secondary.light,
               borderRadius: '50%',
+              bgcolor: theme.palette.secondary.light,
               transform: 'rotateY(12deg) rotateY(6deg)',
+
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
+            <Box
+              sx={{
+                height: '85%',
+                flex: '0 0 85%',
+                borderRadius: '50%',
+                bgcolor: theme.palette.background.paper,
+              }}
+            >
+              <Box
+                sx={{
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: '50%',
+                  bgcolor: alpha(theme.palette.primary.main, 0.8),
+                }}
+              ></Box>
+            </Box>
+
             <animated.div
               style={{
-                position: 'relative',
+                position: 'absolute',
                 width: '100%',
                 height: '100%',
                 ...yStyles,
@@ -143,10 +171,10 @@ const TopBanner = () => {
               <animated.div
                 style={{
                   position: 'absolute',
-                  top: '60%',
-                  left: '8%',
-                  width: '55%',
-                  paddingTop: '55%',
+                  top: '66%',
+                  left: '2%',
+                  width: '50%',
+                  paddingTop: '50%',
                   transform: 'translate(-50%, -50%)',
                   borderRadius: 16,
                   background: `url(${background1}) no-repeat center`,
@@ -157,8 +185,9 @@ const TopBanner = () => {
 
               <animated.div
                 style={{
+                  zIndex: 10,
                   position: 'absolute',
-                  top: '0%',
+                  top: '4%',
                   left: '50%',
                   width: '70%',
                   paddingTop: '70%',
@@ -175,10 +204,10 @@ const TopBanner = () => {
               <animated.div
                 style={{
                   position: 'absolute',
-                  top: '60%',
-                  right: '8%',
-                  width: '55%',
-                  paddingTop: '55%',
+                  top: '66%',
+                  right: '2%',
+                  width: '60%',
+                  paddingTop: '60%',
                   transform: 'translate(50%, -50%)',
                   borderRadius: 16,
                   background: `url(${background1}) no-repeat center`,
@@ -194,7 +223,7 @@ const TopBanner = () => {
         </Box>
 
       </Box>
-    </Box>
+    </Box >
   )
 }
 
