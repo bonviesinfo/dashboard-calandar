@@ -1,3 +1,5 @@
+import { getOtherDateTimeMs } from './dummyEmployeeData'
+
 export const calcMs = (day, hour, min, sec, ms) => {
   let outputMS = 0
   day && (outputMS += day * 24 * 60 * 60 * 1000)
@@ -27,6 +29,8 @@ export const dummyScheduleData = [
     employeeId: 'cm3',
     startTime: calcMs(0, 9, 30),
     endTime: calcMs(0, 19),
+    startRecur: getOtherDateTimeMs(0, 0),
+    endRecur: getOtherDateTimeMs(1, 0, 1),
   },
   {
     id: 's4',

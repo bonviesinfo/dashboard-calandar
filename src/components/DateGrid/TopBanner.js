@@ -10,8 +10,8 @@ const TopBanner = () => {
   const theme = useTheme()
   // const [flipA, setFlipA] = useState(false)
   const styles = useSpring({
-    from: { y: 0, x: 0 },
-    to: { y: 50, x: 270 },
+    from: { x: 0 },
+    to: { x: 270 },
     loop: { reverse: true },
     // reset: true,
     // reverse: flipA,
@@ -32,15 +32,15 @@ const TopBanner = () => {
     },
   })
 
-  // const yStyles = useSpring({
-  //   loop: { reverse: true },
-  //   from: { y: 90 },
-  //   to: { y: -120 },
-  //   delay: 150,
-  //   config: {
-  //     duration: 2400
-  //   },
-  // })
+  const yStyles = useSpring({
+    loop: { reverse: true },
+    from: { y: 90 },
+    to: { y: -120 },
+    delay: 150,
+    config: {
+      duration: 2400
+    },
+  })
 
 
   return (
@@ -82,9 +82,9 @@ const TopBanner = () => {
         >
           <Box className="hookah-wrapper"
             sx={{
-              width: '40%',
+              width: '30%',
               height: '70%',
-              bgcolor: theme.palette.text.mid,
+              bgcolor: theme.palette.text.third,
               borderBottomRightRadius: '50%',
             }}
           >
@@ -115,9 +115,9 @@ const TopBanner = () => {
 
             position: 'absolute',
             width: '66%',
-            height: '66%',
-            top: '65%',
-            left: '55%',
+            height: '62%',
+            top: '66%',
+            left: '52%',
             transform: 'translate(-50%, -50%)',
             // border: `2px dashed ${theme.palette.secondary.light}`,
           }}
@@ -136,7 +136,7 @@ const TopBanner = () => {
                 position: 'relative',
                 width: '100%',
                 height: '100%',
-                // ...yStyles,
+                ...yStyles,
               }}
             >
 

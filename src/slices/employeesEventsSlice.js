@@ -3,8 +3,8 @@ import { dummyEventData } from '../data/dummyEmployeeData'
 import { startHour, intervalMS } from '../constants/dateGrid'
 
 export const filterEventByDate = (events, dateMs) => {
-  const startCheckMs = dateMs + startHour * 60 * 60 * 1000
-  const endCheckMs = dateMs + (startHour + 24) * 60 * 60 * 1000
+  const startCheckMs = dateMs + startHour * 3600000
+  const endCheckMs = dateMs + (startHour + 24) * 3600000
 
   return events.filter(event => {
     const eventStartMs = new Date(event.start).getTime()

@@ -17,13 +17,14 @@ import { dummyPetReserveType } from '../../data/dummyPetData'
 import { updateEmployeeEvent, deleteEmployeeEvent, toggleEmployeeEventCheckIn, selectEmployeesEvents, filterEventByDate, filterAnonymousEvent, limitEventStartEnd } from '../../slices/employeesEventsSlice'
 import { replaceEmployeesEventsMapping } from '../../slices/employeesEventsMappingSlice'
 import { replaceEmployeesOccupiedTime, selectEmployeesOccupiedTime } from '../../slices/employeesOccupiedTimeSlice'
-import { selectEmployeesSchedule } from '../../slices/employeesScheduleSlice'
+import { selectEmployeesSchedule, filterSchedulesByGridStart } from '../../slices/employeesScheduleSlice'
 
 import {
   startInterval,
   timePerHour,
   intervalMS,
   gridLength,
+  startHour,
   nthNum,
 } from '../../constants/dateGrid'
 
@@ -44,7 +45,7 @@ const MainGrid = ({
   const dispatch = useDispatch()
   const originalEmployeesEvents = useSelector(selectEmployeesEvents)
   const employeesOccupiedTime = useSelector(selectEmployeesOccupiedTime)
-  const employeesSchedule = useSelector(selectEmployeesSchedule)
+  const originalEmployeesSchedule = useSelector(selectEmployeesSchedule)
 
   const [employees, setEmployees] = useState([])
   const [employeesStartTimeMapping, setEmployeesStartTimeMapping] = useState({})
@@ -83,13 +84,11 @@ const MainGrid = ({
       ), selectDateMs)
   ), [selectDateMs, originalEmployeesEvents])
 
-  const petReserveTypeMapping = useMemo(() => {
-    const newPetReserveTypeMapping = {}
-    dummyPetReserveType.forEach((petReserveType) => {
-      newPetReserveTypeMapping[petReserveType.id] = petReserveType
-    })
-    return newPetReserveTypeMapping
-  }, [])
+  const employeesSchedule = useMemo(() => {
+    return filterSchedulesByGridStart(originalEmployeesSchedule, selectDateMs + startHour * 3600000)
+  }, [selectDateMs, originalEmployeesSchedule])
+
+  console.log(employeesSchedule)
 
   const employeesScheduleMapping = useMemo(() => {
     const newScheduleMapping = {}
@@ -99,7 +98,13 @@ const MainGrid = ({
     return newScheduleMapping
   }, [employeesSchedule])
 
-  console.log(employeesScheduleMapping)
+  const petReserveTypeMapping = useMemo(() => {
+    const newPetReserveTypeMapping = {}
+    dummyPetReserveType.forEach((petReserveType) => {
+      newPetReserveTypeMapping[petReserveType.id] = petReserveType
+    })
+    return newPetReserveTypeMapping
+  }, [])
 
   useEffect(() => {
     // 每個成員的事件表

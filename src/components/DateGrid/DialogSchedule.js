@@ -167,7 +167,9 @@ const DialogScheduleContent = ({
   const handleRecurDurationChange = (event) => {
     setRecurDuration(event.target.value)
     if (startRecur) {
-      const newEndRecurMs = new Date(startRecur.getTime() + Number(event.target.value) * 86400000).setHours(0, 0, 1, 0)
+      const newEndRecurMs = new Date(
+        startRecur.getTime() + (Number(event.target.value) - 1) * 86400000
+      ).setHours(0, 0, 1, 0)
       setEndRecur(new Date(newEndRecurMs))
     }
   }
