@@ -12,6 +12,7 @@ import dogBg from '../../images/dog-bg.png'
 const TopBanner = () => {
   const theme = useTheme()
   // const [flipA, setFlipA] = useState(false)
+
   const styles = useSpring({
     from: { x: '-50%' },
     to: { x: '25%' },
@@ -57,6 +58,7 @@ const TopBanner = () => {
         overflow: 'hidden',
       }}
     >
+
       <Box className="top-banner-content"
         sx={{
           position: 'relative',
@@ -65,7 +67,6 @@ const TopBanner = () => {
           bgcolor: alpha(theme.palette.primary.main, 0.8),
         }}
       >
-
 
         <Box
           className="hookah-boundary"

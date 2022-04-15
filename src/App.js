@@ -10,6 +10,7 @@ const DateGrid = lazy(() => import('./pages/DateGrid'))
 const TestCalendar = lazy(() => import('./pages/TestCalendar'))
 const ConsultationManage = lazy(() => import('./pages/ConsultationManage'))
 const PurchaseRecordsAccordion = lazy(() => import('./pages/PurchaseRecordsAccordion'))
+const SpringDemo = lazy(() => import('./pages/SpringDemo'))
 
 const App = () => {
   const { CustomizedThemeProvider } = useCustomizedTheme()
@@ -29,6 +30,7 @@ const App = () => {
                 <Route exact path="/calendar" element={<TestCalendar />} />
                 <Route exact path="/consultation" element={<ConsultationManage />} />
                 <Route exact path="/purchase-record" element={<PurchaseRecordsAccordion />} />
+                <Route exact path="/spring-demo" element={<SpringDemo />} />
               </Routes>
             </Suspense>
           </Box>
