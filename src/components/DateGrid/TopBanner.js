@@ -15,7 +15,7 @@ const TopBanner = () => {
 
   const styles = useSpring({
     from: { x: '-50%' },
-    to: { x: '25%' },
+    x: '25%',
     loop: { reverse: true },
     // reset: true,
     // reverse: flipA,
@@ -29,7 +29,7 @@ const TopBanner = () => {
   const rotateStyles = useSpring({
     loop: { reverse: true },
     from: { rotateZ: -15 },
-    to: { rotateZ: 15 },
+    rotateZ: 15,
     delay: 50,
     config: {
       duration: 800
@@ -39,7 +39,7 @@ const TopBanner = () => {
   const [yStyles] = useSpring(() => ({
     loop: { reverse: true },
     from: { y: '20%' },
-    to: { y: '-20%' },
+    y: '-20%',
     delay: 150,
     config: {
       duration: 2400

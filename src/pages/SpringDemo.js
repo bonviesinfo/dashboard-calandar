@@ -1,32 +1,27 @@
-import React, { useState } from 'react'
-import { useSpring, animated, config } from 'react-spring'
+import React, { useState, forwardRef } from 'react'
+import { useSpring, animated, config, to } from 'react-spring'
 import { useTheme, alpha } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 
-const words = ['We', 'came.', 'We', 'saw.', 'We', 'kicked', 'its', 'ass.']
+const MyAnimatedComponent = animated(({ value }) => <div>{value}</div>)
+const MyAnimatedComponentWithRefForwarding = animated(
+  forwardRef(({ value }, ref) => <div ref={ref}>{value}</div>)
+)
+
 
 const SpringDemo = () => {
   const theme = useTheme()
 
-  const [flip, set] = useState(false)
-  const { number } = useSpring({
-    reset: true,
-    reverse: flip,
-    from: { number: 0 },
-    number: 1,
-    delay: 200,
-    config: config.molasses,
-    onRest: () => set(!flip),
-  })
-
-  const { scroll } = useSpring({
-    scroll: (words.length - 1) * 50,
-    from: { scroll: 0 },
-    reset: true,
-    reverse: flip,
-    delay: 200,
-    config: config.molasses,
-    onRest: () => set(!flip),
+  const styles = useSpring({
+    from: { x: 0, y: 0 },
+    x: 200,
+    y: 200,
+    // opacity: 1,
+    // cancel: key => key !== 'x',
+    config: { duration: 500 },
+    loop: {
+      reverse: true,
+    },
   })
 
 
@@ -43,26 +38,15 @@ const SpringDemo = () => {
         bgcolor: alpha(theme.palette.primary.main, 0.3),
       }}
     >
-
-      <animated.div style={{ fontSize: "2rem", fontWeight: 'bold' }}>{number.to(n => n.toFixed(2))}</animated.div>
-
       <animated.div
         style={{
-          position: 'relative',
-          width: '100%',
-          height: 60,
-          overflow: 'auto',
-          fontSize: '0.5em',
+          width: 80,
+          height: 80,
+          backgroundColor: '#46e891',
+          borderRadius: 16,
+          ...styles,
         }}
-        scrollTop={scroll}>
-        {words.map((word, i) => (
-          <div
-            key={`${word}_${i}`}
-            style={{ width: '100%', height: 50, textAlign: 'center' }}>
-            {word}
-          </div>
-        ))}
-      </animated.div>
+      />
 
 
     </Box>

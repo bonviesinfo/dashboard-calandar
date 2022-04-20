@@ -15,7 +15,7 @@ const getDesignTokens = (mode, pattern) => {
       primary = {
         editingBg: '#f8f9a4',
         main: red[300],
-        text: '#f5673c',
+        text: '#d9564a',
         editingText: '#ff756a',
       }
       break
