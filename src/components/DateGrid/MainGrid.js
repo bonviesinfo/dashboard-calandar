@@ -88,8 +88,6 @@ const MainGrid = ({
     return filterSchedulesByGridStart(originalEmployeesSchedule, selectDateMs + startHour * 3600000)
   }, [selectDateMs, originalEmployeesSchedule])
 
-  console.log(employeesSchedule)
-
   const employeesScheduleMapping = useMemo(() => {
     const newScheduleMapping = {}
     employeesSchedule.forEach(schedule => {

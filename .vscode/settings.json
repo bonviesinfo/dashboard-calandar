@@ -3,6 +3,7 @@
     "ampm",
     "bgcolor",
     "describedby",
-    "fadest"
+    "fadest",
+    "gapi"
   ]
 }

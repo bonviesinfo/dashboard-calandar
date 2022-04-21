@@ -1,12 +1,12 @@
-import React, { useState, forwardRef } from 'react'
-import { useSpring, animated, config, to } from 'react-spring'
+import React from 'react'
+import { useSpring, animated } from 'react-spring'
 import { useTheme, alpha } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 
-const MyAnimatedComponent = animated(({ value }) => <div>{value}</div>)
-const MyAnimatedComponentWithRefForwarding = animated(
-  forwardRef(({ value }, ref) => <div ref={ref}>{value}</div>)
-)
+// const MyAnimatedComponent = animated(({ value }) => <div>{value}</div>)
+// const MyAnimatedComponentWithRefForwarding = animated(
+//   forwardRef(({ value }, ref) => <div ref={ref}>{value}</div>)
+// )
 
 
 const SpringDemo = () => {

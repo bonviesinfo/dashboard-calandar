@@ -11,6 +11,7 @@ const TestCalendar = lazy(() => import('./pages/TestCalendar'))
 const ConsultationManage = lazy(() => import('./pages/ConsultationManage'))
 const PurchaseRecordsAccordion = lazy(() => import('./pages/PurchaseRecordsAccordion'))
 const SpringDemo = lazy(() => import('./pages/SpringDemo'))
+const GoogleCalendarDemo = lazy(() => import('./pages/GoogleCalendarDemo'))
 
 const App = () => {
   const { CustomizedThemeProvider } = useCustomizedTheme()
@@ -31,6 +32,7 @@ const App = () => {
                 <Route exact path="/consultation" element={<ConsultationManage />} />
                 <Route exact path="/purchase-record" element={<PurchaseRecordsAccordion />} />
                 <Route exact path="/spring-demo" element={<SpringDemo />} />
+                <Route exact path="/google-calendar" element={<GoogleCalendarDemo />} />
               </Routes>
             </Suspense>
           </Box>
