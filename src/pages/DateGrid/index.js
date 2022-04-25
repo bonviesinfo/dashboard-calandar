@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import IOSSwitch from '../../components/UI/IOSSwitch'
 import MainGrid from '../../components/DateGrid/MainGrid'
-import TopBanner from '../../components/DateGrid/TopBanner'
+// import TopBanner from '../../components/DateGrid/TopBanner'
 import BottomFab from '../../components/DateGrid/BottomFab'
 import DialogEdit from '../../components/DateGrid/DialogEdit'
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -209,7 +209,7 @@ const DateGrid = () => {
         },
       }}
     >
-      <TopBanner />
+      {/* <TopBanner /> */}
 
       <Box
         sx={{
