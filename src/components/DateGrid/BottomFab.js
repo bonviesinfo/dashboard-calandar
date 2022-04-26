@@ -49,7 +49,7 @@ const BottomFab = ({
         alignItems: 'center',
         right: '3rem',
         position: 'fixed',
-        bottom: bottomOpen ? 'calc(180px - 1.25rem)' : '2.5rem',
+        bottom: bottomOpen ? 'calc(210px - 1.25rem)' : '2.5rem',
         transition: theme.transitions.create('bottom', {
           easing: theme.transitions.easing.easeOut,
           duration: theme.transitions.duration.enteringScreen,

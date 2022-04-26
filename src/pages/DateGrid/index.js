@@ -89,11 +89,6 @@ const DateGrid = () => {
         bgcolor: 'text.light',
         userSelect: 'none',
         position: 'relative',
-        '& .event-card-wrapper': {
-          zIndex: 4,
-          width: '80%',
-          position: 'relative',
-        },
         '& .subInfo': {
           position: 'absolute',
           top: theme.spacing(-0.5),
@@ -106,34 +101,69 @@ const DateGrid = () => {
             bgcolor: alpha(theme.palette.primary.light, 0.6),
           },
         },
-        '& .event-card': {
-          boxShadow: 2,
-          borderRadius: 3,
+        '& .right-tags': {
+          position: 'absolute',
+          right: 0,
+          top: 8,
+          weight: '30px',
+          height: '100%',
+          maxHeight: 'calc(100% - 16px)',
+          overflowY: 'auto',
+          transform: 'translate(100%)',
+          // border: `1px solid ${alpha(theme.palette.text.primary, 0.15)}`,
+        },
+        '& .right-tag': {
+          py: 0.75,
+          px: 0.5,
+          mb: 0.5,
           display: 'flex',
-          cursor: 'grab',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderBottomRightRadius: '20%',
+          borderTopRightRadius: '20%',
+          bgcolor: 'primary.main',
+          borderBottom: `1px solid ${theme.palette.text.third}`,
+          '& .MuiSvgIcon-root': {
+            color: 'background.default',
+          },
+        },
+        '& .event-card-wrapper': {
+          zIndex: 4,
+          width: '80%',
+          position: 'relative',
+          '& .event-card': {
+            height: '100%',
+            boxShadow: 2,
+            borderRadius: 3,
+            display: 'flex',
+            cursor: 'grab',
+          },
           '&.dragging': {
             pointerEvents: 'none',
           },
-          '&.cross': {
+          '&.cross .event-card': {
             boxShadow: 0,
             bgcolor: 'text.lightest',
             cursor: 'not-allowed',
             border: `2px solid ${alpha(theme.palette.primary.light, 0.7)}`,
           },
-          '&.cross .MuiTypography-h5': {
+          '&.cross .event-card .MuiTypography-h5': {
             color: 'primary.dark',
           },
-          '&.cross .card-container': {
+          '&.cross .event-card .card-container': {
             bgcolor: 'unset',
           },
-          '&.check-in': {
+          '&.check-in .event-card': {
             bgcolor: 'background.default',
           },
-          '&.check-in .card-container': {
+          '&.check-in .event-card .card-container': {
             bgcolor: alpha(theme.palette.primary.editingBg, 0.15),
           },
-          '&.check-in .actions': {
+          '&.check-in .event-card .actions': {
             bgcolor: alpha(theme.palette.secondary.light, 0.5),
+          },
+          '&.check-in .right-tag': {
+            bgcolor: alpha(theme.palette.secondary.main, 0.8),
           },
         },
         '& .card-container': {

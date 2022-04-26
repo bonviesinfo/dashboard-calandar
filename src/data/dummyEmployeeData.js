@@ -69,6 +69,7 @@ export const dummyEventData = [
       petCategory: 'Cat',
       avatar: 'https://live.staticflickr.com/70/226625536_551abc895a_n.jpg',
     },
+    isPayed: true,
   },
   {
     id: 'ev2',
@@ -77,7 +78,6 @@ export const dummyEventData = [
     remark: '吃韓式炸雞',
     start: getSomeDateTimeMs(10, 30),
     end: getSomeDateTimeMs(12),
-    isCheckIn: true,
     pet: {
       id: 'p2',
       petName: 'Cochi',
@@ -100,6 +100,7 @@ export const dummyEventData = [
       petCategory: 'Cat',
       avatar: 'https://live.staticflickr.com/8586/16253422823_83c8fca8fc_h.jpg',
     },
+    isCheckIn: true,
   },
   {
     id: 'ev4',
@@ -219,6 +220,9 @@ export const dummyEventData = [
       petCategory: 'Cat',
       avatar: 'https://live.staticflickr.com/2851/33522734484_655cb6c80c_n.jpg',
     },
+    isCheckIn: true,
+    isPayed: true,
+    isMeeting: true,
   },
   {
     id: 'ev12',

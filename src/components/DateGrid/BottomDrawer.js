@@ -46,18 +46,16 @@ const BottomDrawer = ({
         '& .event-card-wrapper': {
           flex: '0 0 18%',
           maxWidth: 300,
-          mr: '1.5%',
+          mr: '2.2%',
           mt: 4,
           mb: 3,
           '&:first-of-type': {
             ml: '2%',
           },
         },
-        '& .MuiCard-root': {
-        },
         '& .MuiDrawer-paper': {
           zIndex: 1251,
-          minHeight: 180,
+          minHeight: 210,
           flexDirection: 'row',
         },
       }}
