@@ -9,7 +9,51 @@
   <meta name="description" content="Web site created using create-react-app" />
   <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
 
-  <script src="https://apis.google.com/js/api.js"></script>
+  <script>
+    const gapiLoadPromise = new Promise((resolve, reject) => {
+      gapiLoadOkay = resolve;
+      gapiLoadFail = reject;
+    })
+    const gisLoadPromise = new Promise((resolve, reject) => {
+      gisLoadOkay = resolve;
+      gisLoadFail = reject;
+    })
+
+    var tokenClient
+
+    (async () => {
+
+      // First, load and initialize the gapi.client
+      await gapiLoadPromise;
+      await new Promise((resolve, reject) => {
+        gapi.load('client', { callback: resolve, onerror: reject });
+      });
+      await gapi.client.init({})
+
+      // Now load the GIS client
+      await gisLoadPromise;
+      await new Promise((resolve, reject) => {
+        try {
+          tokenClient = google.accounts.oauth2.initTokenClient({
+            client_id: '398166753551-7gshf600e2md2qigji7a2arpoa2ubl26.apps.googleusercontent.com',
+            scope: 'https://www.googleapis.com/auth/calendar.readonly',
+            // prompt: 'consent',
+            callback: '',
+          });
+          resolve();
+        } catch (err) {
+          reject(err);
+        }
+      });
+    })();
+
+  </script>
+
+  <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoadOkay()"
+    onerror="gapiLoadFail(event)"></script>
+  <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoadOkay()"
+    onerror="gisLoadFail(event)"></script>
+
   <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/

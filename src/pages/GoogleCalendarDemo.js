@@ -1,12 +1,14 @@
 import React from 'react'
-import GoogleAuth from '../components/UI/GoogleAuth'
+import GoogleAuthorization from '../components/UI/GoogleAuthorization'
+// import GoogleAuth from '../components/UI/GoogleAuth'
 
 const GoogleCalendarDemo = () => {
 
 
   return (
     <div>
-      <GoogleAuth />
+      <GoogleAuthorization />
+      {/* <GoogleAuth /> */}
     </div>
   )
 }
