@@ -222,7 +222,7 @@ const MainGrid = ({
         className="grid-container"
         sx={{
           zIndex: 10,
-          width: '95%',
+          width: '96%',
           m: '0 auto',
           flexGrow: 1,
           minHeight: 0,
@@ -280,7 +280,7 @@ const MainGrid = ({
             transform: 'rotateX(180deg)',
             '& .carousel-btn': {
               position: 'absolute',
-              left: '4rem',
+              left: '3rem',
               top: '3.5rem',
               zIndex: 100,
               transform: 'translate(0, -50%) rotateY(180deg)',
@@ -314,7 +314,7 @@ const MainGrid = ({
               className="grid-header"
               sx={{
                 display: 'grid',
-                gridTemplateColumns: `7rem repeat(${carouselEmployees.length}, minmax(270px, 1fr)) 3rem`,
+                gridTemplateColumns: `6rem repeat(${carouselEmployees.length}, minmax(220px, 1fr)) 3rem`,
                 gridTemplateRows: `7rem`,
                 '& > div': {
                   bgcolor: 'text.light',
@@ -445,7 +445,7 @@ const MainGrid = ({
                 display: 'grid',
                 gridAutoFlow: 'column',
                 gridTemplateRows: `60px repeat(${gridLength}, 60px)`,
-                gridTemplateColumns: `4rem 3rem`,
+                gridTemplateColumns: `4rem 2rem`,
 
               }}
             >
@@ -489,7 +489,7 @@ const MainGrid = ({
                 display: 'grid',
                 gridAutoFlow: 'column',
                 gridTemplateRows: `60px repeat(${gridLength}, 60px)`,
-                gridTemplateColumns: `repeat(${carouselEmployees.length}, minmax(270px, 1fr)) 2rem`,
+                gridTemplateColumns: `repeat(${carouselEmployees.length}, minmax(220px, 1fr)) 2rem`,
               }}
             >
               {/* 網格本身 */}

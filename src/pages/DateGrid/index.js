@@ -129,6 +129,7 @@ const DateGrid = () => {
         },
         '& .event-card-wrapper': {
           zIndex: 4,
+          pb: '3px',
           width: '80%',
           position: 'relative',
           '& .event-card': {
